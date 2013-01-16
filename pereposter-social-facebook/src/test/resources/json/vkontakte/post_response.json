@@ -1,0 +1,76 @@
+{"response": [125, {
+    "id": 219,
+    "from_id": 100172,
+    "to_id": 100172,
+    "date": 1286702921,
+    "text": "4 года ВКонтакте и мгновенный поиск",
+    "attachments": [
+        {
+            "type": "link",
+            "link": {
+                "url": "http:\/\/vkontakte.ru\/blog.php?nid=152",
+                "title": "4 года ВКонтакте и мгновенный поиск",
+                "description": ""
+            }
+        }
+    ],
+    "comments": {
+        "count": 0
+    },
+    "likes": {
+        "count": 0
+    },
+    "reposts": {
+        "count": 0
+    }
+}, {
+    "id": 216,
+    "from_id": 100172,
+    "to_id": 100172,
+    "date": 1286540347,
+    "text": "Команда «Тепло!» дошла не до всех - Новости Санкт-Петербурга - Фонтанка.Ру",
+    "attachments": [
+        {
+            "type": "link",
+            "link": {
+                "url": "http:\/\/www.fontanka.ru\/2010\/10\/08\/108\/",
+                "title": "Команда «Тепло!» дошла не до всех - Новости Санкт-Петербурга - Фонтанка.Ру",
+                "description": "Фонтанка.Ру: Команда «Тепло!» дошла не до всех"
+            }
+        }
+    ],
+    "comments": {
+        "count": 0
+    },
+    "likes": {
+        "count": 1
+    },
+    "reposts": {
+        "count": 0
+    }
+}, {
+    "id": 205,
+    "from_id": 100172,
+    "to_id": 100172,
+    "date": 1285743447,
+    "text": "Нравится ли Вам наш новый виджет? — Очень.",
+    "attachments": [
+        {
+            "type": "link",
+            "link": {
+                "url": "http:\/\/vkontakte.ru\/developers.php?o=-1&amp;amp;p=Poll",
+                "title": "Нравится ли Вам наш новый виджет?",
+                "description": ""
+            }
+        }
+    ],
+    "comments": {
+        "count": 0
+    },
+    "likes": {
+        "count": 0
+    },
+    "reposts": {
+        "count": 0
+    }
+}]}

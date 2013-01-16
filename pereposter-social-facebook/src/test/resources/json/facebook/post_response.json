@@ -1,0 +1,267 @@
+{
+    "data": [
+        {
+            "app_data": {
+                "attachment_data": "[]",
+                "images": "[118890484950220,118890491616886]",
+                "photo_ids": [
+                    118890484950220,
+                    118890491616886
+                ]
+            },
+            "post_id": "100004878072152_118890718283530",
+            "attachment": {
+                "media": [
+                    {
+                        "href": "http://www.facebook.com/photo.php?fbid=118890484950220&set=pcb.118890718283530&type=1&relevant_count=2",
+                        "alt": "несколько атачментов в мессаге",
+                        "type": "photo",
+                        "src": "http://photos-f.ak.fbcdn.net/hphotos-ak-ash4/899_118890484950220_221576963_s.jpg",
+                        "photo": {
+                            "aid": "100004878072152_21087",
+                            "pid": "100004878072152_108981",
+                            "fbid": 118890484950220,
+                            "owner": 100004878072152,
+                            "index": 1,
+                            "width": 900,
+                            "height": 517,
+                            "images": [
+                                {
+                                    "src": "http://photos-f.ak.fbcdn.net/hphotos-ak-ash4/899_118890484950220_221576963_s.jpg",
+                                    "width": 130,
+                                    "height": 74
+                                },
+                                {
+                                    "src": "http://sphotos-f.ak.fbcdn.net/hphotos-ak-ash4/s720x720/899_118890484950220_221576963_n.jpg",
+                                    "width": 720,
+                                    "height": 413
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "href": "http://www.facebook.com/photo.php?fbid=118890491616886&set=pcb.118890718283530&type=1&relevant_count=1",
+                        "alt": "несколько атачментов в мессаге",
+                        "type": "photo",
+                        "src": "http://photos-h.ak.fbcdn.net/hphotos-ak-snc7/321002_118890491616886_397451094_s.jpg",
+                        "photo": {
+                            "aid": "100004878072152_21087",
+                            "pid": "100004878072152_108982",
+                            "fbid": 118890491616886,
+                            "owner": 100004878072152,
+                            "index": 2,
+                            "width": 570,
+                            "height": 600
+                        }
+                    }
+                ],
+                "name": "",
+                "caption": "",
+                "description": "",
+                "properties": [
+                ],
+                "icon": "http://static.ak.fbcdn.net/rsrc.php/v2/yz/r/StEh3RhPvjk.gif",
+                "fb_object_type": "album",
+                "fb_object_id": "100004878072152_21087"
+            },
+            "actor_id": 100004878072152,
+            "target_id": null,
+            "message": "несколько атачментов в мессаге",
+            "type": 46,
+            "is_hidden": false,
+            "updated_time": 1358269415,
+            "created_time": 1358269415
+        },
+        {
+            "app_data": [
+            ],
+            "post_id": "100004878072152_118798591626076",
+            "attachment": {
+                "description": ""
+            },
+            "actor_id": 100004878072152,
+            "target_id": null,
+            "message": "еще раз поделился",
+            "type": 46,
+            "is_hidden": false,
+            "updated_time": 1358252392,
+            "created_time": 1358252392
+        },
+        {
+            "app_data": [
+            ],
+            "post_id": "100004878072152_539479159403418",
+            "attachment": {
+                "media": [
+                    {
+                        "href": "http://www.facebook.com/denis.kuzmin.7758/posts/118279898344612",
+                        "alt": "Denis Kuzmin",
+                        "type": "link",
+                        "src": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v2/yo/r/UlIqmHJn-SK.gif"
+                    }
+                ],
+                "name": "Denis Kuzmin",
+                "href": "http://www.facebook.com/denis.kuzmin.7758/posts/118279898344612",
+                "caption": "",
+                "description": "01.01.2012 Сергей попросил написать пост   Проверка того как будут постится большие почты   как то так",
+                "properties": [
+                ],
+                "icon": "http://static.ak.fbcdn.net/rsrc.php/v2/yD/r/aS8ecmYRys0.gif"
+            },
+            "actor_id": 100004878072152,
+            "target_id": null,
+            "message": "еще раз поделился",
+            "type": 80,
+            "is_hidden": false,
+            "updated_time": 1358172489,
+            "created_time": 1358172489
+        },
+        {
+            "app_data": [
+            ],
+            "post_id": "100004878072152_331442763638391",
+            "attachment": {
+                "media": [
+                    {
+                        "href": "http://sphotos-f.ak.fbcdn.net/hphotos-ak-ash3/s2048x2048/406034_118458438326758_1698878644_n.jpg",
+                        "alt": "",
+                        "type": "link",
+                        "src": "http://external.ak.fbcdn.net/safe_image.php?d=AQBt_xJTA7CTAiyG&w=90&h=90&url=http%3A%2F%2Fsphotos-f.ak.fbcdn.net%2Fhphotos-ak-ash3%2Fs2048x2048%2F406034_118458438326758_1698878644_n.jpg"
+                    }
+                ],
+                "name": "http://sphotos-f.ak.fbcdn.net/hphotos-ak-ash3/s2048x2048/406034_118458438326758_1698878644_n.jpg",
+                "href": "http://sphotos-f.ak.fbcdn.net/hphotos-ak-ash3/s2048x2048/406034_118458438326758_1698878644_n.jpg",
+                "caption": "sphotos-f.ak.fbcdn.net",
+                "description": "",
+                "properties": [
+                ],
+                "icon": "http://static.ak.fbcdn.net/rsrc.php/v2/yz/r/StEh3RhPvjk.gif"
+            },
+            "actor_id": 100004878072152,
+            "target_id": null,
+            "message": "Я поделился ссылкой :)",
+            "type": 80,
+            "is_hidden": false,
+            "updated_time": 1358172137,
+            "created_time": 1358172137
+        },
+        {
+            "app_data": [
+            ],
+            "post_id": "100004878072152_444871858911893",
+            "attachment": {
+                "media": [
+                    {
+                        "href": "http://sphotos-f.ak.fbcdn.net/hphotos-ak-ash3/s2048x2048/406034_118458438326758_1698878644_n.jpg",
+                        "alt": "",
+                        "type": "link",
+                        "src": "http://external.ak.fbcdn.net/safe_image.php?d=AQBt_xJTA7CTAiyG&w=90&h=90&url=http%3A%2F%2Fsphotos-f.ak.fbcdn.net%2Fhphotos-ak-ash3%2Fs2048x2048%2F406034_118458438326758_1698878644_n.jpg"
+                    }
+                ],
+                "name": "http://sphotos-f.ak.fbcdn.net/hphotos-ak-ash3/s2048x2048/406034_118458438326758_1698878644_n.jpg",
+                "href": "http://sphotos-f.ak.fbcdn.net/hphotos-ak-ash3/s2048x2048/406034_118458438326758_1698878644_n.jpg",
+                "caption": "sphotos-f.ak.fbcdn.net",
+                "description": "",
+                "properties": [
+                ],
+                "icon": "http://static.ak.fbcdn.net/rsrc.php/v2/yz/r/StEh3RhPvjk.gif"
+            },
+            "actor_id": 100004878072152,
+            "target_id": null,
+            "message": "В этом посте фотка вставлена ссылкой http://sphotos-f.ak.fbcdn.net/hphotos-ak-ash3/s2048x2048/406034_118458438326758_1698878644_n.jpg",
+            "type": 80,
+            "is_hidden": false,
+            "updated_time": 1358172012,
+            "created_time": 1358172012
+        },
+        {
+            "app_data": [
+            ],
+            "post_id": "100004878072152_118459424993326",
+            "attachment": {
+                "description": ""
+            },
+            "actor_id": 100004878072152,
+            "target_id": null,
+            "message": "",
+            "type": null,
+            "is_hidden": false,
+            "updated_time": 1358165854,
+            "created_time": 1358165854
+        },
+        {
+            "app_data": [
+            ],
+            "post_id": "100004878072152_118459388326663",
+            "attachment": {
+                "description": ""
+            },
+            "actor_id": 100004878072152,
+            "target_id": null,
+            "message": "",
+            "type": null,
+            "is_hidden": false,
+            "updated_time": 1358165842,
+            "created_time": 1358165842
+        },
+        {
+            "app_data": {
+                "attachment_data": "[]",
+                "images": "[118458438326758]",
+                "photo_ids": [
+                    118458438326758
+                ]
+            },
+            "post_id": "100004878072152_118458474993421",
+            "attachment": {
+                "media": [
+                    {
+                        "href": "http://www.facebook.com/photo.php?fbid=118458438326758&set=a.118458461660089.21087.100004878072152&type=1&relevant_count=1",
+                        "alt": "оппа, а вот и фотка!",
+                        "type": "photo",
+                        "src": "http://photos-f.ak.fbcdn.net/hphotos-ak-ash3/406034_118458438326758_1698878644_s.jpg",
+                        "photo": {
+                            "aid": "100004878072152_21087",
+                            "pid": "100004878072152_106986",
+                            "fbid": 118458438326758,
+                            "owner": 100004878072152,
+                            "index": 1,
+                            "width": 570,
+                            "height": 600
+                        }
+                    }
+                ],
+                "name": "",
+                "caption": "",
+                "description": "",
+                "properties": [
+                ],
+                "icon": "http://static.ak.fbcdn.net/rsrc.php/v2/yz/r/StEh3RhPvjk.gif",
+                "fb_object_type": "photo",
+                "fb_object_id": "100004878072152_106986"
+            },
+            "actor_id": 100004878072152,
+            "target_id": null,
+            "message": "оппа, а вот и фотка!",
+            "type": 247,
+            "is_hidden": false,
+            "updated_time": 1358165860,
+            "created_time": 1358165536
+        },
+        {
+            "app_data": [
+            ],
+            "post_id": "100004878072152_118279898344612",
+            "attachment": {
+                "description": ""
+            },
+            "actor_id": 100004878072152,
+            "target_id": null,
+            "message": "01.01.2012 Сергей попросил написать пост   Проверка того как будут постится большие почты   как то так",
+            "type": 46,
+            "is_hidden": false,
+            "updated_time": 1358113889,
+            "created_time": 1358113889
+        }
+    ]
+}

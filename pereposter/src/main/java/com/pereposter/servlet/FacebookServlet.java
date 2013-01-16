@@ -144,12 +144,16 @@ public class FacebookServlet extends HttpServlet {
         being = urlWithAccessToken.indexOf("#access_token=");
         end = urlWithAccessToken.substring(urlWithAccessToken.indexOf("#access_token=") + 14).indexOf("&");
 
+        //SELECT app_data, post_id, attachment, actor_id, target_id, message, type, is_hidden, updated_time, created_time FROM stream WHERE source_id = me() AND (type = 46 OR type = 247 OR type = 80) AND is_hidden = 0 LIMIT 1
+        //SELECT app_data, post_id, attachment, actor_id, target_id, message, type, is_hidden, updated_time, created_time FROM stream WHERE source_id = me() AND (type = 46 OR type = 247 OR type = 80) AND is_hidden = 0 AND created_time < 1358172137
+        //SELECT height, photo_id, size, src, width FROM photo_src WHERE photo_id in (118458438326758)
+
         //TODO: Сделать проверку на послений параметер
 
         String accessToken = urlWithAccessToken.substring(being + 14, being + 14 + end);
 
 
-        HttpPost post = new HttpPost("https://graph.facebook.com/100004878072152/feed?message=01.01.2012%20Сергей%20попросил%20написать%20пост%20%20%20Проверка%20того%20как%20будут%20постится%20большие%20почты%20%20%20как%20то%20так&access_token="+accessToken);
+        HttpPost post = new HttpPost("https://graph.facebook.com/100004878072152/feed?message=01.01.2012%20Сергей%20попросил%20написать%20пост%20%20%20Проверка%20того%20как%20будут%20постится%20большие%20почты%20%20%20как%20то%20так&access_token=" + accessToken);
         try {
             httpResponse = httpClient.execute(post);
             bodyResponse = IOUtils.toString(((BasicHttpResponse) httpResponse).getEntity().getContent(), "UTF-8");
@@ -159,6 +163,4 @@ public class FacebookServlet extends HttpServlet {
         post.abort();
 
     }
-
-
 }

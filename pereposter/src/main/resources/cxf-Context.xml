@@ -9,7 +9,7 @@
 
     <jaxrs:server id="restContainer" address="/">
         <jaxrs:serviceBeans>
-            <!--<ref bean="userBoundary"/>-->
+            <ref bean="testBoundary"/>
         </jaxrs:serviceBeans>
     </jaxrs:server>
 
