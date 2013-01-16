@@ -5,7 +5,6 @@ import com.google.common.io.CharStreams;
 import com.pereposter.social.api.connector.SocialNetworkClient;
 import com.pereposter.social.entity.Response;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
