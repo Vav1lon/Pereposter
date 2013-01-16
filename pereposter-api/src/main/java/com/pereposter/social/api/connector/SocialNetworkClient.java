@@ -10,6 +10,6 @@ public interface SocialNetworkClient {
 
     String sendRequestReturnBody(HttpUriRequest request);
 
-    Response sendRequestReturnBodyAndResponse(HttpUriRequest request);
+    Response sendRequestReturnBodyAndResponse(HttpUriRequest request, boolean clearCookie);
 
 }

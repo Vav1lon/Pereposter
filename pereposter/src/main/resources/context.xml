@@ -6,13 +6,13 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
 
-    <context:component-scan base-package="com.pereposter" />
+    <context:component-scan base-package="com.pereposter"/>
 
-    <task:scheduled-tasks>
-        <task:scheduled ref="postManager" method="findAndWriteNewPost" cron="* */2 * * * *"/>
-    </task:scheduled-tasks>
+    <!--<task:scheduled-tasks>-->
+        <!--<task:scheduled ref="postManager" method="findAndWriteNewPost" cron="* */2 * * * *"/>-->
+    <!--</task:scheduled-tasks>-->
 
-    <bean id="objectMapper" class="org.codehaus.jackson.map.ObjectMapper" />
+    <bean id="objectMapper" class="org.codehaus.jackson.map.ObjectMapper"/>
 
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="ignoreUnresolvablePlaceholders" value="true"/>
@@ -26,7 +26,6 @@
         <property name="locations">
             <list>
                 <value>classpath:pereposter.local.properties</value>
-                <value>${pereposter_property}</value>
             </list>
         </property>
     </bean>

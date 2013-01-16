@@ -1,4 +1,4 @@
-package com.pereposter.social.facebook.connector;
+package com.pereposter.social.vkontakte.connector;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.CharStreams;
@@ -15,11 +15,11 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.io.InputStreamReader;
 
-@Component("facebookClient")
+@Component("vkontakteClient")
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class Client implements SocialNetworkClient {
 
-    private HttpClient httpClient;
+    private DefaultHttpClient httpClient;
 
     @PostConstruct
     private void setUp() {
@@ -30,7 +30,6 @@ public class Client implements SocialNetworkClient {
     public HttpResponse sendRequestReturnHttpResponse(HttpUriRequest request) {
 
         HttpResponse httpResponse = null;
-
         try {
             httpResponse = httpClient.execute(request);
         } catch (Exception e) {
@@ -66,6 +65,10 @@ public class Client implements SocialNetworkClient {
         HttpResponse httpResponse = null;
         String bodyResponse = null;
 
+        if (clearCookie) {
+            httpClient.getCookieStore().clear();
+        }
+
         try {
             httpResponse = httpClient.execute(request);
             bodyResponse = CharStreams.toString(new InputStreamReader(httpResponse.getEntity().getContent(), Charsets.UTF_8));
@@ -80,5 +83,4 @@ public class Client implements SocialNetworkClient {
 
         return result;
     }
-
 }

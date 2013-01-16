@@ -50,8 +50,15 @@ public class PostManager {
         account.setPassword("A329k4219516811");
         account.setUsername("denis.kuzmin.7758@facebook.com");
 
+        UserSocialAccount account2 = new UserSocialAccount();
+        account2.setEnabled(false);
+        account2.setSocialNetwork(SocialNetworkEnum.VKONTAKTE);
+        account2.setPassword("19516811");
+        account2.setUsername("pereposter@lenta.ru");
+
         List<UserSocialAccount> tmp = new ArrayList<UserSocialAccount>();
         tmp.add(account);
+        tmp.add(account2);
 
         result.setAccounts(tmp);
         getSession().save(result);

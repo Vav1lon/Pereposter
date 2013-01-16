@@ -12,6 +12,7 @@
         <module>../pereposter</module>
         <module>../pereposter-api</module>
         <module>../pereposter-social-facebook</module>
+        <module>../pereposter-social-vkontakte</module>
     </modules>
 
     <packaging>pom</packaging>

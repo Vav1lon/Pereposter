@@ -22,17 +22,17 @@
         <load-on-startup>1</load-on-startup>
     </servlet>
 
-    <servlet>
-        <servlet-name>FacebookServlet</servlet-name>
-        <servlet-class>com.pereposter.servlet.FacebookServlet</servlet-class>
-        <load-on-startup>2</load-on-startup>
-    </servlet>
+    <!--<servlet>-->
+        <!--<servlet-name>FacebookServlet</servlet-name>-->
+        <!--<servlet-class>com.pereposter.servlet.FacebookServlet</servlet-class>-->
+        <!--<load-on-startup>2</load-on-startup>-->
+    <!--</servlet>-->
 
-    <servlet>
-        <servlet-name>VKontakteServlet</servlet-name>
-        <servlet-class>com.pereposter.servlet.VKontakteServlet</servlet-class>
-        <load-on-startup>3</load-on-startup>
-    </servlet>
+    <!--<servlet>-->
+        <!--<servlet-name>VKontakteServlet</servlet-name>-->
+        <!--<servlet-class>com.pereposter.servlet.VKontakteServlet</servlet-class>-->
+        <!--<load-on-startup>3</load-on-startup>-->
+    <!--</servlet>-->
 
 
     <servlet-mapping>
@@ -40,14 +40,14 @@
         <url-pattern>/api/*</url-pattern>
     </servlet-mapping>
 
-    <servlet-mapping>
-        <servlet-name>FacebookServlet</servlet-name>
-        <url-pattern>/auth/facebook/*</url-pattern>
-    </servlet-mapping>
+    <!--<servlet-mapping>-->
+        <!--<servlet-name>FacebookServlet</servlet-name>-->
+        <!--<url-pattern>/auth/facebook/*</url-pattern>-->
+    <!--</servlet-mapping>-->
 
-    <servlet-mapping>
-        <servlet-name>VKontakteServlet</servlet-name>
-        <url-pattern>/auth/vkontakte/*</url-pattern>
-    </servlet-mapping>
+    <!--<servlet-mapping>-->
+        <!--<servlet-name>VKontakteServlet</servlet-name>-->
+        <!--<url-pattern>/auth/vkontakte/*</url-pattern>-->
+    <!--</servlet-mapping>-->
 
 </web-app>
