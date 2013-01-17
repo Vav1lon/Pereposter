@@ -1,0 +1,51 @@
+{"response": [2, {
+    "id": 2,
+    "from_id": 195726384,
+    "to_id": 195726384,
+    "date": 1358113898,
+    "text": "01.01.2012 Сергей попросил написать пост   Проверка того как будут постится большие почты   как то так",
+    "comments": {
+        "count": 0,
+        "can_post": 1
+    },
+    "likes": {
+        "count": 0,
+        "user_likes": 0,
+        "can_like": 1,
+        "can_publish": 0
+    },
+    "reposts": {
+        "count": 0,
+        "user_reposted": 0
+    },
+    "post_source": {
+        "type": "api"
+    },
+    "online": 1,
+    "reply_count": 0
+}, {
+    "id": 1,
+    "from_id": 195726384,
+    "to_id": 195726384,
+    "date": 1358032273,
+    "text": "Hello_My_World!",
+    "comments": {
+        "count": 0,
+        "can_post": 1
+    },
+    "likes": {
+        "count": 0,
+        "user_likes": 0,
+        "can_like": 1,
+        "can_publish": 0
+    },
+    "reposts": {
+        "count": 0,
+        "user_reposted": 0
+    },
+    "post_source": {
+        "type": "api"
+    },
+    "online": 1,
+    "reply_count": 0
+}]}

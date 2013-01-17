@@ -5,9 +5,7 @@ import com.pereposter.social.api.connector.SocialNetworkConnector;
 import com.pereposter.social.entity.Post;
 import com.pereposter.social.entity.Response;
 import com.pereposter.social.entity.SocialAuth;
-import com.pereposter.social.vkontakte.entity.CookieParam;
-import com.pereposter.social.vkontakte.entity.ParamLoginForm;
-import com.pereposter.social.vkontakte.entity.WritePostResponse;
+import com.pereposter.social.vkontakte.entity.*;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
@@ -23,6 +21,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class VkontakteConnector implements SocialNetworkConnector {
@@ -47,6 +46,12 @@ public class VkontakteConnector implements SocialNetworkConnector {
 
     @Value("${pereposter.social.vkontakte.url.write.post.wall}")
     private String writePostToUserWallUrl;
+
+    @Value("${pereposter.social.vkontakte.url.get.postById}")
+    private String getPostByIdUrl;
+
+    @Value("${pereposter.social.vkontakte.url.get.postList}")
+    private String getPostsFormWall;
 
     @Value("${pereposter.social.vkontakte.url.accessTokenParamName}")
     private String accessTokenParamName;
@@ -77,15 +82,6 @@ public class VkontakteConnector implements SocialNetworkConnector {
         return Strings.isNullOrEmpty(result) ? null : result;
     }
 
-    private String writePostToWall(SocialAuth auth, Post post) {
-        HttpPost httpPost = new HttpPost(writePostToUserWallUrl + StringEscapeUtils.escapeHtml4(post.getMessage()).replace(" ", "%20") + accessTokenParamName + getAccessToken(auth));
-
-        String json = client.sendRequestReturnBody(httpPost);
-        WritePostResponse response = readJsonToObject(json, WritePostResponse.class);
-
-        return response.getResponse().getPost_id();
-    }
-
     @Override
     public String writeNewPosts(SocialAuth auth, List<Post> posts) {
 
@@ -110,17 +106,137 @@ public class VkontakteConnector implements SocialNetworkConnector {
 
     @Override
     public Post findPostById(SocialAuth auth, String postId) {
-        return null;
+
+        HttpGet httpPost = new HttpGet(getPostByIdUrl + postId + accessTokenNameParam + getAccessToken(auth));
+
+        String json = client.sendRequestReturnBody(httpPost);
+
+        FindPostByIdResponse response = readJsonToObject(json, FindPostByIdResponse.class);
+
+        Post result = null;
+
+        if (response != null && response.getResponse().size() != 0) {
+            result = createPost(response.getResponse().get(0));
+        }
+
+        return result;
+
     }
 
     @Override
     public List<Post> findPostsByOverCreatedDate(SocialAuth auth, DateTime createdDate) {
-        return null;
+
+        //TODO: fix logic!!!!
+
+        Integer count = 50;
+        Integer offset = 0;
+
+        List<Post> result = findPostOverCreateDate(auth, createdDate, count, offset);
+
+        return result;
     }
 
     @Override
     public Post findLastPost(SocialAuth auth) {
-        return null;
+
+        HttpGet httpGet = new HttpGet(getPostsFormWall + "?filter=owner&count=" + 1 + accessTokenParamName + getAccessToken(auth));
+        String json = client.sendRequestReturnBody(httpGet);
+        GetPostListResponse response = readJsonToObject(json, GetPostListResponse.class);
+
+        Post result = null;
+
+        if (response != null && response.getResponse().size() == 2) {
+
+            PostVkontakte postVkontakte = createAndFillPostVkontakte((Map<String, Object>) response.getResponse().get(1));
+
+            result = createPost(postVkontakte);
+        }
+
+        return result;
+    }
+
+    private PostVkontakte createAndFillPostVkontakte(Map<String, Object> map) {
+
+        PostVkontakte result = new PostVkontakte();
+
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
+
+            if (entry.getKey().equals("id")) {
+                result.setId(Long.parseLong(entry.getValue().toString()));
+            }
+
+            if (entry.getKey().equals("from_id")) {
+                result.setDate(Long.parseLong(entry.getValue().toString()));
+            }
+
+            if (entry.getKey().equals("to_id")) {
+                result.setTo_id(Long.parseLong(entry.getValue().toString()));
+            }
+
+            if (entry.getKey().equals("date")) {
+                result.setDate(Long.parseLong(entry.getValue().toString()));
+            }
+
+            if (entry.getKey().equals("text")) {
+                result.setText((String) entry.getValue());
+            }
+
+
+        }
+
+        return result;
+
+    }
+
+    private List<Post> findPostOverCreateDate(SocialAuth auth, DateTime createdDate, Integer count, Integer offset) {
+        HttpGet httpGet = new HttpGet(getPostsFormWall + "?filter=owner&count=" + count + "&offset=" + offset + accessTokenParamName + getAccessToken(auth));
+
+        String json = client.sendRequestReturnBodyAndResponse(httpGet, true).getBody();
+
+        GetPostListResponse response = readJsonToObject(json, GetPostListResponse.class);
+
+        List<Post> result = new ArrayList<Post>();
+        PostVkontakte postVkontakte;
+
+        for (int i = 1; i < response.getResponse().size(); i++) {
+
+            postVkontakte = createAndFillPostVkontakte((Map<String, Object>) response.getResponse().get(i));
+
+            if (postVkontakte.getDate() > (createdDate.getMillis() / 1000)) {
+                result.add(createPost(postVkontakte));
+            } else {
+                break;
+            }
+
+        }
+
+
+        return result.isEmpty() ? null : result;
+    }
+
+    private String writePostToWall(SocialAuth auth, Post post) {
+        HttpPost httpPost = new HttpPost(writePostToUserWallUrl + StringEscapeUtils.escapeHtml4(post.getMessage()).replace(" ", "%20") + accessTokenParamName + getAccessToken(auth));
+
+        String json = client.sendRequestReturnBody(httpPost);
+        WritePostResponse response = readJsonToObject(json, WritePostResponse.class);
+
+        return response.getResponse().getPost_id();
+    }
+
+    private Post createPost(PostVkontakte postVkontakte) {
+        Post result = new Post();
+        result.setCreatedDate(new DateTime(postVkontakte.getDate() * 1000));
+        result.setId(postVkontakte.getId().toString());
+        result.setMessage(postVkontakte.getText());
+        return result;
+    }
+
+    private Post createPost(FindPostByIdResult findPostResponse) {
+        Post result = new Post();
+        result.setId(findPostResponse.getId().toString());
+        result.setMessage(findPostResponse.getText());
+        result.setCreatedDate(new DateTime(findPostResponse.getDate() * 1000));
+        return result;
     }
 
     private <T> T readJsonToObject(String json, Class<T> clazz) {

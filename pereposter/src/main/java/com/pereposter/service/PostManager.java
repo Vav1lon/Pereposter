@@ -31,50 +31,7 @@ public class PostManager {
     @Autowired
     private SessionFactory sessionFactory;
 
-
-    //TODO: for test
-    User result = null;
-
-    @Autowired
-    private SocialNetworkControl socialNetworkControl;
-
-    public void setUp() {
-
-        result = new User();
-        result.setName("Denis Kuzmin [Tester]");
-        result.setActive(true);
-
-        UserSocialAccount account = new UserSocialAccount();
-        account.setEnabled(true);
-        account.setSocialNetwork(SocialNetworkEnum.FACEBOOK);
-        account.setPassword("A329k4219516811");
-        account.setUsername("denis.kuzmin.7758@facebook.com");
-
-        UserSocialAccount account2 = new UserSocialAccount();
-        account2.setEnabled(false);
-        account2.setSocialNetwork(SocialNetworkEnum.VKONTAKTE);
-        account2.setPassword("19516811");
-        account2.setUsername("pereposter@lenta.ru");
-
-        List<UserSocialAccount> tmp = new ArrayList<UserSocialAccount>();
-        tmp.add(account);
-        tmp.add(account2);
-
-        result.setAccounts(tmp);
-        getSession().save(result);
-        getSession().flush();
-
-
-        socialNetworkControl.initializationUser(result);
-
-    }
-
-
     public void findAndWriteNewPost() {
-
-        if (result == null) {
-            setUp();
-        }
 
         List<User> users = (List<User>) getSession().createQuery("FROM User u WHERE u.active = true ").list();
 

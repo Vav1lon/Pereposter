@@ -28,15 +28,20 @@ public class TestBoundary {
     @Autowired
     private ApplicationContext applicationContext;
 
+    @Autowired
+    private PostManager postManager;
+
     @GET
     public void test() {
 
+        postManager.findAndWriteNewPost();
 
-        SocialAuth socialAuth = new SocialAuth();
-        socialAuth.setPassword("A329k4219516811");
-        socialAuth.setLogin("denis.kuzmin.7758@facebook.com");
 
-        facebookConnector.writeNewPost(socialAuth, null);
+//        SocialAuth socialAuth = new SocialAuth();
+//        socialAuth.setPassword("A329k4219516811");
+//        socialAuth.setLogin("denis.kuzmin.7758@facebook.com");
+//
+//        facebookConnector.writeNewPost(socialAuth, null);
 
         //postManager.findAndWriteNewPost();
 

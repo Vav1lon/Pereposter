@@ -124,5 +124,33 @@
 
     </dependencies>
 
+    <profiles>
+        <profile>
+            <id>Generate DDL by Entity</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>de.juplo</groupId>
+                        <artifactId>hibernate4-maven-plugin</artifactId>
+                        <version>1.0</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>export</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <driverClassName>com.mysql.jdbc.Driver</driverClassName>
+                            <hibernateDialect>org.hibernate.dialect.MySQL5Dialect</hibernateDialect>
+                            <url><![CDATA[jdbc:mysql://localhost:3306/pereposter]]></url>
+                            <username>pereposter_user</username>
+                            <password>19516811</password>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>
