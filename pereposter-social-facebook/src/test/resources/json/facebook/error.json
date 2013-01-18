@@ -1,0 +1,8 @@
+{"error": {
+    "message": "(#506) Duplicate status message",
+    "type": "OAuthException",
+    "code": 506,
+    "error_data": {
+        "kError": 1455006
+    }
+}}

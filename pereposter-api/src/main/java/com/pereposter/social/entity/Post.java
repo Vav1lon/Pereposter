@@ -7,6 +7,7 @@ import java.util.List;
 public class Post {
 
     private String id;
+    private String ownerId;
     private String message;
     private DateTime createdDate;
     private DateTime updatedDate;
@@ -18,6 +19,14 @@ public class Post {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(String ownerId) {
+        this.ownerId = ownerId;
     }
 
     public String getMessage() {

@@ -11,6 +11,8 @@
     <modules>
         <module>../pereposter</module>
         <module>../pereposter-api</module>
+
+        <module>../pereposter-gateway</module>
         <module>../pereposter-social-facebook</module>
         <module>../pereposter-social-vkontakte</module>
     </modules>
@@ -67,7 +69,7 @@
         <dependency>
             <groupId>org.jadira.usertype</groupId>
             <artifactId>usertype.core</artifactId>
-            <version>3.0.0.CR1</version>
+            <version>3.0.0.CR3</version>
         </dependency>
 
         <!-- Log -->
@@ -99,6 +101,12 @@
             <groupId>org.slf4j</groupId>
             <artifactId>jul-to-slf4j</artifactId>
             <version>${slf4j.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.codehaus.janino</groupId>
+            <artifactId>janino</artifactId>
+            <version>2.6.1</version>
         </dependency>
 
         <!-- Spring -->

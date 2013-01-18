@@ -19,21 +19,10 @@
     <dependencies>
 
         <!--Internal-->
+
         <dependency>
             <groupId>com.pereposter</groupId>
             <artifactId>pereposter-api</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.pereposter</groupId>
-            <artifactId>pereposter-social-facebook</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.pereposter</groupId>
-            <artifactId>pereposter-social-vkontakte</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
@@ -41,19 +30,7 @@
 
         <dependency>
             <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-core</artifactId>
-            <version>${cxf.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-frontend-jaxrs</artifactId>
-            <version>${cxf.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-transports-http</artifactId>
             <version>${cxf.version}</version>
         </dependency>
 
@@ -119,7 +96,7 @@
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <version>1.3.170</version>
-            <!--<scope>test</scope>-->
+            <scope>test</scope>
         </dependency>
 
     </dependencies>

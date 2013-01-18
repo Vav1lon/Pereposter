@@ -3,7 +3,6 @@ package com.pereposter.service.socialnetwork;
 import com.pereposter.entity.internal.UserSocialAccount;
 import com.pereposter.social.api.connector.SocialNetworkConnector;
 import com.pereposter.social.entity.Post;
-import com.pereposter.social.entity.PostKeyInfo;
 import com.pereposter.social.entity.SocialAuth;
 import com.pereposter.utils.ServiceHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +23,9 @@ public class FacebookService implements SocialNetworkService {
     private ServiceHelper serviceHelper;
 
     @Override
-    public PostKeyInfo findLastUserPost(UserSocialAccount socialAccount) {
+    public Post findLastUserPost(UserSocialAccount socialAccount) {
         SocialAuth socialAuth = serviceHelper.transformSocialAccount(socialAccount);
-
-        Post post = facebookConnector.findLastPost(socialAuth);
-
-        return new PostKeyInfo(post.getId(), post.getCreatedDate());
+        return facebookConnector.findLastPost(socialAuth);
     }
 
     @Override
@@ -47,17 +43,15 @@ public class FacebookService implements SocialNetworkService {
     }
 
     @Override
-    public String writePost(UserSocialAccount socialAccount, Post post) {
+    public Post writePost(UserSocialAccount socialAccount, Post post) {
         SocialAuth socialAuth = serviceHelper.transformSocialAccount(socialAccount);
-
-        return facebookConnector.writeNewPost(socialAuth, post);
+        return facebookConnector.findPostById(socialAuth, facebookConnector.writeNewPost(socialAuth, post));
 
     }
 
     @Override
-    public String writePosts(UserSocialAccount socialAccount, List<Post> posts) {
+    public Post writePosts(UserSocialAccount socialAccount, List<Post> posts) {
         SocialAuth socialAuth = serviceHelper.transformSocialAccount(socialAccount);
-
-        return facebookConnector.writeNewPosts(socialAuth, posts);
+        return facebookConnector.findPostById(socialAuth, facebookConnector.writeNewPosts(socialAuth, posts));
     }
 }

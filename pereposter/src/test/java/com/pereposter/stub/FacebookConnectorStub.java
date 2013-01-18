@@ -1,9 +1,11 @@
 package com.pereposter.stub;
 
+import com.pereposter.TestHelper;
 import com.pereposter.social.api.connector.SocialNetworkConnector;
 import com.pereposter.social.entity.Post;
 import com.pereposter.social.entity.SocialAuth;
 import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -14,53 +16,75 @@ import java.util.Random;
 @Service("facebookConnector")
 public class FacebookConnectorStub implements SocialNetworkConnector {
 
+    @Autowired
+    private TestHelper testHelper;
+
+    private List<Post> facebookPosts;
+
     Random random;
 
     @PostConstruct
     public void setUp() {
         random = new Random();
+        facebookPosts = new ArrayList<Post>();
     }
 
     @Override
     public String writeNewPost(SocialAuth auth, Post post) {
-        return Long.toString(random.nextLong());
+        testHelper.setCountWriteRowToFacebook(testHelper.getCountWriteRowToFacebook() + 1);
+        return post.getId();
     }
 
     @Override
     public String writeNewPosts(SocialAuth auth, List<Post> posts) {
-        return Long.toString(random.nextLong());
+        testHelper.setCountWriteRowToFacebook(testHelper.getCountWriteRowToFacebook() + posts.size());
+        facebookPosts.addAll(posts);
+        return facebookPosts.get(facebookPosts.size() - 1).getId();
     }
 
     @Override
     public Post findPostById(SocialAuth auth, String postId) {
-        return createPost("Это одно тестовое сообщение");
+
+        Post result = null;
+
+        for (Post post : facebookPosts) {
+            if (post.getId().equalsIgnoreCase(postId)) {
+                result = post;
+            }
+        }
+
+        return result;
     }
 
     @Override
     public List<Post> findPostsByOverCreatedDate(SocialAuth auth, DateTime createdDate) {
 
-        List<Post> result = new ArrayList<Post>();
+        List<Post> result = null;
 
-        result.add(createPost("Это первое тестовове сообщение в списке из 4-х"));
-        result.add(createPost("Это второе тестовове сообщение в списке из 4-х"));
-        result.add(createPost("Это третье тестовове сообщение в списке из 4-х"));
-        result.add(createPost("Это четвертое тестовове сообщение в списке из 4-х"));
+        if (testHelper.isFacebookSource() && !testHelper.getSourcePost().isEmpty()) {
+            result = testHelper.getSourcePost();
+        }
 
         return result;
     }
 
     @Override
     public Post findLastPost(SocialAuth auth) {
-        return createPost("Это одно тестовое сообщение");
+
+        Post result = null;
+
+        if (!facebookPosts.isEmpty()) {
+            result = facebookPosts.get(facebookPosts.size() - 1);
+        }
+
+        return result;
     }
 
-    private Post createPost(String message) {
-        Post post = new Post();
-        post.setId(Integer.toString(random.nextInt()));
-        post.setCreatedDate(new DateTime().minusHours(random.nextInt(10)));
-        post.setUpdatedDate(new DateTime());
-        post.setMessage(message);
-        return post;
+    public List<Post> getFacebookPosts() {
+        return facebookPosts;
     }
 
+    public void setFacebookPosts(List<Post> facebookPosts) {
+        this.facebookPosts = facebookPosts;
+    }
 }

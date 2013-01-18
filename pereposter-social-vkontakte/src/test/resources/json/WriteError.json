@@ -1,0 +1,24 @@
+{"error": {
+    "error_code": 14,
+    "error_msg": "Captcha needed",
+    "request_params": [
+        {
+            "key": "oauth",
+            "value": "1"
+        },
+        {
+            "key": "method",
+            "value": "wall.post"
+        },
+        {
+            "key": "message",
+            "value": "это пост из вконтакта в фейсбук"
+        },
+        {
+            "key": "access_token",
+            "value": "aff05ce2910aadd9b2afb4013290f4f5feedf2b818cdf8aae827945f266c331551c36877caae9139e8600"
+        }
+    ],
+    "captcha_sid": "286691687574",
+    "captcha_img": "http:\/\/api.vk.com\/captcha.php?sid=286691687574&s=1"
+}}

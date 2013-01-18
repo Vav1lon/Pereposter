@@ -5,11 +5,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <context:component-scan base-package="com.pereposter.stub"/>
-    <context:component-scan base-package="com.pereposter.boundary"/>
-    <context:component-scan base-package="com.pereposter.control"/>
-    <context:component-scan base-package="com.pereposter.service"/>
-    <context:component-scan base-package="com.pereposter.utils"/>
+    <context:component-scan base-package="com.pereposter"/>
 
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="ignoreUnresolvablePlaceholders" value="true"/>

@@ -15,13 +15,13 @@ public class UserSocialAccount {
     @Column(name = "ID")
     private Long id;
 
-    @Column(name = "USERNAME", length = 256, nullable = false)
+    @Column(name = "USERNAME", length = 256, nullable = false, unique = true)
     private String username;
 
     @Column(name = "PASSWORD", length = 512, nullable = false)
     private String password;
 
-    @Column(name = "SOCIAL_NETWORK")
+    @Column(name = "SOCIAL_NETWORK", nullable = false)
     @Type(type = "com.pereposter.utils.GenericEnumUserType",
             parameters = {
                     @org.hibernate.annotations.Parameter(

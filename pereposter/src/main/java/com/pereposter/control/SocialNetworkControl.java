@@ -3,7 +3,7 @@ package com.pereposter.control;
 import com.pereposter.entity.internal.User;
 import com.pereposter.entity.internal.UserSocialAccount;
 import com.pereposter.service.socialnetwork.SocialNetworkService;
-import com.pereposter.social.entity.PostKeyInfo;
+import com.pereposter.social.entity.Post;
 import com.pereposter.utils.ServiceHelper;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -22,17 +22,28 @@ public class SocialNetworkControl {
     @Autowired
     private SessionFactory sessionFactory;
 
+    public void initializationUser(String id) {
+
+        User user = (User) getSession().get(User.class, Long.valueOf(id));
+
+        if (user != null) {
+            initializationUser(user);
+        }
+
+    }
+
     public void initializationUser(User user) {
 
         for (UserSocialAccount account : user.getAccounts()) {
 
             if (account.isEnabled()) {
                 SocialNetworkService service = serviceHelper.getService(account.getSocialNetwork());
-                PostKeyInfo postKeyInfo = service.findLastUserPost(account);
+                Post post = service.findLastUserPost(account);
 
-                if (postKeyInfo != null) {
-                    account.setLastPostId(postKeyInfo.getId());
-                    account.setCreateDateLastPost(postKeyInfo.getCreatedDate());
+                if (post != null) {
+                    account.setLastPostId(post.getId());
+                    account.setCreateDateLastPost(post.getCreatedDate());
+                    account.setSocialUserId(post.getOwnerId());
                     getSession().saveOrUpdate(user);
                 } else {
                     //TODO: пишем в лог что данной учетной записи не существует или пароль не верен

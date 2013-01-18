@@ -22,7 +22,6 @@
         <property name="hibernateProperties">
             <value>
                 hibernate.dialect=${pereposter.jdbc.dialect}
-                <!--hibernate.hbm2ddl.auto=${pereposter.jdbc.generateDdl}-->
                 hibernate.show_sql=${pereposter.jdbc.showSql}
             </value>
         </property>

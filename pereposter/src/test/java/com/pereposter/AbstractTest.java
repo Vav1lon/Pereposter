@@ -3,6 +3,7 @@ package com.pereposter;
 import com.pereposter.entity.internal.SocialNetworkEnum;
 import com.pereposter.entity.internal.User;
 import com.pereposter.entity.internal.UserSocialAccount;
+import org.hibernate.FlushMode;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.junit.Before;
@@ -12,69 +13,47 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
+@Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({"/context-test.xml", "/database-context-test.xml"})
-@Transactional
 public abstract class AbstractTest {
 
     @Autowired
     private SessionFactory sessionFactory;
 
-    private Random random = new Random();
-
     protected User user;
     protected User user2;
+
+    protected UserSocialAccount socialAccountFaceBookEnabledForUser1;
+    protected UserSocialAccount socialAccountVkontakteEnableForUser1;
+
+    protected UserSocialAccount socialAccountFaceBookEnabledForUser2;
+    protected UserSocialAccount socialAccountVkontakteEnableForUser2;
+    protected UserSocialAccount socialAccountVkontakteDisableForUser2;
 
     @Before
     public void setUp() {
 
-        user = createUserTwoNetwork("Test-User-1");
-        user2 = createUserThreeNetwork("Test-User-2");
+        getSession().setFlushMode(FlushMode.ALWAYS);
 
-        getSession().save(user);
-        getSession().save(user2);
+        socialAccountFaceBookEnabledForUser1 = createUserSocialAccount(true, SocialNetworkEnum.FACEBOOK);
+        socialAccountVkontakteEnableForUser1 = createUserSocialAccount(true, SocialNetworkEnum.VKONTAKTE);
 
-        assert getSession().createQuery("FROM User").list().size() == 2;
+        socialAccountFaceBookEnabledForUser2 = createUserSocialAccount(true, SocialNetworkEnum.FACEBOOK);
+        socialAccountVkontakteEnableForUser2 = createUserSocialAccount(true, SocialNetworkEnum.VKONTAKTE);
+        socialAccountVkontakteDisableForUser2 = createUserSocialAccount(false, SocialNetworkEnum.VKONTAKTE);
+
+        user = createUser("Test-User-1");
+        user2 = createUser("Test-User-2");
 
     }
 
-    private User createUserTwoNetwork(String name) {
-
+    private User createUser(String name) {
         User result = new User();
         result.setName(name);
-        result.setId(random.nextLong());
         result.setActive(true);
-
-        List<UserSocialAccount> userSocialAccounts = new ArrayList<UserSocialAccount>();
-
-        userSocialAccounts.add(createUserSocialAccount(true, SocialNetworkEnum.FACEBOOK));
-        userSocialAccounts.add(createUserSocialAccount(true, SocialNetworkEnum.VKONTAKTE));
-        userSocialAccounts.add(createUserSocialAccount(false, SocialNetworkEnum.VKONTAKTE));
-
-        result.setAccounts(userSocialAccounts);
-        return result;
-    }
-
-    private User createUserThreeNetwork(String name) {
-
-        User result = new User();
-        result.setName(name);
-        result.setId(random.nextLong());
-        result.setActive(true);
-
-        List<UserSocialAccount> userSocialAccounts = new ArrayList<UserSocialAccount>();
-
-        userSocialAccounts.add(createUserSocialAccount(true, SocialNetworkEnum.FACEBOOK));
-        userSocialAccounts.add(createUserSocialAccount(true, SocialNetworkEnum.VKONTAKTE));
-        userSocialAccounts.add(createUserSocialAccount(false, SocialNetworkEnum.VKONTAKTE));
-        userSocialAccounts.add(createUserSocialAccount(false, SocialNetworkEnum.FACEBOOK));
-
-        result.setAccounts(userSocialAccounts);
         return result;
     }
 
@@ -86,11 +65,11 @@ public abstract class AbstractTest {
         account.setEnabled(enabled);
         account.setSocialNetwork(networkEnum);
         account.setPassword(uuid.toString());
-        account.setUsername("facebook-user-" + uuid.toString());
+        account.setUsername("user-" + uuid.toString());
         return account;
     }
 
-    private Session getSession() {
+    protected Session getSession() {
         return sessionFactory.getCurrentSession();
     }
 }

@@ -2,7 +2,6 @@ package com.pereposter.service.socialnetwork;
 
 import com.pereposter.entity.internal.UserSocialAccount;
 import com.pereposter.social.entity.Post;
-import com.pereposter.social.entity.PostKeyInfo;
 
 import java.util.List;
 
@@ -12,7 +11,7 @@ public interface SocialNetworkService {
        * find last message user in social network
        * if not found returned null
      */
-    PostKeyInfo findLastUserPost(UserSocialAccount socialAccount);
+    Post findLastUserPost(UserSocialAccount socialAccount);
 
     Post getPostById(UserSocialAccount socialAccount, String postId);
 
@@ -21,8 +20,8 @@ public interface SocialNetworkService {
     /*
       * write post to social network
      */
-    String writePost(UserSocialAccount socialAccount, Post post);
+    Post writePost(UserSocialAccount socialAccount, Post post);
 
-    String writePosts(UserSocialAccount socialAccount, List<Post> posts);
+    Post writePosts(UserSocialAccount socialAccount, List<Post> posts);
 
 }

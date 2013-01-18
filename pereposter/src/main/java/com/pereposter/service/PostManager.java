@@ -1,6 +1,5 @@
 package com.pereposter.service;
 
-import com.pereposter.control.SocialNetworkControl;
 import com.pereposter.entity.internal.SocialNetworkEnum;
 import com.pereposter.entity.internal.User;
 import com.pereposter.entity.internal.UserSocialAccount;
@@ -15,11 +14,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 @Transactional(propagation = Propagation.REQUIRED)
@@ -31,78 +27,111 @@ public class PostManager {
     @Autowired
     private SessionFactory sessionFactory;
 
-    public void findAndWriteNewPost() {
+    //TODO: временный метод
+    public void starter() {
 
         List<User> users = (List<User>) getSession().createQuery("FROM User u WHERE u.active = true ").list();
 
         for (User user : users) {
 
-            Map<UserSocialAccount, List<Post>> accountPostMap = findNewPostByUser(user);
+            findAndWriteNewPost(user);
 
-            if (checkNewPost(accountPostMap)) {
-                writeNewPost(user, accountPostMap);
-            }
-        }
-    }
-
-    private void writeNewPost(User user, Map<UserSocialAccount, List<Post>> accountPostMap) {
-
-        String lastPostId = null;
-
-        for (Map.Entry<UserSocialAccount, List<Post>> entry : accountPostMap.entrySet()) {
-
-            if (entry.getValue() != null) {
-
-                for (UserSocialAccount account : user.getAccounts()) {
-
-                    lastPostId = null;
-
-                    if (!entry.getKey().equals(account)) {
-
-                        SocialNetworkService service = serviceHelper.getService(account.getSocialNetwork());
-
-                        for (Post post : entry.getValue()) {
-                            lastPostId = service.writePost(account, post);
-                        }
-
-                        account.setLastPostId(lastPostId);
-                        account.setCreateDateLastPost(new DateTime());
-                        getSession().save(account);
-
-                    }
-                }
-            }
         }
 
     }
 
-    private Map<UserSocialAccount, List<Post>> findNewPostByUser(User user) {
+    //TODO: надо сделать много поточность через countDownlatch
+    private synchronized void findAndWriteNewPost(User user) {
 
-        Map<UserSocialAccount, List<Post>> result = new HashMap<UserSocialAccount, List<Post>>();
+        ConcurrentHashMap<SocialNetworkEnum, List<Post>> postsMap = new ConcurrentHashMap<SocialNetworkEnum, List<Post>>();
 
         for (UserSocialAccount account : user.getAccounts()) {
-            if (account.isEnabled()) {
-                SocialNetworkService service = serviceHelper.getService(account.getSocialNetwork());
-                result.put(account, service.findNewPostByOverCreateDate(account));
+
+            ConcurrentHashMap map = findNewPosts(account);
+
+            if (map != null) {
+                postsMap.putAll(map);
             }
+
         }
 
+
+        for (UserSocialAccount account : user.getAccounts()) {
+
+            SocialNetworkEnum currentAccount = account.getSocialNetwork();
+            List<Post> posts = postsMap.get(currentAccount);
+
+            if (posts != null) {
+
+                for (UserSocialAccount accountForWritePosts : user.getAccounts()) {
+
+                    if (!accountForWritePosts.getSocialNetwork().equals(currentAccount)) {
+
+                        writeNewPost(posts, accountForWritePosts);
+
+                    }
+
+                }
+
+                checkReadSourcePost(account, posts);
+
+            }
+
+        }
+
+    }
+
+    private void checkReadSourcePost(UserSocialAccount account, List<Post> posts) {
+        Post lastPost = findLastDateOriginalPost(posts);
+
+        if (lastPost != null) {
+            account.setCreateDateLastPost(lastPost.getCreatedDate());
+            account.setLastPostId(lastPost.getId());
+        } else {
+            //TODO: пишем в лог!!
+            throw new IllegalArgumentException("нет даты последнего поста оригинала");
+        }
+    }
+
+    private void writeNewPost(List<Post> posts, UserSocialAccount accountForWritePosts) {
+        SocialNetworkService service = serviceHelper.getService(accountForWritePosts.getSocialNetwork());
+        Post lastPost = service.writePosts(accountForWritePosts, posts);
+
+        accountForWritePosts.setCreateDateLastPost(lastPost.getCreatedDate());
+        accountForWritePosts.setLastPostId(lastPost.getId());
+    }
+
+    private Post findLastDateOriginalPost(List<Post> posts) {
+        DateTime lastPostDate = null;
+        Post result = null;
+        for (Post post : posts) {
+
+            if (lastPostDate == null) {
+                lastPostDate = post.getCreatedDate();
+                result = post;
+            }
+
+            if (lastPostDate.getMillis() < post.getCreatedDate().getMillis()) {
+                lastPostDate = post.getCreatedDate();
+                result = post;
+            }
+
+        }
         return result;
     }
 
-    private boolean checkNewPost(Map<UserSocialAccount, List<Post>> map) {
+    private ConcurrentHashMap<SocialNetworkEnum, List<Post>> findNewPosts(UserSocialAccount account) {
 
-        boolean result = false;
+        List<Post> posts = serviceHelper.getService(account.getSocialNetwork()).findNewPostByOverCreateDate(account);
 
-        for (Map.Entry<UserSocialAccount, List<Post>> entry : map.entrySet()) {
-            if (entry.getValue() != null) {
-                result = true;
-                break;
-            }
+        ConcurrentHashMap<SocialNetworkEnum, List<Post>> result = null;
+
+        if (posts != null && !posts.isEmpty()) {
+            result = new ConcurrentHashMap<SocialNetworkEnum, List<Post>>();
+            result.put(account.getSocialNetwork(), posts);
         }
 
         return result;
-
     }
 
     private Session getSession() {

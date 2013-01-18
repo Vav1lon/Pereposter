@@ -15,7 +15,6 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.client.utils.URIUtils;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
@@ -93,7 +92,9 @@ public class FacebookConnector implements SocialNetworkConnector {
 
         Post result = null;
 
-        PostResponse response = readDataFromResponse(new HttpGet(fqlFindPostById + postId + accessTokenParamName + getAccessToken(auth)), PostResponse.class);
+        String buildUrl = fqlFindPostById + "\"" + postId + "\"" + accessTokenParamName + getAccessToken(auth);
+
+        PostResponse response = readDataFromResponse(new HttpGet(buildUrl), PostResponse.class);
 
         if (response != null && !response.getData().isEmpty()) {
             result = createAndFillPostFromPostResponse(response);
