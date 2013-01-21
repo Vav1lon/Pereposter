@@ -2,8 +2,9 @@ package com.pereposter.service;
 
 import com.pereposter.AbstractTest;
 import com.pereposter.TestHelper;
+import com.pereposter.control.PostManagerControl;
 import com.pereposter.entity.internal.UserSocialAccount;
-import com.pereposter.social.entity.Post;
+import com.pereposter.entity.Post;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,7 +17,7 @@ import static org.junit.Assert.assertEquals;
 public class PostManagerTest extends AbstractTest {
 
     @Autowired
-    private PostManager postManager;
+    private PostManagerControl postManager;
 
     @Autowired
     private TestHelper testHelper;

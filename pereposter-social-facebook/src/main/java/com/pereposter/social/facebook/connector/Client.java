@@ -2,7 +2,7 @@ package com.pereposter.social.facebook.connector;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.CharStreams;
-import com.pereposter.social.api.connector.SocialNetworkClient;
+import com.pereposter.social.api.SocialNetworkClient;
 import com.pereposter.social.entity.Response;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;

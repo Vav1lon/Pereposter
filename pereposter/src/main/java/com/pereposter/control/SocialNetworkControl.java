@@ -2,8 +2,7 @@ package com.pereposter.control;
 
 import com.pereposter.entity.internal.User;
 import com.pereposter.entity.internal.UserSocialAccount;
-import com.pereposter.service.socialnetwork.SocialNetworkService;
-import com.pereposter.social.entity.Post;
+import com.pereposter.entity.Post;
 import com.pereposter.utils.ServiceHelper;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -37,7 +36,7 @@ public class SocialNetworkControl {
         for (UserSocialAccount account : user.getAccounts()) {
 
             if (account.isEnabled()) {
-                SocialNetworkService service = serviceHelper.getService(account.getSocialNetwork());
+                com.pereposter.control.social.SocialNetworkControl service = serviceHelper.getSocialNetworkControl(account.getSocialNetwork());
                 Post post = service.findLastUserPost(account);
 
                 if (post != null) {

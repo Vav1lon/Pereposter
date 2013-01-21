@@ -1,6 +1,6 @@
 package com.pereposter.entity.internal;
 
-import com.pereposter.utils.JodaTimeTypes;
+import com.pereposter.utils.usertype.JodaTimeTypes;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
@@ -22,7 +22,7 @@ public class UserSocialAccount {
     private String password;
 
     @Column(name = "SOCIAL_NETWORK", nullable = false)
-    @Type(type = "com.pereposter.utils.GenericEnumUserType",
+    @Type(type = "com.pereposter.utils.usertype.GenericEnumUserType",
             parameters = {
                     @org.hibernate.annotations.Parameter(
                             name = "enumClass",

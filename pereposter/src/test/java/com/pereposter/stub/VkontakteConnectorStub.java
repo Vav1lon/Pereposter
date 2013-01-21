@@ -1,9 +1,9 @@
 package com.pereposter.stub;
 
 import com.pereposter.TestHelper;
-import com.pereposter.social.api.connector.SocialNetworkConnector;
-import com.pereposter.social.entity.Post;
-import com.pereposter.social.entity.SocialAuth;
+import com.pereposter.social.api.SocialNetworkConnector;
+import com.pereposter.entity.Post;
+import com.pereposter.entity.SocialAuth;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

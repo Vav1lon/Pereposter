@@ -1,6 +1,6 @@
 package com.pereposter;
 
-import com.pereposter.social.entity.Post;
+import com.pereposter.entity.Post;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
 

@@ -1,48 +1,28 @@
 package com.pereposter.social.vkontakte.connector;
 
 import com.google.common.base.Strings;
-import com.pereposter.social.api.connector.SocialNetworkConnector;
-import com.pereposter.social.entity.Post;
-import com.pereposter.social.entity.Response;
-import com.pereposter.social.entity.SocialAuth;
+import com.pereposter.social.api.SocialNetworkConnector;
+import com.pereposter.social.api.entity.PostEntity;
+import com.pereposter.social.api.entity.SocialAuthService;
 import com.pereposter.social.vkontakte.entity.*;
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.http.Header;
-import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.message.BasicHeader;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class VkontakteConnector implements SocialNetworkConnector {
-
-    @Value("${pereposter.social.vkontakte.authorizeUrl}")
-    private String authorizeUrl;
-
-    @Value("${pereposter.social.vkontakte.client_id}")
-    private long client_id;
-
-    @Value("${pereposter.social.vkontakte.scope}")
-    private String scope;
-
-    @Value("${pereposter.social.vkontakte.redirect_uri}")
-    private String redirect_uri;
-
-    @Value("${pereposter.social.vkontakte.display}")
-    private String display;
-
-    @Value("${pereposter.social.vkontakte.response_type}")
-    private String response_type;
 
     @Value("${pereposter.social.vkontakte.url.write.post.wall}")
     private String writePostToUserWallUrl;
@@ -56,17 +36,7 @@ public class VkontakteConnector implements SocialNetworkConnector {
     @Value("${pereposter.social.vkontakte.url.accessTokenParamName}")
     private String accessTokenParamName;
 
-    private final String REMIXSID_PARAM_NAME = "remixsid";
-    private final String accessTokenNameParam = "access_token=";
-
-    private final String IP_H_FIND_STRING = "name=\"ip_h\" value=\"";
-    private final Integer IP_H_LENGTH = 19;
-
-    private final String TO_FIND_STRING = "name=\"to\" value=\"";
-    private final Integer TO_LENGTH = 17;
-
-    private final String ACTION_URL_FIND_STRING = "<form method=\"post\" action=\"";
-    private final Integer ACTION_URL_LENGTH = 28;
+    private Map<String, AccessToken> accessTokenMap = null;
 
     @Autowired
     private Client client;
@@ -74,25 +44,46 @@ public class VkontakteConnector implements SocialNetworkConnector {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private AccessTokenService accessTokenService;
+
+    @PostConstruct
+    private void initConnector() {
+        accessTokenMap = new ConcurrentHashMap<String, AccessToken>();
+    }
+
+    //TODO: проверитьм етод!!
+    public synchronized void checkValidToken() {
+
+        long currentTimeStamp = new DateTime().getMillis();
+
+        for (Map.Entry<String, AccessToken> entry : accessTokenMap.entrySet()) {
+
+            if (currentTimeStamp > (entry.getValue().getExpiresIn() * 1000)) {
+                accessTokenMap.remove(entry);
+            }
+
+        }
+
+    }
+
     @Override
-    public String writeNewPost(SocialAuth auth, Post post) {
-
-        String result = writePostToWall(auth, post);
-
+    public String writeNewPost(SocialAuthService auth, PostEntity postEntity) {
+        String result = writePostToWall(auth, postEntity);
         return Strings.isNullOrEmpty(result) ? null : result;
     }
 
     @Override
-    public String writeNewPosts(SocialAuth auth, List<Post> posts) {
+    public String writeNewPosts(SocialAuthService auth, List<PostEntity> postEntities) {
 
         WritePostResponse response = null;
         HttpPost httpPost;
 
-        for (Post post : posts) {
+        for (PostEntity postEntity : postEntities) {
 
-            httpPost = new HttpPost(writePostToUserWallUrl + StringEscapeUtils.escapeHtml4(post.getMessage()).replace(" ", "%20") + accessTokenParamName + getAccessToken(auth));
+            httpPost = new HttpPost(writePostToUserWallUrl + StringEscapeUtils.escapeHtml4(postEntity.getMessage()).replace(" ", "%20") + accessTokenParamName + getAccessToken(auth));
 
-            String json = client.sendRequestReturnBody(httpPost);
+            String json = client.sendRequestReturnBodyAndResponse(httpPost, false).getBody();
             response = readJsonToObject(json, WritePostResponse.class);
         }
 
@@ -105,15 +96,16 @@ public class VkontakteConnector implements SocialNetworkConnector {
     }
 
     @Override
-    public Post findPostById(SocialAuth auth, String postId) {
+    public PostEntity findPostById(SocialAuthService auth, String postId) {
 
-        HttpGet httpPost = new HttpGet(getPostByIdUrl + postId + accessTokenNameParam + getAccessToken(auth));
 
-        String json = client.sendRequestReturnBody(httpPost);
+        HttpGet httpPost = new HttpGet(getPostByIdUrl + postId + "_" + auth.getUserId() + accessTokenParamName + getAccessToken(auth));
+
+        String json = client.sendRequestReturnBodyAndResponse(httpPost, false).getBody();
 
         FindPostByIdResponse response = readJsonToObject(json, FindPostByIdResponse.class);
 
-        Post result = null;
+        PostEntity result = null;
 
         if (response != null && response.getResponse().size() != 0) {
             result = createPost(response.getResponse().get(0));
@@ -124,26 +116,26 @@ public class VkontakteConnector implements SocialNetworkConnector {
     }
 
     @Override
-    public List<Post> findPostsByOverCreatedDate(SocialAuth auth, DateTime createdDate) {
+    public List<PostEntity> findPostsByOverCreatedDate(SocialAuthService auth, DateTime createdDate) {
 
         //TODO: fix logic!!!!
 
         Integer count = 50;
         Integer offset = 0;
 
-        List<Post> result = findPostOverCreateDate(auth, createdDate, count, offset);
+        List<PostEntity> result = findPostOverCreateDate(auth, createdDate, count, offset);
 
         return result;
     }
 
     @Override
-    public Post findLastPost(SocialAuth auth) {
+    public PostEntity findLastPost(SocialAuthService auth) {
 
         HttpGet httpGet = new HttpGet(getPostsFormWall + "?filter=owner&count=" + 1 + accessTokenParamName + getAccessToken(auth));
-        String json = client.sendRequestReturnBody(httpGet);
+        String json = client.sendRequestReturnBodyAndResponse(httpGet, false).getBody();
         GetPostListResponse response = readJsonToObject(json, GetPostListResponse.class);
 
-        Post result = null;
+        PostEntity result = null;
 
         if (response != null && response.getResponse().size() == 2) {
 
@@ -153,6 +145,17 @@ public class VkontakteConnector implements SocialNetworkConnector {
         }
 
         return result;
+    }
+
+    private String getAccessToken(SocialAuthService auth) {
+        AccessToken result;
+        result = accessTokenMap.get(auth.getUserId());
+
+        if (result == null) {
+            result = accessTokenService.getNewAccessToken(auth);
+            accessTokenMap.put(result.getUserId(), result);
+        }
+        return result.getAccessToken();
     }
 
     private PostVkontakte createAndFillPostVkontakte(Map<String, Object> map) {
@@ -188,14 +191,14 @@ public class VkontakteConnector implements SocialNetworkConnector {
 
     }
 
-    private List<Post> findPostOverCreateDate(SocialAuth auth, DateTime createdDate, Integer count, Integer offset) {
+    private List<PostEntity> findPostOverCreateDate(SocialAuthService auth, DateTime createdDate, Integer count, Integer offset) {
         HttpGet httpGet = new HttpGet(getPostsFormWall + "?filter=owner&count=" + count + "&offset=" + offset + accessTokenParamName + getAccessToken(auth));
 
         String json = client.sendRequestReturnBodyAndResponse(httpGet, true).getBody();
 
         GetPostListResponse response = readJsonToObject(json, GetPostListResponse.class);
 
-        List<Post> result = new ArrayList<Post>();
+        List<PostEntity> result = new ArrayList<PostEntity>();
         PostVkontakte postVkontakte;
 
         for (int i = 1; i < response.getResponse().size(); i++) {
@@ -214,25 +217,25 @@ public class VkontakteConnector implements SocialNetworkConnector {
         return result.isEmpty() ? null : result;
     }
 
-    private String writePostToWall(SocialAuth auth, Post post) {
-        HttpPost httpPost = new HttpPost(writePostToUserWallUrl + StringEscapeUtils.escapeHtml4(post.getMessage()).replace(" ", "%20") + accessTokenParamName + getAccessToken(auth));
+    private String writePostToWall(SocialAuthService auth, PostEntity postEntity) {
+        HttpPost httpPost = new HttpPost(writePostToUserWallUrl + StringEscapeUtils.escapeHtml4(postEntity.getMessage()).replace(" ", "%20") + accessTokenParamName + getAccessToken(auth));
 
-        String json = client.sendRequestReturnBody(httpPost);
+        String json = client.sendRequestReturnBodyAndResponse(httpPost, false).getBody();
         WritePostResponse response = readJsonToObject(json, WritePostResponse.class);
 
         return response.getResponse().getPost_id();
     }
 
-    private Post createPost(PostVkontakte postVkontakte) {
-        Post result = new Post();
+    private PostEntity createPost(PostVkontakte postVkontakte) {
+        PostEntity result = new PostEntity();
         result.setCreatedDate(new DateTime(postVkontakte.getDate() * 1000));
         result.setId(postVkontakte.getId().toString());
         result.setMessage(postVkontakte.getText());
         return result;
     }
 
-    private Post createPost(FindPostByIdResult findPostResponse) {
-        Post result = new Post();
+    private PostEntity createPost(FindPostByIdResult findPostResponse) {
+        PostEntity result = new PostEntity();
         result.setId(findPostResponse.getId().toString());
         result.setMessage(findPostResponse.getText());
         result.setCreatedDate(new DateTime(findPostResponse.getDate() * 1000));
@@ -252,195 +255,4 @@ public class VkontakteConnector implements SocialNetworkConnector {
 
     }
 
-    private String getAccessToken(SocialAuth auth) {
-
-        boolean clearCookie = true;
-
-        Response response = step1(clearCookie);
-
-        clearCookie = false;
-
-        /////////////////////////////////
-        //      STEP 2
-        /////////////////////////////////
-
-        response = step2(auth, clearCookie, response);
-
-        /////////////////////////////////
-        //      STEP 3
-        /////////////////////////////////
-
-        CookieParam cookieParam = getLoginHashAndPasswordHashFromCookie(response.getHttpResponse().getHeaders("set-cookie"));
-
-        response = client.sendRequestReturnBodyAndResponse(new HttpPost(getUrlByLocationHeader(response.getHttpResponse())), clearCookie);
-
-        //Окно одобрения приложения соц сети
-        if (response.getHttpResponse().getStatusLine().getStatusCode() == 200) {
-            response.setHttpResponse(confirmationApplication(response.getBody()));
-        } else if (response.getHttpResponse().getStatusLine().getStatusCode() != 302) {
-            //TODO: Пишем в лог
-            throw new IllegalArgumentException("Не верный ответ пришел с сервера!");
-        }
-
-        /////////////////////////////////
-        //      STEP 4
-        /////////////////////////////////
-
-        response = step4(clearCookie, response, cookieParam);
-
-        String link = getUrlByLocationHeader(response.getHttpResponse());
-
-        return gettingAccessTokenFromUrl(link);
-    }
-
-    private Response step4(boolean clearCookie, Response response, CookieParam cookieParam) {
-        String remixsid = gettingRemixsidFromCookie(response.getHttpResponse());
-
-        HttpPost post = new HttpPost(getUrlByLocationHeader(response.getHttpResponse()));
-        post.setHeaders(fillCookieClient(cookieParam, remixsid));
-
-        response = client.sendRequestReturnBodyAndResponse(post, clearCookie);
-
-        if (response.getHttpResponse().getStatusLine().getStatusCode() != 302) {
-            //TODO: Пишем в лог
-            throw new IllegalArgumentException("Не верный ответ пришел с сервера!");
-        }
-        return response;
-    }
-
-    private Response step2(SocialAuth auth, boolean clearCookie, Response response) {
-        ParamLoginForm paramLoginForm = gettingParamFormLoginForm(response.getBody());
-
-        String loginUrl = paramLoginForm.getActionUrlParam() +
-                "&ip_h=" + paramLoginForm.getIpHParam() +
-                "&to=" + paramLoginForm.getToParam() +
-                "&email=" + auth.getLogin() +
-                "&pass=" + auth.getPassword();
-
-        response = client.sendRequestReturnBodyAndResponse(new HttpPost(loginUrl), clearCookie);
-
-        if (response.getHttpResponse().getStatusLine().getStatusCode() != 302) {
-            //TODO: писать в лог
-            throw new IllegalArgumentException("Не верный ответ пришел с сервера!");
-        }
-        return response;
-    }
-
-    private Response step1(boolean clearCookie) {
-        String authorizeUrlParams = authorizeUrl + client_id
-                + "&scope=" + scope
-                + "&redirect_uri=" + redirect_uri
-                + "&display=" + display
-                + "&response_type=" + response_type
-                + "&_hash=0";
-
-        return client.sendRequestReturnBodyAndResponse(new HttpGet(authorizeUrlParams), clearCookie);
-    }
-
-    private ParamLoginForm gettingParamFormLoginForm(String body) {
-
-        int ipHBeginIndex = body.indexOf(IP_H_FIND_STRING) + IP_H_LENGTH;
-        int ipHBeginEnd = ipHBeginIndex + body.substring(ipHBeginIndex).indexOf("\"");
-        String ipHParam = body.substring(ipHBeginIndex, ipHBeginEnd);
-
-        int toBeginIndex = body.indexOf(TO_FIND_STRING) + TO_LENGTH;
-        int toBeginEnd = toBeginIndex + body.substring(toBeginIndex).indexOf("\"");
-        String toParam = body.substring(toBeginIndex, toBeginEnd);
-
-        int actionUrlBeginIndex = body.indexOf(ACTION_URL_FIND_STRING) + ACTION_URL_LENGTH;
-        int actionUrlBeginEnd = actionUrlBeginIndex + body.substring(actionUrlBeginIndex).indexOf("\"");
-        String actionUrlParam = body.substring(actionUrlBeginIndex, actionUrlBeginEnd);
-
-        return new ParamLoginForm(ipHParam, toParam, actionUrlParam);
-
-    }
-
-    private CookieParam getLoginHashAndPasswordHashFromCookie(Header[] headers) {
-
-        String loginParam = null;
-        String passParam = null;
-        Header header;
-        for (int i = 0; i < headers.length; i++) {
-            header = headers[i];
-
-            int loginParamNum = header.getValue().indexOf("l=");
-            if (loginParamNum != -1) {
-                loginParam = getValueParamFormCookie(header, loginParamNum);
-            }
-
-            int passParamNum = header.getValue().indexOf("p=");
-            if (passParamNum != -1) {
-                passParam = getValueParamFormCookie(header, passParamNum);
-            }
-
-        }
-
-        return new CookieParam(loginParam, passParam);
-    }
-
-    private String getValueParamFormCookie(Header header, int lnameParam) {
-        int begin = header.getValue().substring(lnameParam + 2).indexOf(";");
-        return header.getValue().substring(lnameParam + 2, lnameParam + 2 + begin);
-    }
-
-    private String gettingAccessTokenFromUrl(String link) {
-
-        int begin = link.indexOf(accessTokenNameParam);
-        int end = link.substring(begin + accessTokenNameParam.length()).indexOf("&");
-
-        String accessToken = null;
-        if (end != -1) {
-            accessToken = link.substring(begin + accessTokenNameParam.length(), end + begin + accessTokenNameParam.length());
-        } else {
-            accessToken = link.substring(begin + accessTokenNameParam.length());
-        }
-        return accessToken;
-    }
-
-    private Header[] fillCookieClient(CookieParam cookieParam, String remixsid) {
-        List<BasicHeader> basicHeaders = new ArrayList<BasicHeader>();
-        basicHeaders.add(new BasicHeader("Cookie", "remixsid=" + remixsid));
-        basicHeaders.add(new BasicHeader("Cookie", "l=" + cookieParam.getLoginParam()));
-        basicHeaders.add(new BasicHeader("Cookie", "p=" + cookieParam.getPassParam()));
-        return basicHeaders.toArray(new BasicHeader[basicHeaders.size()]);
-    }
-
-    private String gettingRemixsidFromCookie(HttpResponse httpResponse) {
-
-        String result = null;
-
-        Header[] headers;
-        Header header;
-        headers = httpResponse.getHeaders("set-cookie");
-        for (int i = 0; i < headers.length; i++) {
-            header = headers[i];
-
-            int cookieRow = header.getValue().indexOf(REMIXSID_PARAM_NAME);
-
-            if (cookieRow != -1) {
-                int c = header.getValue().substring(cookieRow + REMIXSID_PARAM_NAME.length() + 1).indexOf(";");
-                result = header.getValue().substring(cookieRow + REMIXSID_PARAM_NAME.length() + 1, c);
-            }
-
-        }
-        return result;
-    }
-
-    private HttpResponse confirmationApplication(String body) {
-        HttpResponse result;
-
-        int begin = body.indexOf("<form method=\"post\" action=");
-        int end = body.substring(begin + 28).indexOf("\">");
-
-        String link = body.substring(begin + 28, begin + 28 + end);
-
-        result = client.sendRequestReturnHttpResponse(new HttpPost(link));
-        result = client.sendRequestReturnHttpResponse(new HttpPost(getUrlByLocationHeader(result)));
-
-        return result;
-    }
-
-    private String getUrlByLocationHeader(HttpResponse httpResponse) {
-        return httpResponse.getFirstHeader("location").getValue();
-    }
 }
