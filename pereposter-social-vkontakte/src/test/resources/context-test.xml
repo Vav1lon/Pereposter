@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
+
+    <bean id="objectMapper" class="org.codehaus.jackson.map.ObjectMapper"/>
+
+    <bean id="client" class="org.mockito.Mockito" factory-method="mock" name="vkontakteClient">
+        <constructor-arg value="com.pereposter.social.vkontakte.connector.Client"/>
+    </bean>
+
+    <bean id="accessTokenService" class="org.mockito.Mockito" factory-method="mock">
+        <constructor-arg value="com.pereposter.social.vkontakte.connector.AccessTokenService"/>
+    </bean>
+
+    <bean id="vkontakteConnector" class="com.pereposter.social.vkontakte.connector.VkontakteConnector"/>
+
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations" value="classpath:vkontakte.test.local.properties"/>
+        <property name="fileEncoding" value="UTF-8"/>
+    </bean>
+
+</beans>

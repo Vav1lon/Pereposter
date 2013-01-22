@@ -5,6 +5,6 @@ import org.apache.http.client.methods.HttpUriRequest;
 
 public interface SocialNetworkClient {
 
-    Response sendRequestReturnBodyAndResponse(HttpUriRequest request, boolean clearCookie);
+    Response processRequest(HttpUriRequest request, boolean clearCookie);
 
 }

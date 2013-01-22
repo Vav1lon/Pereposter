@@ -44,7 +44,7 @@ public class Client implements SocialNetworkClient {
     }
 
     @Override
-    public Response sendRequestReturnBodyAndResponse(HttpUriRequest request, boolean clearCookie) {
+    public Response processRequest(HttpUriRequest request, boolean clearCookie) {
 
         Response result = null;
         HttpResponse httpResponse = null;

@@ -77,7 +77,7 @@ public class AccessTokenService {
 
         CookieParam cookieParam = getLoginHashAndPasswordHashFromCookie(response.getHttpResponse().getHeaders("set-cookie"));
 
-        response = client.sendRequestReturnBodyAndResponse(new HttpPost(getUrlByLocationHeader(response.getHttpResponse())), clearCookie);
+        response = client.processRequest(new HttpPost(getUrlByLocationHeader(response.getHttpResponse())), clearCookie);
 
         //Окно одобрения приложения соц сети
         if (response.getHttpResponse().getStatusLine().getStatusCode() == 200) {
@@ -104,7 +104,7 @@ public class AccessTokenService {
         HttpPost post = new HttpPost(getUrlByLocationHeader(response.getHttpResponse()));
         post.setHeaders(fillCookieClient(cookieParam, remixsid));
 
-        response = client.sendRequestReturnBodyAndResponse(post, clearCookie);
+        response = client.processRequest(post, clearCookie);
 
         if (response.getHttpResponse().getStatusLine().getStatusCode() != 302) {
             //TODO: Пишем в лог
@@ -122,7 +122,7 @@ public class AccessTokenService {
                 "&email=" + auth.getLogin() +
                 "&pass=" + auth.getPassword();
 
-        response = client.sendRequestReturnBodyAndResponse(new HttpPost(loginUrl), clearCookie);
+        response = client.processRequest(new HttpPost(loginUrl), clearCookie);
 
         if (response.getHttpResponse().getStatusLine().getStatusCode() != 302) {
             //TODO: писать в лог
@@ -139,7 +139,7 @@ public class AccessTokenService {
                 + "&response_type=" + response_type
                 + "&_hash=0";
 
-        return client.sendRequestReturnBodyAndResponse(new HttpGet(authorizeUrlParams), clearCookie);
+        return client.processRequest(new HttpGet(authorizeUrlParams), clearCookie);
     }
 
     private Header[] fillCookieClient(CookieParam cookieParam, String remixsid) {
@@ -179,8 +179,8 @@ public class AccessTokenService {
 
         String link = body.substring(begin + 28, begin + 28 + end);
 
-        result = client.sendRequestReturnBodyAndResponse(new HttpPost(link), false).getHttpResponse();
-        result = client.sendRequestReturnBodyAndResponse(new HttpPost(getUrlByLocationHeader(result)), false).getHttpResponse();
+        result = client.processRequest(new HttpPost(link), false).getHttpResponse();
+        result = client.processRequest(new HttpPost(getUrlByLocationHeader(result)), false).getHttpResponse();
 
         return result;
     }
