@@ -1,6 +1,7 @@
 package com.pereposter.social.facebook.connector;
 
 import com.google.common.base.Strings;
+import com.pereposter.social.api.FacebookException;
 import com.pereposter.social.api.entity.Response;
 import com.pereposter.social.api.entity.SocialAuthEntity;
 import com.pereposter.social.facebook.entity.AccessToken;
@@ -54,7 +55,7 @@ public class AccessTokenService {
     @Autowired
     private Client client;
 
-    public AccessToken getAccessToken(SocialAuthEntity auth) {
+    public AccessToken getAccessToken(SocialAuthEntity auth) throws FacebookException {
 
         Response response;
         String body;
@@ -68,7 +69,7 @@ public class AccessTokenService {
                 + "&scope=" + createScopeString(scopeRead, scopeWrite)
                 + "&response_type=" + responseType;
 
-        response = client.processRequest(new HttpPost(mainUrl), true);
+        response = client.processRequest(new HttpPost(mainUrl));
 
         if (response.getHttpResponse().getStatusLine().getStatusCode() != 302) {
             //TODO: пишем в лог что логин и пароль не пршел
@@ -84,7 +85,7 @@ public class AccessTokenService {
         if (!urlLoginPage.contains(accesstokenFromUrlParamName)) {
 
             httpPost = new HttpPost(urlLoginPage);
-            body = client.processRequest(httpPost, false).getBody();
+            body = client.processRequest(httpPost).getBody();
 
             if (response.getHttpResponse().getStatusLine().getStatusCode() != 302) {
                 //TODO: пишем в лог что логин и пароль не пршел
@@ -96,7 +97,7 @@ public class AccessTokenService {
             // Step 3
             // Send login form
             httpPost = getHttpPost(auth.getLogin(), auth.getPassword(), response.getHttpResponse(), body);
-            response = client.processRequest(httpPost, false);
+            response = client.processRequest(httpPost);
 
             if (response.getHttpResponse().getStatusLine().getStatusCode() != 302) {
                 //TODO: пишем в лог что логин и пароль не пршел
@@ -109,7 +110,7 @@ public class AccessTokenService {
             // Step 4
             // get accessToken url
             httpPost = new HttpPost(mainUrl);
-            response = client.processRequest(httpPost, false);
+            response = client.processRequest(httpPost);
 
 
             //Step 4_1 solve app
@@ -148,7 +149,7 @@ public class AccessTokenService {
 
                 httpPost = setHttpEntityToHttpPost(urlParamValue, httpEntities);
 
-                response = client.processRequest(httpPost, false);
+                response = client.processRequest(httpPost);
             }
 
         }

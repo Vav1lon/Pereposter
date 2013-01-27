@@ -2,15 +2,13 @@ package com.pereposter.social.facebook.connector;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.CharStreams;
-import com.pereposter.social.api.SocialNetworkClient;
+import com.pereposter.social.api.FacebookException;
 import com.pereposter.social.api.entity.Response;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -19,11 +17,9 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.io.InputStreamReader;
 
-@Component("facebookClient")
+@Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class Client implements SocialNetworkClient {
-
-    private final static Logger LOGGER = LoggerFactory.getLogger(Client.class);
+public class Client {
 
     @Value("${pereposter.social.facebook.client.maxConnectionsPerHost}")
     private Integer defaultMaxConnectionsPerHost;
@@ -41,8 +37,7 @@ public class Client implements SocialNetworkClient {
         httpClient = new DefaultHttpClient(connectionManager);
     }
 
-    @Override
-    public Response processRequest(HttpUriRequest request, boolean clearCookie) {
+    public Response processRequest(HttpUriRequest request) throws FacebookException {
         HttpResponse httpResponse = null;
         String bodyResponse = null;
 
@@ -50,16 +45,11 @@ public class Client implements SocialNetworkClient {
             httpResponse = httpClient.execute(request);
             bodyResponse = CharStreams.toString(new InputStreamReader(httpResponse.getEntity().getContent(), Charsets.UTF_8));
         } catch (Exception e) {
-            //TODO: писать об ошибке в лог
-            LOGGER.error("Ошибка в работе httpclient", e);
+            throw new FacebookException(e.getMessage(), e);
         }
         request.abort();
 
-        Response result = new Response();
-        result.setBody(bodyResponse);
-        result.setHttpResponse(httpResponse);
-
-        return result;
+        return new Response(bodyResponse, httpResponse);
     }
 
 }

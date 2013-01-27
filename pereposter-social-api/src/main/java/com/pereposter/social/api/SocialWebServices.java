@@ -9,22 +9,22 @@ public interface SocialWebServices extends SocialService {
 
     String findLastPost(FindPostRequest request);
 
-    PostEntity getLastPost(String requestId);
+    ResponseObject<PostEntity> getLastPost(String requestId);
 
     String findPostById(FindPostRequest request);
 
-    PostEntity getPostById(String requestId);
+    ResponseObject<PostEntity> getPostById(String requestId);
 
     String findPostsByOverCreateDate(FindPostRequest request);
 
-    PostsResponse getPostsByOverCreateDate(String requestId);
+    ResponseObject<PostsResponse> getPostsByOverCreateDate(String requestId);
 
     String writePost(WritePostRequest request);
 
-    String getWritePost(String requestId);
+    ResponseObject<String> getWritePost(String requestId);
 
     String writePosts(WritePostsRequest request);
 
-    String getWritePosts(String requestId);
+    ResponseObject<String> getWritePosts(String requestId);
 
 }

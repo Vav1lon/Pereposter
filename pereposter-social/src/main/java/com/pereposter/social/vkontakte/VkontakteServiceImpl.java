@@ -49,7 +49,7 @@ public class VkontakteServiceImpl implements SocialWebServices {
     }
 
     @Override
-    public PostEntity getLastPost(String requestId) {
+    public ResponseObject<PostEntity> getLastPost(String requestId) {
         return findLastPostVkontakteResponseHolder.getResponse(requestId);
     }
 
@@ -65,7 +65,7 @@ public class VkontakteServiceImpl implements SocialWebServices {
     }
 
     @Override
-    public PostEntity getPostById(String requestId) {
+    public ResponseObject<PostEntity> getPostById(String requestId) {
         return findPostByIdVkontakteResponseHolder.getResponse(requestId);
     }
 
@@ -81,7 +81,7 @@ public class VkontakteServiceImpl implements SocialWebServices {
     }
 
     @Override
-    public PostsResponse getPostsByOverCreateDate(String requestId) {
+    public ResponseObject<PostsResponse> getPostsByOverCreateDate(String requestId) {
         return findPostsByOverCreatedDateVkontakteResponseHolder.getResponse(requestId);
     }
 
@@ -97,7 +97,7 @@ public class VkontakteServiceImpl implements SocialWebServices {
     }
 
     @Override
-    public String getWritePost(String requestId) {
+    public ResponseObject<String> getWritePost(String requestId) {
         return writeNewPostVkontakteResponseHolder.getResponse(requestId);
     }
 
@@ -113,7 +113,7 @@ public class VkontakteServiceImpl implements SocialWebServices {
     }
 
     @Override
-    public String getWritePosts(String requestId) {
+    public ResponseObject<String> getWritePosts(String requestId) {
         return writeNewPostsVkontakteResponseHolder.getResponse(requestId);
     }
 

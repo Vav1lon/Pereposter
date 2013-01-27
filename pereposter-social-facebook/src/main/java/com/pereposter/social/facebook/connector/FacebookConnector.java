@@ -1,9 +1,9 @@
 package com.pereposter.social.facebook.connector;
 
 import com.google.common.base.Strings;
+import com.pereposter.social.api.FacebookException;
 import com.pereposter.social.api.SocialNetworkConnector;
-import com.pereposter.social.api.entity.PostEntity;
-import com.pereposter.social.api.entity.SocialAuthEntity;
+import com.pereposter.social.api.entity.*;
 import com.pereposter.social.facebook.entity.AccessToken;
 import com.pereposter.social.facebook.entity.PostFacebook;
 import com.pereposter.social.facebook.entity.PostResponse;
@@ -19,9 +19,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Component("facebookConnector")
 public class FacebookConnector implements SocialNetworkConnector {
@@ -52,123 +55,200 @@ public class FacebookConnector implements SocialNetworkConnector {
     @Autowired
     private AccessTokenService facebookAccessTokenService;
 
-    private AccessToken getAccessToken(SocialAuthEntity auth) {
-        //TODO: если есть время жизни токена то сделать кеш
-        return facebookAccessTokenService.getAccessToken(auth);
+    private ConcurrentHashMap<String, AccessToken> accessTokenMap;
+
+    @PostConstruct
+    private void initConnector() {
+        accessTokenMap = new ConcurrentHashMap<String, AccessToken>();
+    }
+
+    //TODO: проверитьм етод!!
+    public synchronized void checkValidToken() {
+
+        long currentTimeStamp = new DateTime().getMillis();
+
+        for (Map.Entry<String, AccessToken> entry : accessTokenMap.entrySet()) {
+
+            if (currentTimeStamp > (entry.getValue().getExpiresIn() * 1000)) {
+                accessTokenMap.remove(entry.getKey());
+            }
+
+        }
+
+    }
+
+    private String getAccessToken(SocialAuthEntity auth) {
+
+        AccessToken result = accessTokenMap.get(auth.getUserId());
+
+        try {
+            if (result == null) {
+                result = facebookAccessTokenService.getAccessToken(auth);
+                accessTokenMap.put(result.getUserId(), result);
+            }
+        } catch (Exception e) {
+            // TODO: write log
+            LOGGER.error("can not access to use for SocialAuthEntity: " + auth.toString());
+        }
+
+        return result != null ? result.getAccessToken() : null;
     }
 
     @Override
-    public String writeNewPost(SocialAuthEntity auth, PostEntity postEntity) {
+    public ResponseObject<String> writeNewPost(SocialAuthEntity auth, PostEntity postEntity) {
 
-        String result = null;
-        String url = graphWritePost + StringEscapeUtils.unescapeHtml4(postEntity.getMessage()).replace(" ", "%20") + accessTokenParamName + getAccessToken(auth).getAccessToken();
-        String json = client.processRequest(new HttpPost(url), false).getBody();
+        ResponseObject<String> result = new ResponseObject<String>();
 
-        if (!json.contains("error")) {
+        if (Strings.isNullOrEmpty(postEntity.getMessage())) {
 
-            result = readDataFromResponse(json, WritePostResult.class).getId();
+            try {
 
-        } else {
-            //TODO: пишем в логер
-            LOGGER.error("Error write new post in FacebookConnector", json);
+                String json = writePostToWall(auth, postEntity);
+
+                checkErrorInResponse(json);
+
+                result.setValue(readDataFromResponse(json, WritePostResult.class).getId());
+
+            } catch (FacebookException e) {
+                LOGGER.error(e.getMessage(), e);
+                result.setStatus(ResponseStatus.ERROR);
+                result.getErrors().add(e.getMessage());
+            }
         }
-
         return result;
     }
 
     @Override
-    public String writeNewPosts(SocialAuthEntity auth, List<PostEntity> postEntities) {
+    public ResponseObject<String> writeNewPosts(SocialAuthEntity auth, List<PostEntity> postEntities) {
 
-        String result = null;
-        String url;
+        ResponseObject<String> result = new ResponseObject<String>();
         String json;
 
-        for (PostEntity post : postEntities) {
+        try {
 
-            url = graphWritePost + StringEscapeUtils.unescapeHtml4(post.getMessage()).replace(" ", "%20") + accessTokenParamName + getAccessToken(auth).getAccessToken();
-            json = client.processRequest(new HttpPost(url), false).getBody();
+            for (PostEntity post : postEntities) {
 
-            if (!json.contains("error")) {
+                json = writePostToWall(auth, post);
+
+                checkErrorInResponse(json);
 
                 WritePostResult writePostResult = readDataFromResponse(json, WritePostResult.class);
                 if (writePostResult != null) {
-                    result = writePostResult.getId();
+                    result.setValue(writePostResult.getId());
                 }
 
-            } else {
-                //TODO: пишем в логер
-                LOGGER.error("Error write new posts in FacebookConnector", json);
-            }
 
+            }
+        } catch (FacebookException e) {
+            //TODO: пишем в логер
+            LOGGER.error(e.getMessage(), e);
+            result.setStatus(ResponseStatus.WARNING);
+            result.getErrors().add(e.getMessage());
+
+        }
+
+        if (result.getErrors().size() >= postEntities.size()) {
+            result.setStatus(ResponseStatus.ERROR);
         }
 
         return result;
     }
 
     @Override
-    public PostEntity findPostById(SocialAuthEntity auth, String postId) {
+    public ResponseObject<PostEntity> findPostById(SocialAuthEntity auth, String postId) {
 
-        PostEntity result = null;
+        ResponseObject<PostEntity> result = new ResponseObject<PostEntity>();
 
-        String url = fqlFindPostById + "%22" + postId + "%22" + accessTokenParamName + getAccessToken(auth).getAccessToken();
+        String url = fqlFindPostById + "%22" + postId + "%22" + accessTokenParamName + getAccessToken(auth);
 
-        String json = client.processRequest(new HttpGet(url), false).getBody();
+        try {
 
-        if (!json.contains("error")) {
+            String json = client.processRequest(new HttpGet(url)).getBody();
+
+            checkErrorInResponse(json);
+
             PostResponse response = readDataFromResponse(json, PostResponse.class);
             if (response != null && !response.getData().isEmpty()) {
-                result = createAndFillPostFromPostResponse(response);
+                result.setValue(createAndFillPostFromPostResponse(response));
             }
-        } else {
+
+        } catch (FacebookException e) {
             //TODO: пишем в логер
-            LOGGER.error("Error find post by id in FacebookConnector", json);
+            LOGGER.error(e.getMessage(), e);
+            result.setStatus(ResponseStatus.ERROR);
+            result.getErrors().add(e.getMessage());
         }
 
         return result;
     }
 
     @Override
-    public List<PostEntity> findPostsByOverCreatedDate(SocialAuthEntity auth, DateTime createdDate) {
+    public ResponseObject<PostsResponse> findPostsByOverCreatedDate(SocialAuthEntity auth, DateTime createdDate) {
 
-        List<PostEntity> result = new ArrayList<PostEntity>();
+        ResponseObject<PostsResponse> result = new ResponseObject<PostsResponse>();
 
-        HttpGet query = new HttpGet(fqlFindPostsByOverCreatedDate + createdDate.getMillis() / 1000 + accessTokenParamName + getAccessToken(auth).getAccessToken());
+        HttpGet query = new HttpGet(fqlFindPostsByOverCreatedDate + createdDate.getMillis() / 1000 + accessTokenParamName + getAccessToken(auth));
 
-        String json = client.processRequest(query, false).getBody();
+        List<PostEntity> value = new ArrayList<PostEntity>();
 
-        if (!json.contains("error")) {
-            PostResponse response = readDataFromResponse(json, PostResponse.class);
+        try {
 
-            for (PostFacebook postFacebook : response.getData()) {
-                result.add(createAndFillPostFromPostFacebook(postFacebook));
+
+            String json = client.processRequest(query).getBody();
+
+            checkErrorInResponse(json);
+
+            for (PostFacebook postFacebook : readDataFromResponse(json, PostResponse.class).getData()) {
+                value.add(createAndFillPostFromPostFacebook(postFacebook));
             }
-        } else {
+
+            result.setValue(new PostsResponse(value));
+
+        } catch (FacebookException e) {
             //TODO: пишем в логер
-            LOGGER.error("Error find post by over create date in FacebookConnector", json);
+            result.setStatus(ResponseStatus.ERROR);
+            result.getErrors().add(e.getMessage());
         }
 
-        return result.isEmpty() ? null : result;
+        return result;
 
     }
 
     @Override
-    public PostEntity findLastPost(SocialAuthEntity auth) {
+    public ResponseObject<PostEntity> findLastPost(SocialAuthEntity auth) {
 
-        HttpGet query = new HttpGet(fqlFindLastPost + accessTokenParamName + getAccessToken(auth).getAccessToken());
+        ResponseObject<PostEntity> result = new ResponseObject<PostEntity>();
 
-        String json = client.processRequest(query, false).getBody();
+        HttpGet query = new HttpGet(fqlFindLastPost + accessTokenParamName + getAccessToken(auth));
 
-        PostEntity result = null;
+        try {
 
-        if (!json.contains("error")) {
+            String json = client.processRequest(query).getBody();
+
+            checkErrorInResponse(json);
+
             PostFacebook postFacebook = readDataFromResponse(json, PostFacebook.class);
-            result = createAndFillPostFromPostFacebook(postFacebook);
-        } else {
+            result.setValue(createAndFillPostFromPostFacebook(postFacebook));
+
+        } catch (FacebookException e) {
             //TODO: пишем в логер
-            LOGGER.error("Error find last post in FacebookConnector", json);
+            LOGGER.error(e.getMessage(), e);
+            result.setStatus(ResponseStatus.ERROR);
+            result.getErrors().add(e.getMessage());
         }
 
         return result;
+    }
+
+    private String writePostToWall(SocialAuthEntity auth, PostEntity postEntity) throws FacebookException {
+        String url = graphWritePost + StringEscapeUtils.unescapeHtml4(postEntity.getMessage()).replace(" ", "%20") + accessTokenParamName + getAccessToken(auth);
+        return client.processRequest(new HttpPost(url)).getBody();
+    }
+
+    private void checkErrorInResponse(String json) throws FacebookException {
+        if (json.contains("error")) {
+            throw new FacebookException("Facebook response contains error: " + json);
+        }
     }
 
     private PostEntity createAndFillPostFromPostFacebook(PostFacebook post) {
@@ -191,15 +271,14 @@ public class FacebookConnector implements SocialNetworkConnector {
         return result;
     }
 
-    private <T> T readDataFromResponse(String json, Class<T> clazz) {
+    private <T> T readDataFromResponse(String json, Class<T> clazz) throws FacebookException {
 
         T result = null;
         if (!Strings.isNullOrEmpty(json)) {
             try {
                 result = objectMapper.readValue(json, clazz);
             } catch (IOException e) {
-                //TODO: писать в лог онибку!
-                LOGGER.error("Ошибка в Facebook connector, при разбора json", e);
+                throw new FacebookException(e.getMessage());
             }
 
         }

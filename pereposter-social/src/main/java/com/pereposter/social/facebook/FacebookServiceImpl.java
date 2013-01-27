@@ -48,7 +48,7 @@ public class FacebookServiceImpl implements SocialWebServices {
     }
 
     @Override
-    public PostEntity getLastPost(String requestId) {
+    public ResponseObject<PostEntity> getLastPost(String requestId) {
         return findLastPostFacebookResponseHolder.getResponse(requestId);
     }
 
@@ -64,7 +64,7 @@ public class FacebookServiceImpl implements SocialWebServices {
     }
 
     @Override
-    public PostEntity getPostById(String requestId) {
+    public ResponseObject<PostEntity> getPostById(String requestId) {
         return findPostByIdFacebookResponseHolder.getResponse(requestId);
     }
 
@@ -80,7 +80,7 @@ public class FacebookServiceImpl implements SocialWebServices {
     }
 
     @Override
-    public PostsResponse getPostsByOverCreateDate(String requestId) {
+    public ResponseObject<PostsResponse> getPostsByOverCreateDate(String requestId) {
         return findPostsByOverCreatedDateFacebookResponseHolder.getResponse(requestId);
     }
 
@@ -96,7 +96,7 @@ public class FacebookServiceImpl implements SocialWebServices {
     }
 
     @Override
-    public String getWritePost(String requestId) {
+    public ResponseObject<String> getWritePost(String requestId) {
         return writeNewPostFacebookResponseHolder.getResponse(requestId);
     }
 
@@ -112,7 +112,7 @@ public class FacebookServiceImpl implements SocialWebServices {
     }
 
     @Override
-    public String getWritePosts(String requestId) {
+    public ResponseObject<String> getWritePosts(String requestId) {
         return writeNewPostsFacebookResponseHolder.getResponse(requestId);
     }
 

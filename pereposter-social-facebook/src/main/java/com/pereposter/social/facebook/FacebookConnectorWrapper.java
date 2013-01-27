@@ -16,23 +16,23 @@ public class FacebookConnectorWrapper {
         this.facebookConnector = facebookConnector;
     }
 
-    public String writeNewPost(WritePostRequest writePostRequest) {
+    public ResponseObject<String> writeNewPost(WritePostRequest writePostRequest) {
         return facebookConnector.writeNewPost(writePostRequest.getSocialAuthEntity(), writePostRequest.getPostEntity());
     }
 
-    public String writeNewPosts(WritePostsRequest writePostsRequest) {
+    public ResponseObject<String> writeNewPosts(WritePostsRequest writePostsRequest) {
         return facebookConnector.writeNewPosts(writePostsRequest.getSocialAuthEntity(), writePostsRequest.getPostsService());
     }
 
-    public PostEntity findPostById(FindPostRequest findPostRequest) {
+    public ResponseObject<PostEntity> findPostById(FindPostRequest findPostRequest) {
         return facebookConnector.findPostById(findPostRequest.getSocialAuthEntity(), findPostRequest.getPostId());
     }
 
-    public PostsResponse findPostsByOverCreatedDate(FindPostRequest findPostRequest) {
-        return new PostsResponse(facebookConnector.findPostsByOverCreatedDate(findPostRequest.getSocialAuthEntity(), findPostRequest.getCreatedDate()));
+    public ResponseObject<PostsResponse> findPostsByOverCreatedDate(FindPostRequest findPostRequest) {
+        return facebookConnector.findPostsByOverCreatedDate(findPostRequest.getSocialAuthEntity(), findPostRequest.getCreatedDate());
     }
 
-    public PostEntity findLastPost(FindPostRequest findPostRequest) {
+    public ResponseObject<PostEntity> findLastPost(FindPostRequest findPostRequest) {
         return facebookConnector.findLastPost(findPostRequest.getSocialAuthEntity());
     }
 }

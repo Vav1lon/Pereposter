@@ -1,9 +1,10 @@
 package com.pereposter.social.api.entity;
 
-import com.pereposter.social.api.ConnectorResponse;
 import org.joda.time.DateTime;
 
-public class PostEntity extends ConnectorResponse {
+import java.io.Serializable;
+
+public class PostEntity implements Serializable {
 
     private String id;
     private String message;

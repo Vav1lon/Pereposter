@@ -31,4 +31,13 @@ public class SocialAuthEntity implements Serializable {
     public void setUserId(String userId) {
         this.userId = userId;
     }
+
+    @Override
+    public String toString() {
+        return "SocialAuthEntity{" +
+                "login='" + login + '\'' +
+                ", password='" + password + '\'' +
+                ", userId='" + userId + '\'' +
+                '}';
+    }
 }

@@ -1,7 +1,7 @@
 package com.pereposter.social.vkontakte.connector;
 
 import com.google.common.base.Strings;
-import com.pereposter.social.api.SocialNetworkClient;
+import com.pereposter.social.api.VkontakteException;
 import com.pereposter.social.api.entity.Response;
 import com.pereposter.social.api.entity.SocialAuthEntity;
 import com.pereposter.social.vkontakte.entity.AccessToken;
@@ -55,9 +55,9 @@ public class AccessTokenService {
     private final Integer ACTION_URL_LENGTH = 28;
 
     @Autowired
-    private SocialNetworkClient client;
+    private Client client;
 
-    public AccessToken getNewAccessToken(SocialAuthEntity auth) {
+    public AccessToken getNewAccessToken(SocialAuthEntity auth) throws VkontakteException {
 
         boolean clearCookie = true;
 
@@ -98,7 +98,7 @@ public class AccessTokenService {
         return gettingAccessTokenFromUrl(link);
     }
 
-    private Response step4(boolean clearCookie, Response response, CookieParam cookieParam) {
+    private Response step4(boolean clearCookie, Response response, CookieParam cookieParam) throws VkontakteException{
         String remixsid = gettingRemixsidFromCookie(response.getHttpResponse());
 
         HttpPost post = new HttpPost(getUrlByLocationHeader(response.getHttpResponse()));
@@ -113,7 +113,7 @@ public class AccessTokenService {
         return response;
     }
 
-    private Response step2(SocialAuthEntity auth, boolean clearCookie, Response response) {
+    private Response step2(SocialAuthEntity auth, boolean clearCookie, Response response)  throws VkontakteException {
         ParamLoginForm paramLoginForm = gettingParamFormLoginForm(response.getBody());
 
         String loginUrl = paramLoginForm.getActionUrlParam() +
@@ -131,7 +131,7 @@ public class AccessTokenService {
         return response;
     }
 
-    private Response step1(boolean clearCookie) {
+    private Response step1(boolean clearCookie)  throws VkontakteException {
         String authorizeUrlParams = authorizeUrl + client_id
                 + "&scope=" + scope
                 + "&redirect_uri=" + redirect_uri
@@ -171,7 +171,7 @@ public class AccessTokenService {
         return result;
     }
 
-    private HttpResponse confirmationApplication(String body) {
+    private HttpResponse confirmationApplication(String body)  throws VkontakteException {
         HttpResponse result;
 
         int begin = body.indexOf("<form method=\"post\" action=");

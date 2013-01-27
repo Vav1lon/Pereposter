@@ -2,8 +2,8 @@ package com.pereposter.social.vkontakte.connector;
 
 import com.google.common.base.Strings;
 import com.pereposter.social.api.SocialNetworkConnector;
-import com.pereposter.social.api.entity.PostEntity;
-import com.pereposter.social.api.entity.SocialAuthEntity;
+import com.pereposter.social.api.VkontakteException;
+import com.pereposter.social.api.entity.*;
 import com.pereposter.social.vkontakte.entity.*;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.http.client.methods.HttpGet;
@@ -64,7 +64,7 @@ public class VkontakteConnector implements SocialNetworkConnector {
         for (Map.Entry<String, AccessToken> entry : accessTokenMap.entrySet()) {
 
             if (currentTimeStamp > (entry.getValue().getExpiresIn() * 1000)) {
-                accessTokenMap.remove(entry);
+                accessTokenMap.remove(entry.getKey());
             }
 
         }
@@ -72,64 +72,88 @@ public class VkontakteConnector implements SocialNetworkConnector {
     }
 
     @Override
-    public String writeNewPost(SocialAuthEntity auth, PostEntity postEntity) {
-        String result = writePostToWall(auth, postEntity);
-        return Strings.isNullOrEmpty(result) ? null : result;
+    public ResponseObject<String> writeNewPost(SocialAuthEntity auth, PostEntity postEntity) {
+
+        ResponseObject<String> result = new ResponseObject<String>();
+
+        if (Strings.isNullOrEmpty(postEntity.getMessage())) {
+
+            try {
+                result.setValue(writePostToWall(auth, postEntity));
+            } catch (VkontakteException e) {
+                //TODO: write to log
+                result.setStatus(ResponseStatus.ERROR);
+                result.getErrors().add(e.getMessage());
+            }
+        }
+
+        return result;
     }
 
     @Override
-    public String writeNewPosts(SocialAuthEntity auth, List<PostEntity> postEntities) {
+    public ResponseObject<String> writeNewPosts(SocialAuthEntity auth, List<PostEntity> postEntities) {
 
-        WritePostResponse response = null;
-        String url;
+        ResponseObject<String> result = new ResponseObject<String>();
 
         for (PostEntity postEntity : postEntities) {
+            if (!Strings.isNullOrEmpty(postEntity.getMessage())) {
+                try {
+                    result.setValue(writePostToWall(auth, postEntity));
+                } catch (VkontakteException e) {
+                    result.setStatus(ResponseStatus.WARNING);
+                    result.getErrors().add(e.getMessage());
+                }
+            }
 
-            url = writePostToUserWallUrl + StringEscapeUtils.escapeHtml4(postEntity.getMessage()).replace(" ", "%20") + accessTokenParamName + getAccessToken(auth);
-            String json = client.processRequest(new HttpPost(url), false).getBody();
+        }
+
+        if (result.getErrors().size() == postEntities.size()) {
+            //TODO: писать ошибку в лог
+            result.setStatus(ResponseStatus.ERROR);
+        }
+
+        return result;
+    }
+
+    @Override
+    public ResponseObject<PostEntity> findPostById(SocialAuthEntity auth, String postId) {
+
+        ResponseObject<PostEntity> result = new ResponseObject<PostEntity>();
+
+        FindPostByIdResponse response = null;
+        String url = getPostByIdUrl + postId + "_" + auth.getUserId() + accessTokenParamName + getAccessToken(auth);
+
+        try {
+
+            String json = client.processRequest(new HttpGet(url), false).getBody();
 
             if (!json.contains("error")) {
-                response = readJsonToObject(json, WritePostResponse.class);
+                response = readJsonToObject(json, FindPostByIdResponse.class);
             } else {
                 //TODO: писать ошибку в лог
-                LOGGER.error("Error write message to vkontakte ", json);
+                throw new VkontakteException("Error, request writeNewPosts throw: " + json);
+            }
+
+        } catch (VkontakteException e) {
+            LOGGER.error(e.getMessage());
+            result.setStatus(ResponseStatus.ERROR);
+            result.getErrors().add(e.getMessage());
+        }
+
+
+        if (result.getStatus() != ResponseStatus.ERROR) {
+
+            if (response != null && response.getResponse().size() != 0) {
+                result.setValue(createPost(response.getResponse().get(0)));
             }
         }
 
-        String result = null;
-        if (response != null && !Strings.isNullOrEmpty(response.getResponse().getPost_id()))
-            result = response.getResponse().getPost_id();
-
         return result;
 
     }
 
     @Override
-    public PostEntity findPostById(SocialAuthEntity auth, String postId) {
-
-        String url = getPostByIdUrl + postId + "_" + auth.getUserId() + accessTokenParamName + getAccessToken(auth);
-        String json = client.processRequest(new HttpGet(url), false).getBody();
-
-        FindPostByIdResponse response = null;
-        if (!json.contains("error")) {
-            response = readJsonToObject(json, FindPostByIdResponse.class);
-        } else {
-            //TODO: писать ошибку в лог
-            LOGGER.error("Error find by id message to vkontakte ", json);
-        }
-
-        PostEntity result = null;
-
-        if (response != null && response.getResponse().size() != 0) {
-            result = createPost(response.getResponse().get(0));
-        }
-
-        return result;
-
-    }
-
-    @Override
-    public List<PostEntity> findPostsByOverCreatedDate(SocialAuthEntity auth, DateTime createdDate) {
+    public ResponseObject<PostsResponse> findPostsByOverCreatedDate(SocialAuthEntity auth, DateTime createdDate) {
 
         //TODO: fix logic!!!!
 
@@ -140,42 +164,60 @@ public class VkontakteConnector implements SocialNetworkConnector {
     }
 
     @Override
-    public PostEntity findLastPost(SocialAuthEntity auth) {
+    public ResponseObject<PostEntity> findLastPost(SocialAuthEntity auth) {
+
+        ResponseObject<PostEntity> result = new ResponseObject<PostEntity>();
+        GetPostListResponse response = null;
 
         String url = getPostsFormWall + "?filter=owner&count=1" + accessTokenParamName + getAccessToken(auth);
-        String json = client.processRequest(new HttpGet(url), false).getBody();
 
-        GetPostListResponse response = null;
-        if (!json.contains("error")) {
-            response = readJsonToObject(json, GetPostListResponse.class);
-        } else {
-            //TODO: писать ошибку в лог
-            LOGGER.error("Error find last post to vkontakte ", json);
+        try {
+            String json = client.processRequest(new HttpGet(url), false).getBody();
+
+            if (!json.contains("error")) {
+                response = readJsonToObject(json, GetPostListResponse.class);
+            } else {
+                //TODO: писать ошибку в лог
+                throw new VkontakteException("Error, request findLostPost throw: " + json);
+            }
+        } catch (VkontakteException e) {
+            LOGGER.error(e.getMessage());
+            result.setStatus(ResponseStatus.ERROR);
+            result.getErrors().add(e.getMessage());
         }
 
-        PostEntity result = null;
+        if (result.getStatus() != ResponseStatus.ERROR) {
 
-        if (response != null && response.getResponse().size() == 2) {
+            if (response != null && response.getResponse().size() == 2) {
 
-            PostVkontakte postVkontakte = createAndFillPostVkontakte((Map<String, Object>) response.getResponse().get(1));
+                PostVkontakte postVkontakte = createAndFillPostVkontakte((Map<String, Object>) response.getResponse().get(1));
 
-            result = createPost(postVkontakte);
+                result.setValue(createPost(postVkontakte));
+            }
         }
 
         return result;
     }
 
+    private synchronized AccessToken getValueAccessTokenMap(String key) {
+        return accessTokenMap.get(key);
+    }
+
     private String getAccessToken(SocialAuthEntity auth) {
-        AccessToken result = null;
 
-        if (auth.getUserId() != null)
-            result = accessTokenMap.get(auth.getUserId());
+        AccessToken result = getValueAccessTokenMap(auth.getUserId());
 
-        if (result == null) {
-            result = vkontakteAccessTokenService.getNewAccessToken(auth);
-            accessTokenMap.put(result.getUserId(), result);
+        try {
+            if (result == null) {
+                result = vkontakteAccessTokenService.getNewAccessToken(auth);
+                accessTokenMap.put(result.getUserId(), result);
+            }
+        } catch (Exception e) {
+            // TODO: write log
+            LOGGER.error("can not access to use for SocialAuthEntity: " + auth.toString());
         }
-        return result.getAccessToken();
+
+        return result != null ? result.getAccessToken() : null;
     }
 
     private PostVkontakte createAndFillPostVkontakte(Map<String, Object> map) {
@@ -211,42 +253,59 @@ public class VkontakteConnector implements SocialNetworkConnector {
 
     }
 
-    private List<PostEntity> findPostOverCreateDate(SocialAuthEntity auth, DateTime createdDate, Integer count, Integer offset) {
+    private ResponseObject<PostsResponse> findPostOverCreateDate(SocialAuthEntity auth, DateTime createdDate, Integer count, Integer offset) {
+
+        ResponseObject<PostsResponse> result = new ResponseObject<PostsResponse>();
+        GetPostListResponse response = null;
+
         HttpGet httpGet = new HttpGet(getPostsFormWall + "?filter=owner&count=" + count + "&offset=" + offset + accessTokenParamName + getAccessToken(auth));
 
-        String json = client.processRequest(httpGet, true).getBody();
+        try {
+            String json = client.processRequest(httpGet, true).getBody();
 
-        GetPostListResponse response = null;
-        if (json.contains("error")) {
-            //TODO: писать ошибку в лог
-            LOGGER.error("Error find post over date to vkontakte ", json);
-        } else {
-            response = readJsonToObject(json, GetPostListResponse.class);
-        }
-
-        List<PostEntity> result = new ArrayList<PostEntity>();
-        PostVkontakte postVkontakte;
-
-        for (int i = 1; i < response.getResponse().size(); i++) {
-
-            postVkontakte = createAndFillPostVkontakte((Map<String, Object>) response.getResponse().get(i));
-
-            if (postVkontakte.getDate() > (createdDate.getMillis() / 1000)) {
-                result.add(createPost(postVkontakte));
+            if (!json.contains("error")) {
+                response = readJsonToObject(json, GetPostListResponse.class);
             } else {
-                break;
+                throw new VkontakteException("Error, request findPostOverCreateDate throw: " + json);
             }
 
+            List<PostEntity> values = new ArrayList<PostEntity>();
+            PostVkontakte postVkontakte;
+
+            for (int i = 1; i < response.getResponse().size(); i++) {
+
+                postVkontakte = createAndFillPostVkontakte((Map<String, Object>) response.getResponse().get(i));
+
+                if (postVkontakte.getDate() > (createdDate.getMillis() / 1000)) {
+                    values.add(createPost(postVkontakte));
+                } else {
+                    break;
+                }
+
+            }
+
+            result.setValue(new PostsResponse(values));
+
+        } catch (VkontakteException e) {
+            //TODO: писать ошибку в лог
+            LOGGER.error(e.getMessage());
+            result.setStatus(ResponseStatus.ERROR);
+            result.getErrors().add(e.getMessage());
         }
 
-
-        return result.isEmpty() ? null : result;
+        return result;
     }
 
-    private String writePostToWall(SocialAuthEntity auth, PostEntity postEntity) {
+    private String writePostToWall(SocialAuthEntity auth, PostEntity postEntity) throws VkontakteException {
+
         HttpPost httpPost = new HttpPost(writePostToUserWallUrl + StringEscapeUtils.escapeHtml4(postEntity.getMessage()).replace(" ", "%20") + accessTokenParamName + getAccessToken(auth));
 
         String json = client.processRequest(httpPost, false).getBody();
+
+        if (json.contains("error")) {
+            throw new VkontakteException("Error: request writePostToWall throw: " + json);
+        }
+
         WritePostResponse response = readJsonToObject(json, WritePostResponse.class);
 
         return response.getResponse().getPost_id();
@@ -268,13 +327,13 @@ public class VkontakteConnector implements SocialNetworkConnector {
         return result;
     }
 
-    private <T> T readJsonToObject(String json, Class<T> clazz) {
+    private <T> T readJsonToObject(String json, Class<T> clazz) throws VkontakteException {
 
         T result = null;
         try {
             result = objectMapper.readValue(json, clazz);
         } catch (IOException e) {
-            //TODO: пишем ошибку в лог
+            throw new VkontakteException("json parse error: " + e.getMessage(), e);
         }
 
         return result;

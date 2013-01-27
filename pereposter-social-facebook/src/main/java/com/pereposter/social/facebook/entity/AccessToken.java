@@ -4,6 +4,7 @@ public class AccessToken {
 
     private String accessToken;
     private Long expiresIn;
+    private String userId;
 
     public AccessToken() {
     }
@@ -26,5 +27,13 @@ public class AccessToken {
 
     public void setExpiresIn(Long expiresIn) {
         this.expiresIn = expiresIn;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }
