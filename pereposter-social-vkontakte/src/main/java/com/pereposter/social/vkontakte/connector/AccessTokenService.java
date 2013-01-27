@@ -3,7 +3,7 @@ package com.pereposter.social.vkontakte.connector;
 import com.google.common.base.Strings;
 import com.pereposter.social.api.SocialNetworkClient;
 import com.pereposter.social.api.entity.Response;
-import com.pereposter.social.api.entity.SocialAuthService;
+import com.pereposter.social.api.entity.SocialAuthEntity;
 import com.pereposter.social.vkontakte.entity.AccessToken;
 import com.pereposter.social.vkontakte.entity.CookieParam;
 import com.pereposter.social.vkontakte.entity.ParamLoginForm;
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
+@Component("vkontakteAccessTokenService")
 public class AccessTokenService {
 
     @Value("${pereposter.social.vkontakte.authorizeUrl}")
@@ -57,7 +57,7 @@ public class AccessTokenService {
     @Autowired
     private SocialNetworkClient client;
 
-    public AccessToken getNewAccessToken(SocialAuthService auth) {
+    public AccessToken getNewAccessToken(SocialAuthEntity auth) {
 
         boolean clearCookie = true;
 
@@ -113,7 +113,7 @@ public class AccessTokenService {
         return response;
     }
 
-    private Response step2(SocialAuthService auth, boolean clearCookie, Response response) {
+    private Response step2(SocialAuthEntity auth, boolean clearCookie, Response response) {
         ParamLoginForm paramLoginForm = gettingParamFormLoginForm(response.getBody());
 
         String loginUrl = paramLoginForm.getActionUrlParam() +

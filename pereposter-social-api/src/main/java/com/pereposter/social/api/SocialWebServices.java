@@ -1,12 +1,11 @@
-package com.pereposter.social.api.vkontakte;
+package com.pereposter.social.api;
 
-import com.pereposter.social.api.SocialService;
 import com.pereposter.social.api.entity.*;
 
 import javax.jws.WebService;
 
 @WebService
-public interface SocialVkontakteServices extends SocialService {
+public interface SocialWebServices extends SocialService {
 
     String findLastPost(FindPostRequest request);
 
@@ -22,10 +21,10 @@ public interface SocialVkontakteServices extends SocialService {
 
     String writePost(WritePostRequest request);
 
-    PostEntity getWritePost(String requestId);
+    String getWritePost(String requestId);
 
     String writePosts(WritePostsRequest request);
 
-    PostEntity getWritePosts(String requestId);
+    String getWritePosts(String requestId);
 
 }

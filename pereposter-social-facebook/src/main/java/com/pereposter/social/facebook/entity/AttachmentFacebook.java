@@ -11,6 +11,8 @@ public class AttachmentFacebook {
     private String description;
     private String icon;
     private List<KeyValue> properties;
+    private String fb_object_type;
+    private String fb_object_id;
 
     public List<Media> getMedia() {
         return media;
@@ -66,5 +68,21 @@ public class AttachmentFacebook {
 
     public void setProperties(List<KeyValue> properties) {
         this.properties = properties;
+    }
+
+    public String getFb_object_type() {
+        return fb_object_type;
+    }
+
+    public void setFb_object_type(String fb_object_type) {
+        this.fb_object_type = fb_object_type;
+    }
+
+    public String getFb_object_id() {
+        return fb_object_id;
+    }
+
+    public void setFb_object_id(String fb_object_id) {
+        this.fb_object_id = fb_object_id;
     }
 }

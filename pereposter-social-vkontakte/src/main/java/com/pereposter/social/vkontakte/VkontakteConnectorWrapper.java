@@ -12,26 +12,24 @@ public class VkontakteConnectorWrapper extends ConnectorWrapper {
         this.vkontakteConnector = vkontakteConnector;
     }
 
-    public PostEntity writeNewPost(WritePostRequest writePostRequest) {
-        String postId = vkontakteConnector.writeNewPost(writePostRequest.getSocialAuthService(), writePostRequest.getPostEntity());
-        return vkontakteConnector.findPostById(writePostRequest.getSocialAuthService(), postId);
+    public String writeNewPost(WritePostRequest writePostRequest) {
+        return vkontakteConnector.writeNewPost(writePostRequest.getSocialAuthEntity(), writePostRequest.getPostEntity());
     }
 
-    public PostEntity writeNewPosts(WritePostsRequest writePostsRequest) {
-        String postId = vkontakteConnector.writeNewPosts(writePostsRequest.getSocialAuthService(), writePostsRequest.getPostsService());
-        return vkontakteConnector.findPostById(writePostsRequest.getSocialAuthService(), postId);
+    public String writeNewPosts(WritePostsRequest writePostsRequest) {
+        return vkontakteConnector.writeNewPosts(writePostsRequest.getSocialAuthEntity(), writePostsRequest.getPostsService());
     }
 
     public PostEntity findPostById(FindPostRequest findPostRequest) {
-        return vkontakteConnector.findPostById(findPostRequest.getSocialAuthService(), findPostRequest.getPostId());
+        return vkontakteConnector.findPostById(findPostRequest.getSocialAuthEntity(), findPostRequest.getPostId());
     }
 
     public PostsResponse findPostsByOverCreatedDate(FindPostRequest findPostRequest) {
-        return new PostsResponse(vkontakteConnector.findPostsByOverCreatedDate(findPostRequest.getSocialAuthService(), findPostRequest.getCreatedDate()));
+        return new PostsResponse(vkontakteConnector.findPostsByOverCreatedDate(findPostRequest.getSocialAuthEntity(), findPostRequest.getCreatedDate()));
     }
 
     public PostEntity findLastPost(FindPostRequest findPostRequest) {
-        return vkontakteConnector.findLastPost(findPostRequest.getSocialAuthService());
+        return vkontakteConnector.findLastPost(findPostRequest.getSocialAuthEntity());
     }
 
 }

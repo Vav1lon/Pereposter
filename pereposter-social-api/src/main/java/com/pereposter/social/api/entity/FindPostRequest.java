@@ -6,33 +6,33 @@ import java.io.Serializable;
 
 public class FindPostRequest implements Serializable {
 
-    private SocialAuthService socialAuthService;
+    private SocialAuthEntity socialAuthEntity;
     private String postId;
     private DateTime createdDate;
 
     public FindPostRequest() {
     }
 
-    public FindPostRequest(SocialAuthService socialAuthService, String postId) {
-        this.socialAuthService = socialAuthService;
+    public FindPostRequest(SocialAuthEntity socialAuthEntity, String postId) {
+        this.socialAuthEntity = socialAuthEntity;
         this.postId = postId;
     }
 
-    public FindPostRequest(SocialAuthService socialAuthService, DateTime createdDate) {
-        this.socialAuthService = socialAuthService;
+    public FindPostRequest(SocialAuthEntity socialAuthEntity, DateTime createdDate) {
+        this.socialAuthEntity = socialAuthEntity;
         this.createdDate = createdDate;
     }
 
-    public FindPostRequest(SocialAuthService socialAuthService) {
-        this.socialAuthService = socialAuthService;
+    public FindPostRequest(SocialAuthEntity socialAuthEntity) {
+        this.socialAuthEntity = socialAuthEntity;
     }
 
-    public SocialAuthService getSocialAuthService() {
-        return socialAuthService;
+    public SocialAuthEntity getSocialAuthEntity() {
+        return socialAuthEntity;
     }
 
-    public void setSocialAuthService(SocialAuthService socialAuthService) {
-        this.socialAuthService = socialAuthService;
+    public void setSocialAuthEntity(SocialAuthEntity socialAuthEntity) {
+        this.socialAuthEntity = socialAuthEntity;
     }
 
     public String getPostId() {

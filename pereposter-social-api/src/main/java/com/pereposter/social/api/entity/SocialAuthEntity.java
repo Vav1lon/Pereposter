@@ -2,7 +2,7 @@ package com.pereposter.social.api.entity;
 
 import java.io.Serializable;
 
-public class SocialAuthService implements Serializable {
+public class SocialAuthEntity implements Serializable {
 
     private String login;
     private String password;

@@ -1,0 +1,22 @@
+{"error": {
+    "error_code": 100,
+    "error_msg": "One of the parameters specified was missing or invalid: invalid message param",
+    "request_params": [
+        {
+            "key": "oauth",
+            "value": "1"
+        },
+        {
+            "key": "method",
+            "value": "wall.post"
+        },
+        {
+            "key": "message",
+            "value": ""
+        },
+        {
+            "key": "access_token",
+            "value": "3e95778e8c87a29a01a1fcaad3b9aac5581cf39677b698f59e5e64993fe5c025ff3526cb057bea2f85c1e"
+        }
+    ]
+}}

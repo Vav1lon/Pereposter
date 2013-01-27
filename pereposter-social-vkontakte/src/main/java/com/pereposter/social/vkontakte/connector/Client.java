@@ -9,6 +9,8 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -21,6 +23,8 @@ import java.io.InputStreamReader;
 @Component("vkontakteClient")
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class Client implements SocialNetworkClient {
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(Client.class);
 
     @Value("${pereposter.social.vkontakte.client.maxConnectionsPerHost}")
     private Integer defaultMaxConnectionsPerHost;
@@ -58,6 +62,7 @@ public class Client implements SocialNetworkClient {
             result = new Response(CharStreams.toString(new InputStreamReader(httpResponse.getEntity().getContent(), Charsets.UTF_8)), httpResponse);
         } catch (Exception e) {
             //TODO: писать об ошибке в лог
+            LOGGER.error("Ошибка в работе httpclient", e);
         }
         request.abort();
 

@@ -12,7 +12,6 @@
 })
 package com.pereposter.social.vkontakte;
 
-
 import com.pereposter.utils.jaxb.*;
 import org.joda.time.*;
 

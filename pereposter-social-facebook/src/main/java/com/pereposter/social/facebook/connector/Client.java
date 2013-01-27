@@ -3,11 +3,15 @@ package com.pereposter.social.facebook.connector;
 import com.google.common.base.Charsets;
 import com.google.common.io.CharStreams;
 import com.pereposter.social.api.SocialNetworkClient;
-import com.pereposter.social.entity.Response;
+import com.pereposter.social.api.entity.Response;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.PoolingClientConnectionManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -19,50 +23,26 @@ import java.io.InputStreamReader;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class Client implements SocialNetworkClient {
 
-    private HttpClient httpClient;
+    private final static Logger LOGGER = LoggerFactory.getLogger(Client.class);
+
+    @Value("${pereposter.social.facebook.client.maxConnectionsPerHost}")
+    private Integer defaultMaxConnectionsPerHost;
+
+    @Value("${pereposter.social.facebook.client.maxTotalConnections}")
+    private Integer maxTotalConnections;
+
+    private DefaultHttpClient httpClient;
 
     @PostConstruct
-    private void setUp() {
-        httpClient = new DefaultHttpClient();
+    private void initClient() {
+        ClientConnectionManager connectionManager = new PoolingClientConnectionManager();
+        ((PoolingClientConnectionManager) connectionManager).setMaxTotal(maxTotalConnections);
+        ((PoolingClientConnectionManager) connectionManager).setDefaultMaxPerRoute(defaultMaxConnectionsPerHost);
+        httpClient = new DefaultHttpClient(connectionManager);
     }
 
     @Override
-    public HttpResponse sendRequestReturnHttpResponse(HttpUriRequest request) {
-
-        HttpResponse httpResponse = null;
-
-        try {
-            httpResponse = httpClient.execute(request);
-        } catch (Exception e) {
-            //TODO: писать об ошибке в лог
-            System.out.println(e.getMessage());
-        }
-        request.abort();
-
-        return httpResponse;
-
-    }
-
-    @Override
-    public String sendRequestReturnBody(HttpUriRequest request) {
-
-        HttpResponse httpResponse;
-        String bodyResponse = null;
-
-        try {
-            httpResponse = httpClient.execute(request);
-            bodyResponse = CharStreams.toString(new InputStreamReader(httpResponse.getEntity().getContent(), Charsets.UTF_8));
-        } catch (Exception e) {
-            //TODO: писать об ошибке в лог
-        }
-        request.abort();
-
-        return bodyResponse;
-
-    }
-
-    @Override
-    public Response sendRequestReturnBodyAndResponse(HttpUriRequest request, boolean clearCookie) {
+    public Response processRequest(HttpUriRequest request, boolean clearCookie) {
         HttpResponse httpResponse = null;
         String bodyResponse = null;
 
@@ -71,6 +51,7 @@ public class Client implements SocialNetworkClient {
             bodyResponse = CharStreams.toString(new InputStreamReader(httpResponse.getEntity().getContent(), Charsets.UTF_8));
         } catch (Exception e) {
             //TODO: писать об ошибке в лог
+            LOGGER.error("Ошибка в работе httpclient", e);
         }
         request.abort();
 

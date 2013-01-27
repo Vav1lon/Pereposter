@@ -1,7 +1,7 @@
 package com.pereposter.social.vkontakte.connector;
 
 import com.pereposter.social.api.entity.PostEntity;
-import com.pereposter.social.api.entity.SocialAuthService;
+import com.pereposter.social.api.entity.SocialAuthEntity;
 import com.pereposter.social.vkontakte.AbstractTest;
 import com.pereposter.social.vkontakte.entity.AccessToken;
 import org.apache.http.client.methods.HttpGet;
@@ -33,7 +33,7 @@ public class VkontakteConnectorTest extends AbstractTest {
     @Autowired
     private VkontakteConnector connector;
 
-    private SocialAuthService authService;
+    private SocialAuthEntity authService;
 
     private AccessToken accessToken;
 
@@ -55,8 +55,8 @@ public class VkontakteConnectorTest extends AbstractTest {
         return token;
     }
 
-    private SocialAuthService initAuthService() {
-        SocialAuthService result = new SocialAuthService();
+    private SocialAuthEntity initAuthService() {
+        SocialAuthEntity result = new SocialAuthEntity();
         result.setUserId(UUID.randomUUID().toString());
         result.setPassword(UUID.randomUUID().toString());
         result.setLogin(UUID.randomUUID().toString());

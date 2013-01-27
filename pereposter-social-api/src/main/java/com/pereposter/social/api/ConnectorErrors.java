@@ -1,0 +1,12 @@
+package com.pereposter.social.api;
+
+public enum ConnectorErrors {
+
+    ERROR_AUTHORIZATION_FAILED,
+    ERROR_APPLICATION_IS_DISABLED,
+    ERROR_INCORRECT_SIGNATURE,
+    ERROR_EXCEEDED_THE_QUERY_LIMIT,
+
+    UNKNOWN_ERROR;
+
+}

@@ -6,6 +6,8 @@ public class Media {
     private String alt;
     private String type;
     private String src;
+    private AttachmentPhoto photo;
+    private AttachmentVideo video;
 
     public String getHref() {
         return href;
@@ -37,5 +39,21 @@ public class Media {
 
     public void setSrc(String src) {
         this.src = src;
+    }
+
+    public AttachmentPhoto getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(AttachmentPhoto photo) {
+        this.photo = photo;
+    }
+
+    public AttachmentVideo getVideo() {
+        return video;
+    }
+
+    public void setVideo(AttachmentVideo video) {
+        this.video = video;
     }
 }

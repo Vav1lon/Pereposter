@@ -1,10 +1,8 @@
 package com.pereposter.social.facebook.entity;
 
-import java.util.List;
-
 public class PostFacebook {
 
-    private List<AppData> app_data;
+//    private List<AppData> app_data;
     private String post_id;
     private Long actor_id;
     private String target_id;
@@ -15,13 +13,13 @@ public class PostFacebook {
     private long updated_time;
     private AttachmentFacebook attachment;
 
-    public List<AppData> getApp_data() {
-        return app_data;
-    }
-
-    public void setApp_data(List<AppData> app_data) {
-        this.app_data = app_data;
-    }
+//    public List<AppData> getApp_data() {
+//        return app_data;
+//    }
+//
+//    public void setApp_data(List<AppData> app_data) {
+//        this.app_data = app_data;
+//    }
 
     public String getPost_id() {
         return post_id;

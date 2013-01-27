@@ -5,23 +5,23 @@ import java.util.List;
 
 public class WritePostsRequest implements Serializable {
 
-    private SocialAuthService socialAuthService;
+    private SocialAuthEntity socialAuthEntity;
     private List<PostEntity> postsService;
 
     public WritePostsRequest() {
     }
 
-    public WritePostsRequest(SocialAuthService socialAuthService, List<PostEntity> postsService) {
-        this.socialAuthService = socialAuthService;
+    public WritePostsRequest(SocialAuthEntity socialAuthEntity, List<PostEntity> postsService) {
+        this.socialAuthEntity = socialAuthEntity;
         this.postsService = postsService;
     }
 
-    public SocialAuthService getSocialAuthService() {
-        return socialAuthService;
+    public SocialAuthEntity getSocialAuthEntity() {
+        return socialAuthEntity;
     }
 
-    public void setSocialAuthService(SocialAuthService socialAuthService) {
-        this.socialAuthService = socialAuthService;
+    public void setSocialAuthEntity(SocialAuthEntity socialAuthEntity) {
+        this.socialAuthEntity = socialAuthEntity;
     }
 
     public List<PostEntity> getPostsService() {

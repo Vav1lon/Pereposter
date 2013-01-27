@@ -4,23 +4,23 @@ import java.io.Serializable;
 
 public class WritePostRequest implements Serializable {
 
-    private SocialAuthService socialAuthService;
+    private SocialAuthEntity socialAuthEntity;
     private PostEntity postEntity;
 
     public WritePostRequest() {
     }
 
-    public WritePostRequest(SocialAuthService socialAuthService, PostEntity postEntity) {
-        this.socialAuthService = socialAuthService;
+    public WritePostRequest(SocialAuthEntity socialAuthEntity, PostEntity postEntity) {
+        this.socialAuthEntity = socialAuthEntity;
         this.postEntity = postEntity;
     }
 
-    public SocialAuthService getSocialAuthService() {
-        return socialAuthService;
+    public SocialAuthEntity getSocialAuthEntity() {
+        return socialAuthEntity;
     }
 
-    public void setSocialAuthService(SocialAuthService socialAuthService) {
-        this.socialAuthService = socialAuthService;
+    public void setSocialAuthEntity(SocialAuthEntity socialAuthEntity) {
+        this.socialAuthEntity = socialAuthEntity;
     }
 
     public PostEntity getPostEntity() {

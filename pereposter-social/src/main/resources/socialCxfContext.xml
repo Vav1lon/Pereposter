@@ -7,9 +7,15 @@
     <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
 
     <jaxws:endpoint implementor="#socialVkontakteServices" address="/vkontakteWebService"/>
+    <jaxws:endpoint implementor="#socialFacebookServices" address="/facebookWebService"/>
 
     <bean id="socialVkontakteServices" class="com.pereposter.social.vkontakte.VkontakteServiceImpl">
         <constructor-arg index="0" ref="camelContext"/>
     </bean>
+
+    <bean id="socialFacebookServices" class="com.pereposter.social.facebook.FacebookServiceImpl">
+        <constructor-arg index="0" ref="camelContext"/>
+    </bean>
+
 
 </beans>

@@ -97,13 +97,6 @@
             </exclusions>
         </dependency>
 
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>3.0.1</version>
-            <scope>provided</scope>
-        </dependency>
-
         <!-- JMS -->
 
         <dependency>
@@ -121,7 +114,7 @@
         <dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-pool</artifactId>
-            <version>${activemq.pool.version}</version>
+            <version>${activemq.version}</version>
             <exclusions>
                 <exclusion>
                     <artifactId>spring-context</artifactId>
@@ -129,8 +122,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
-
 
     </dependencies>
 

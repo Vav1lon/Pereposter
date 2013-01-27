@@ -1,7 +1,7 @@
 package com.pereposter.social.api;
 
 import com.pereposter.social.api.entity.PostEntity;
-import com.pereposter.social.api.entity.SocialAuthService;
+import com.pereposter.social.api.entity.SocialAuthEntity;
 import org.joda.time.DateTime;
 
 import java.util.List;
@@ -14,7 +14,7 @@ public interface SocialNetworkConnector {
     *
     */
 
-    String writeNewPost(SocialAuthService auth, PostEntity postEntity);
+    String writeNewPost(SocialAuthEntity auth, PostEntity postEntity);
 
     /*
     *
@@ -22,12 +22,12 @@ public interface SocialNetworkConnector {
     *
     */
 
-    String writeNewPosts(SocialAuthService auth, List<PostEntity> postEntities);
+    String writeNewPosts(SocialAuthEntity auth, List<PostEntity> postEntities);
 
-    PostEntity findPostById(SocialAuthService auth, String postId);
+    PostEntity findPostById(SocialAuthEntity auth, String postId);
 
-    List<PostEntity> findPostsByOverCreatedDate(SocialAuthService auth, DateTime createdDate);
+    List<PostEntity> findPostsByOverCreatedDate(SocialAuthEntity auth, DateTime createdDate);
 
-    PostEntity findLastPost(SocialAuthService auth);
+    PostEntity findLastPost(SocialAuthEntity auth);
 
 }

@@ -3,7 +3,7 @@ package com.pereposter.social.vkontakte.connector;
 import com.google.common.base.Strings;
 import com.pereposter.social.api.SocialNetworkConnector;
 import com.pereposter.social.api.entity.PostEntity;
-import com.pereposter.social.api.entity.SocialAuthService;
+import com.pereposter.social.api.entity.SocialAuthEntity;
 import com.pereposter.social.vkontakte.entity.*;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.http.client.methods.HttpGet;
@@ -49,7 +49,7 @@ public class VkontakteConnector implements SocialNetworkConnector {
     private ObjectMapper objectMapper;
 
     @Autowired
-    private AccessTokenService accessTokenService;
+    private AccessTokenService vkontakteAccessTokenService;
 
     @PostConstruct
     private void initConnector() {
@@ -72,27 +72,27 @@ public class VkontakteConnector implements SocialNetworkConnector {
     }
 
     @Override
-    public String writeNewPost(SocialAuthService auth, PostEntity postEntity) {
+    public String writeNewPost(SocialAuthEntity auth, PostEntity postEntity) {
         String result = writePostToWall(auth, postEntity);
         return Strings.isNullOrEmpty(result) ? null : result;
     }
 
     @Override
-    public String writeNewPosts(SocialAuthService auth, List<PostEntity> postEntities) {
+    public String writeNewPosts(SocialAuthEntity auth, List<PostEntity> postEntities) {
 
         WritePostResponse response = null;
-        HttpPost httpPost;
+        String url;
 
         for (PostEntity postEntity : postEntities) {
 
-            httpPost = new HttpPost(writePostToUserWallUrl + StringEscapeUtils.escapeHtml4(postEntity.getMessage()).replace(" ", "%20") + accessTokenParamName + getAccessToken(auth));
-            String json = client.processRequest(httpPost, false).getBody();
+            url = writePostToUserWallUrl + StringEscapeUtils.escapeHtml4(postEntity.getMessage()).replace(" ", "%20") + accessTokenParamName + getAccessToken(auth);
+            String json = client.processRequest(new HttpPost(url), false).getBody();
 
-            if (json.contains("error")) {
+            if (!json.contains("error")) {
+                response = readJsonToObject(json, WritePostResponse.class);
+            } else {
                 //TODO: писать ошибку в лог
                 LOGGER.error("Error write message to vkontakte ", json);
-            } else {
-                response = readJsonToObject(json, WritePostResponse.class);
             }
         }
 
@@ -105,18 +105,17 @@ public class VkontakteConnector implements SocialNetworkConnector {
     }
 
     @Override
-    public PostEntity findPostById(SocialAuthService auth, String postId) {
+    public PostEntity findPostById(SocialAuthEntity auth, String postId) {
 
-        HttpGet httpPost = new HttpGet(getPostByIdUrl + postId + "_" + auth.getUserId() + accessTokenParamName + getAccessToken(auth));
-
-        String json = client.processRequest(httpPost, false).getBody();
+        String url = getPostByIdUrl + postId + "_" + auth.getUserId() + accessTokenParamName + getAccessToken(auth);
+        String json = client.processRequest(new HttpGet(url), false).getBody();
 
         FindPostByIdResponse response = null;
-        if (json.contains("error")) {
+        if (!json.contains("error")) {
+            response = readJsonToObject(json, FindPostByIdResponse.class);
+        } else {
             //TODO: писать ошибку в лог
             LOGGER.error("Error find by id message to vkontakte ", json);
-        } else {
-            response = readJsonToObject(json, FindPostByIdResponse.class);
         }
 
         PostEntity result = null;
@@ -130,30 +129,28 @@ public class VkontakteConnector implements SocialNetworkConnector {
     }
 
     @Override
-    public List<PostEntity> findPostsByOverCreatedDate(SocialAuthService auth, DateTime createdDate) {
+    public List<PostEntity> findPostsByOverCreatedDate(SocialAuthEntity auth, DateTime createdDate) {
 
         //TODO: fix logic!!!!
 
         Integer count = 50;
         Integer offset = 0;
 
-        List<PostEntity> result = findPostOverCreateDate(auth, createdDate, count, offset);
-
-        return result;
+        return findPostOverCreateDate(auth, createdDate, count, offset);
     }
 
     @Override
-    public PostEntity findLastPost(SocialAuthService auth) {
+    public PostEntity findLastPost(SocialAuthEntity auth) {
 
-        HttpGet httpGet = new HttpGet(getPostsFormWall + "?filter=owner&count=1" + accessTokenParamName + getAccessToken(auth));
-        String json = client.processRequest(httpGet, false).getBody();
+        String url = getPostsFormWall + "?filter=owner&count=1" + accessTokenParamName + getAccessToken(auth);
+        String json = client.processRequest(new HttpGet(url), false).getBody();
 
         GetPostListResponse response = null;
-        if (json.contains("error")) {
+        if (!json.contains("error")) {
+            response = readJsonToObject(json, GetPostListResponse.class);
+        } else {
             //TODO: писать ошибку в лог
             LOGGER.error("Error find last post to vkontakte ", json);
-        } else {
-            response = readJsonToObject(json, GetPostListResponse.class);
         }
 
         PostEntity result = null;
@@ -168,12 +165,14 @@ public class VkontakteConnector implements SocialNetworkConnector {
         return result;
     }
 
-    private String getAccessToken(SocialAuthService auth) {
-        AccessToken result;
-        result = accessTokenMap.get(auth.getUserId());
+    private String getAccessToken(SocialAuthEntity auth) {
+        AccessToken result = null;
+
+        if (auth.getUserId() != null)
+            result = accessTokenMap.get(auth.getUserId());
 
         if (result == null) {
-            result = accessTokenService.getNewAccessToken(auth);
+            result = vkontakteAccessTokenService.getNewAccessToken(auth);
             accessTokenMap.put(result.getUserId(), result);
         }
         return result.getAccessToken();
@@ -212,7 +211,7 @@ public class VkontakteConnector implements SocialNetworkConnector {
 
     }
 
-    private List<PostEntity> findPostOverCreateDate(SocialAuthService auth, DateTime createdDate, Integer count, Integer offset) {
+    private List<PostEntity> findPostOverCreateDate(SocialAuthEntity auth, DateTime createdDate, Integer count, Integer offset) {
         HttpGet httpGet = new HttpGet(getPostsFormWall + "?filter=owner&count=" + count + "&offset=" + offset + accessTokenParamName + getAccessToken(auth));
 
         String json = client.processRequest(httpGet, true).getBody();
@@ -244,7 +243,7 @@ public class VkontakteConnector implements SocialNetworkConnector {
         return result.isEmpty() ? null : result;
     }
 
-    private String writePostToWall(SocialAuthService auth, PostEntity postEntity) {
+    private String writePostToWall(SocialAuthEntity auth, PostEntity postEntity) {
         HttpPost httpPost = new HttpPost(writePostToUserWallUrl + StringEscapeUtils.escapeHtml4(postEntity.getMessage()).replace(" ", "%20") + accessTokenParamName + getAccessToken(auth));
 
         String json = client.processRequest(httpPost, false).getBody();

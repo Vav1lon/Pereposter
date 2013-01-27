@@ -14,7 +14,9 @@
         <module>../pereposter-social</module>
         <module>../pereposter-social-api</module>
         <module>../pereposter-social-vkontakte</module>
+        <module>../pereposter-social-facebook</module>
         <module>../jaxb-utils</module>
+        <module>../pereposter-social-utils</module>
     </modules>
 
     <properties>
@@ -29,7 +31,7 @@
         <jackson.jaxrs.version>1.9.9</jackson.jaxrs.version>
         <camel.version>2.10.3</camel.version>
         <xbean.spring.version>3.12</xbean.spring.version>
-        <activemq.pool.version>5.7.0</activemq.pool.version>
+        <activemq.version>5.7.0</activemq.version>
     </properties>
 
     <dependencies>
@@ -39,12 +41,6 @@
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-frontend-jaxws</artifactId>
-            <version>${cxf.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-transports-http</artifactId>
             <version>${cxf.version}</version>
         </dependency>
 

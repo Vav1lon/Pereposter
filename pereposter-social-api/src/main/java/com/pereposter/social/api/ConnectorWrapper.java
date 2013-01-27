@@ -5,7 +5,7 @@ import java.util.TreeSet;
 
 public class ConnectorWrapper {
 
-    private Set<String> requestIds=new TreeSet<String>();
+    private Set<String> requestIds = new TreeSet<String>();
 
     public void cancelRequest(String requestId) {
         requestIds.add(requestId);

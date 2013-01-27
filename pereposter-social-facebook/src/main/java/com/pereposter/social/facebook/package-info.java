@@ -10,8 +10,7 @@
         @XmlJavaTypeAdapter(type = LocalDateTime.class,
                 value = LocalDateTimeAdapter.class)
 })
-package com.pereposter.social;
-
+package com.pereposter.social.facebook;
 
 import com.pereposter.utils.jaxb.*;
 import org.joda.time.*;
