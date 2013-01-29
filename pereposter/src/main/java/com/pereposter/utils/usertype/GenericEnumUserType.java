@@ -15,66 +15,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
 
-/**
- * Example of usage<br/>
- * <br/>
- *<br/>
- *For enum like this one:<br/>
- *<br/>
- * public enum OrderPayType {<br/>
- CASH(1, "cash"),<br/>
- EUROSET(2, "euroset"),<br/>
- private int id;<br/>
- private String name;<br/>
- OrderPayType(int id, String name) {<br/>
- this.id = id;<br/>
- this.name = name;<br/>
- }<br/>
- public int getId() {<br/>
- return id;<br/>
- }<br/>
- public String getName() {<br/>
- return name;<br/>
- }
- <br/>
- public static final OrderPayType fromName(String name) {<br/>
- for (OrderPayType v : OrderPayType.values()) {<br/>
- if (StringUtils.equals(v.getName(), name)) {<br/>
- return v;<br/>
- }<br/>
- }<br/>
- throw new IllegalArgumentException("couldn't find payment type with id: " + name);<br/>
- }<br/>
- public static final OrderPayType fromInt(int payTypeId) {<br/>
- for (OrderPayType v : OrderPayType.values()) {<br/>
- if (v.getId() == payTypeId) {<br/>
- return v;<br/>
- }<br/>
- }<br/>
- throw new IllegalArgumentException("couldn't find payment type with id: " + payTypeId);<br/>
- }<br/>
- }<br/>
- * &#064Column(name = "pay_type", nullable = true)<br/>
- &#064Type(<br/>
- type = "ru.agent.persistence.model.userTypes.GenericEnumUserType",<br/>
- parameters = {<br/>
- &#064Parameter(<br/>
- name = "enumClass",<br/>
- value = "ru.agent.common.enums.OrderPayType"),<br/>
- &#064Parameter(<br/>
- name = "identifierMethod",<br/>
- value = "getId"),<br/>
- &#064Parameter(<br/>
- name = "valueOfMethod",<br/>
- value = "fromInt")<br/>
- }<br/>
- )<br/>
- *
- * Date: Nov 2, 2011
- * Time: 13:00:00
- *
- *
- */
 public class GenericEnumUserType implements UserType, ParameterizedType {
     private static final String DEFAULT_IDENTIFIER_METHOD_NAME = "name";
     private static final String DEFAULT_VALUE_OF_METHOD_NAME = "valueOf";

@@ -1,8 +1,7 @@
 package com.pereposter.control;
 
-import com.pereposter.entity.internal.User;
-import com.pereposter.entity.internal.UserSocialAccount;
 import com.pereposter.entity.Post;
+import com.pereposter.entity.internal.UserSocialAccount;
 import com.pereposter.utils.ServiceHelper;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -23,7 +22,7 @@ public class SocialNetworkControl {
 
     public void initializationUser(String id) {
 
-        User user = (User) getSession().get(User.class, Long.valueOf(id));
+        UserSocialAccount user = (UserSocialAccount) getSession().get(UserSocialAccount.class, Long.valueOf(id));
 
         if (user != null) {
             initializationUser(user);
@@ -31,25 +30,22 @@ public class SocialNetworkControl {
 
     }
 
-    public void initializationUser(User user) {
+    public void initializationUser(UserSocialAccount account) {
 
-        for (UserSocialAccount account : user.getAccounts()) {
 
-            if (account.isEnabled()) {
-                com.pereposter.control.social.SocialNetworkControl service = serviceHelper.getSocialNetworkControl(account.getSocialNetwork());
-                Post post = service.findLastUserPost(account);
+        com.pereposter.control.social.SocialNetworkControl service = serviceHelper.getSocialNetworkControl(account.getSocialNetwork());
+        Post post = service.findLastUserPost(account);
 
-                if (post != null) {
-                    account.setLastPostId(post.getId());
-                    account.setCreateDateLastPost(post.getCreatedDate());
-                    account.setSocialUserId(post.getOwnerId());
-                    getSession().saveOrUpdate(user);
-                } else {
-                    //TODO: пишем в лог что данной учетной записи не существует или пароль не верен
-                    //TODO: уведосить юзера что учетная запись не верна
-                }
-            }
+        if (post != null) {
+            account.setLastPostId(post.getId());
+            account.setCreateDateLastPost(post.getCreatedDate());
+            account.setSocialUserId(post.getOwnerId());
+            getSession().saveOrUpdate(account);
+        } else {
+            //TODO: пишем в лог что данной учетной записи не существует или пароль не верен
+            //TODO: уведосить юзера что учетная запись не верна
         }
+
     }
 
     private Session getSession() {

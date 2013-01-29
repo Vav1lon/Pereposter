@@ -1,13 +1,15 @@
 package com.pereposter.control;
 
+import com.pereposter.entity.Post;
 import com.pereposter.entity.internal.SocialNetworkEnum;
 import com.pereposter.entity.internal.User;
 import com.pereposter.entity.internal.UserSocialAccount;
-import com.pereposter.entity.Post;
 import com.pereposter.utils.ServiceHelper;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
@@ -20,11 +22,15 @@ import java.util.concurrent.ConcurrentHashMap;
 @Transactional(propagation = Propagation.REQUIRED)
 public class PostManagerControl {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(PostManagerControl.class);
+
     @Autowired
     private ServiceHelper serviceHelper;
 
     @Autowired
     private SessionFactory sessionFactory;
+
+    ConcurrentHashMap<SocialNetworkEnum, List<Post>> postsMap = new ConcurrentHashMap<SocialNetworkEnum, List<Post>>();
 
     //TODO: временный метод
     public void starter() {
@@ -42,8 +48,6 @@ public class PostManagerControl {
     //TODO: надо сделать много поточность через countDownlatch
     private synchronized void findAndWriteNewPost(User user) {
 
-        ConcurrentHashMap<SocialNetworkEnum, List<Post>> postsMap = new ConcurrentHashMap<SocialNetworkEnum, List<Post>>();
-
         for (UserSocialAccount account : user.getAccounts()) {
 
             ConcurrentHashMap map = findNewPosts(account);
@@ -54,28 +58,36 @@ public class PostManagerControl {
 
         }
 
+        if (postsMap.size() != 0) {
 
-        for (UserSocialAccount account : user.getAccounts()) {
+            for (UserSocialAccount account : user.getAccounts()) {
 
-            SocialNetworkEnum currentAccount = account.getSocialNetwork();
-            List<Post> posts = postsMap.get(currentAccount);
+                SocialNetworkEnum currentAccount = account.getSocialNetwork();
+                List<Post> posts = postsMap.get(currentAccount);
 
-            if (posts != null) {
+                if (posts != null) {
 
-                for (UserSocialAccount accountForWritePosts : user.getAccounts()) {
+                    for (UserSocialAccount accountForWritePosts : user.getAccounts()) {
 
-                    if (!accountForWritePosts.getSocialNetwork().equals(currentAccount)) {
+                        if (accountForWritePosts.getSocialNetwork().getId() != currentAccount.getId()) {
 
-                        writeNewPost(posts, accountForWritePosts);
+                            writeNewPosts(posts, accountForWritePosts);
+
+                        }
 
                     }
 
-                }
+                    checkReadSourcePost(account, posts);
 
-                checkReadSourcePost(account, posts);
+                }
 
             }
 
+
+            //TODO: hack
+            getSession().flush();
+
+            postsMap.clear();
         }
 
     }
@@ -92,12 +104,19 @@ public class PostManagerControl {
         }
     }
 
-    private void writeNewPost(List<Post> posts, UserSocialAccount accountForWritePosts) {
+    private void writeNewPosts(List<Post> posts, UserSocialAccount accountForWritePosts) {
         com.pereposter.control.social.SocialNetworkControl service = serviceHelper.getSocialNetworkControl(accountForWritePosts.getSocialNetwork());
         Post lastPost = service.writePosts(accountForWritePosts, posts);
 
-        accountForWritePosts.setCreateDateLastPost(lastPost.getCreatedDate());
-        accountForWritePosts.setLastPostId(lastPost.getId());
+        if (lastPost != null) {
+            accountForWritePosts.setCreateDateLastPost(lastPost.getCreatedDate());
+            accountForWritePosts.setLastPostId(lastPost.getId());
+
+            //TODO: dirty hack
+            getSession().saveOrUpdate(accountForWritePosts);
+            getSession().flush();
+        }
+
     }
 
     private Post findLastDateOriginalPost(List<Post> posts) {

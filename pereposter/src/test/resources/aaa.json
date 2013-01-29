@@ -1,0 +1,154 @@
+{
+    "data": [
+        {
+            "app_data": [
+            ],
+            "post_id": "100004878072152_122900767882525",
+            "attachment": {
+                "description": ""
+            },
+            "actor_id": 100004878072152,
+            "target_id": null,
+            "message": "Этот пост я пишу для теста на этой стене и дабы меня не забанил фейсбук",
+            "type": 46,
+            "is_hidden": false,
+            "updated_time": 1359155641,
+            "created_time": 1359155641
+        },
+        {
+            "app_data": [
+            ],
+            "post_id": "100004878072152_122899024549366",
+            "attachment": {
+                "description": ""
+            },
+            "actor_id": 100004878072152,
+            "target_id": null,
+            "message": "ыжшварпдыва",
+            "type": 46,
+            "is_hidden": false,
+            "updated_time": 1359155072,
+            "created_time": 1359155072
+        },
+        {
+            "app_data": [
+            ],
+            "post_id": "100004878072152_122898967882705",
+            "attachment": {
+                "description": ""
+            },
+            "actor_id": 100004878072152,
+            "target_id": null,
+            "message": "пробный пост, надо удалить",
+            "type": 46,
+            "is_hidden": false,
+            "updated_time": 1359155053,
+            "created_time": 1359155053
+        },
+        {
+            "app_data": [
+            ],
+            "post_id": "100004878072152_122854754553793",
+            "attachment": {
+                "description": ""
+            },
+            "actor_id": 100004878072152,
+            "target_id": null,
+            "message": "Hello_My_World!",
+            "type": 46,
+            "is_hidden": false,
+            "updated_time": 1359154357,
+            "created_time": 1359154357
+        },
+        {
+            "app_data": [
+            ],
+            "post_id": "100004878072152_122854477887154",
+            "attachment": {
+                "description": ""
+            },
+            "actor_id": 100004878072152,
+            "target_id": null,
+            "message": "пробный пост, надо удалить",
+            "type": 46,
+            "is_hidden": false,
+            "updated_time": 1359154356,
+            "created_time": 1359154356
+        },
+        {
+            "app_data": [
+            ],
+            "post_id": "100004878072152_122428754596393",
+            "attachment": {
+                "description": ""
+            },
+            "actor_id": 100004878072152,
+            "target_id": null,
+            "message": "Hello_My_World!",
+            "type": 46,
+            "is_hidden": false,
+            "updated_time": 1359125729,
+            "created_time": 1359125729
+        },
+        {
+            "app_data": [
+            ],
+            "post_id": "100004878072152_122428747929727",
+            "attachment": {
+                "description": ""
+            },
+            "actor_id": 100004878072152,
+            "target_id": null,
+            "message": "пробный пост, надо удалить",
+            "type": 46,
+            "is_hidden": false,
+            "updated_time": 1359125728,
+            "created_time": 1359125728
+        },
+        {
+            "app_data": [
+            ],
+            "post_id": "100004878072152_122426481263287",
+            "attachment": {
+                "description": ""
+            },
+            "actor_id": 100004878072152,
+            "target_id": null,
+            "message": "Hello_My_World!",
+            "type": 46,
+            "is_hidden": false,
+            "updated_time": 1359125385,
+            "created_time": 1359125385
+        },
+        {
+            "app_data": [
+            ],
+            "post_id": "100004878072152_122426477929954",
+            "attachment": {
+                "description": ""
+            },
+            "actor_id": 100004878072152,
+            "target_id": null,
+            "message": "пробный пост, надо удалить",
+            "type": 46,
+            "is_hidden": false,
+            "updated_time": 1359125384,
+            "created_time": 1359125384
+        },
+        {
+            "app_data": [
+            ],
+            "post_id": "100004878072152_122426444596624",
+            "attachment": {
+                "description": ""
+            },
+            "actor_id": 100004878072152,
+            "target_id": null,
+            "message": "Hello_My_World!",
+            "type": 46,
+            "is_hidden": false,
+            "updated_time": 1359125373,
+            "created_time": 1359125373
+        }
+    ]
+}

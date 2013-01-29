@@ -14,7 +14,18 @@ public class User {
     @Column(name = "ID")
     private Long id;
 
-    @Column(name = "NAME", nullable = false, unique = true)
+    @Transient
+    private String password;
+    @Transient
+    private boolean enabled;
+    @Transient
+    private boolean accountExpired;
+    @Transient
+    private boolean accountLocked;
+    @Transient
+    private boolean passwordExpired;
+
+    @Column(name = "username", nullable = false, unique = true)
     private String name;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

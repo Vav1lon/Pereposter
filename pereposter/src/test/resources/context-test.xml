@@ -9,9 +9,6 @@
 
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="ignoreUnresolvablePlaceholders" value="true"/>
-    </bean>
-
-    <bean class="org.springframework.web.context.support.ServletContextPropertyPlaceholderConfigurer">
         <property name="locations">
             <list>
                 <value>classpath:pereposter.test.local.properties</value>
