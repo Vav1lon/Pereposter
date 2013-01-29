@@ -77,9 +77,16 @@ public class FacebookConnector implements SocialNetworkConnector {
 
     }
 
+    private synchronized AccessToken getValueAccessTokenMap(String key) {
+        return accessTokenMap.get(key);
+    }
+
     private String getAccessToken(SocialAuthEntity auth) {
 
-        AccessToken result = accessTokenMap.get(auth.getUserId());
+        AccessToken result = null;
+        if (auth.getUserId() != null) {
+            result = getValueAccessTokenMap(auth.getUserId());
+        }
 
         try {
             if (result == null) {

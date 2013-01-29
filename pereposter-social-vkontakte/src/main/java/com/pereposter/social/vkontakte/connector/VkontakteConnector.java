@@ -205,7 +205,10 @@ public class VkontakteConnector implements SocialNetworkConnector {
 
     private String getAccessToken(SocialAuthEntity auth) {
 
-        AccessToken result = getValueAccessTokenMap(auth.getUserId());
+        AccessToken result = null;
+        if (auth.getUserId() != null) {
+            result = getValueAccessTokenMap(auth.getUserId());
+        }
 
         try {
             if (result == null) {
