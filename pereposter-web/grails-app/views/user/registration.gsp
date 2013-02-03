@@ -80,6 +80,14 @@
     <div class='inner'>
         <div class='fheader'><g:message code="registration.headFormTitle"/></div>
 
+        <g:if test="${flash.errors}">
+        <div class="errors">
+            <ul>
+                <g:render template="renderflasherrors" collection="${flash.errors}"  as="list"/>
+            </ul>
+        </div>
+        </g:if>
+
         <g:if test='${flash.message}'>
             <div class='login_message'>${flash.message}</div>
         </g:if>

@@ -15,7 +15,8 @@ class SocialBoardService {
                     , id: it.id
                     , username: it.username
                     , userId: getCurrentUser().id
-                    , enabled: it.enabled)
+                    , enabled: it.enabled
+                    , socialUserId: it.socialUserId)
         }
     }
 
@@ -68,8 +69,11 @@ class SocialBoardService {
         if (!socialNetwork) {
             throw new NullPointerException("Not found UserSocialAccount by id: " + socialNetworkId + " in User: " + getCurrentUser().id);
         }
-        getCurrentUser().removeFromAccounts(socialNetwork)
-        socialNetwork.delete()
+
+        User currentUser = socialNetwork.user;
+
+        currentUser.removeFromAccounts(socialNetwork)
+        currentUser.save()
     }
 
     private User getCurrentUser() {

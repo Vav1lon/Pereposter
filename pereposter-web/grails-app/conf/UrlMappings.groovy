@@ -2,6 +2,7 @@ class UrlMappings {
 
     static mappings = {
 
+
         "/user/registration" {
             controller = "user"
             action = [GET: "registration", POST: "save"]
@@ -26,5 +27,7 @@ class UrlMappings {
 
         "/"(controller: 'socialBoard', action: 'index')
         "500"(view: '/error')
+        "404"(view: '/error')
+        "403"(view: '/error')
     }
 }

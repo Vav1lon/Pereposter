@@ -21,17 +21,16 @@ class UserController {
             flash.message = "Repeat passwords is null"
             render(view: 'registration')
             return
-        } else if (params.password != params.passwordRepeat && !Strings.isNullOrEmpty(params.password) && !Strings.isNullOrEmpty(params.passwordRepeat)) {
+        } else if (params.password != params.passwordRepeat) {
             flash.message = "Passwords do not match"
             render(view: 'registration')
             return
         }
 
-
         try {
             userService.createNewUser(params.login, params.password)
         } catch (ValidationException e) {
-            flash.message = e.errors.fieldError.defaultMessage
+            flash.errors = e.errors.allErrors*.defaultMessage
             render(view: 'registration')
             return
         }

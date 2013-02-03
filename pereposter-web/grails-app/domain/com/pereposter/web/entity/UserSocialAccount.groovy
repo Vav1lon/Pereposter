@@ -13,13 +13,16 @@ class UserSocialAccount {
     String socialUserId
     String username
 
-    static hasOne = [user: User]
+    static belongsTo = [user: User]
+
+    static mappedBy = []
 
     static mapping = {
         table name: 'USER_SOCIAL_ACCOUNT'
         socialNetwork enumClass: 'com.pereposter.web.entity.SocialNetworkEnum'
         createDateLastPost type: PersistentDateTime
         user cascade: 'save-update'
+        user foreignKey: 'USER_SOCIAL_ACCOUNT_USER_PEREPOSTER'
 
         version false
     }

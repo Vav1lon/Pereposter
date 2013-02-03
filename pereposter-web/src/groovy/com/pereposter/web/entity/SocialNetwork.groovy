@@ -7,5 +7,6 @@ class SocialNetwork {
     SocialNetworkEnum socialNetworkEnum
     String username
     Boolean enabled
+    String socialUserId
 
 }

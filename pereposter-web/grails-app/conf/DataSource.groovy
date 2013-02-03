@@ -1,8 +1,5 @@
 dataSource {
-    driverClassName = "com.mysql.jdbc.Driver"
     username = "pereposter_user"
-    url = "jdbc:mysql://localhost:3306/pereposter"
-    pooled = true
 }
 hibernate {
     cache.use_second_level_cache = true
@@ -13,10 +10,13 @@ hibernate {
 environments {
     development {
         dataSource {
+            driverClassName = "com.mysql.jdbc.Driver"
+            url = "jdbc:mysql://localhost:3306/pereposter"
             password = "19516811"
             dbCreate = ""
             dialect = "org.hibernate.dialect.MySQL5Dialect"
             logSql = true
+            pooled = true
         }
     }
     test {
@@ -25,12 +25,16 @@ environments {
             dbCreate = "update"
             password = ""
             url = "jdbc:h2:mem:testDb;MVCC=TRUE;LOCK_TIMEOUT=10000"
+            logSql = true
         }
     }
     production {
         dataSource {
+            driverClassName = "com.mysql.jdbc.Driver"
+            url = "jdbc:mysql://localhost:3306/pereposter"
             dbCreate = ""
             password = "GMe6DVE5hesRlsIUo2o8ZS6oE"
+            pooled = true
             properties {
                 maxActive = -1
                 minEvictableIdleTimeMillis = 1800000

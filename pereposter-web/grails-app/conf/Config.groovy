@@ -118,3 +118,12 @@ grails.plugins.springsecurity.controllerAnnotations.staticRules = [
         '/user/**': ['IS_AUTHENTICATED_ANONYMOUSLY'],
         '/**': ['ROLE_USER']
 ]
+
+environments {
+    development {
+        pereposter.core.initSocialAccount.url = 'http://localhost:8082/service/Social/Account/'
+    }
+    production {
+        pereposter.core.initSocialAccount.url = 'http://localhost:8093/service/Social/Account/'
+    }
+}

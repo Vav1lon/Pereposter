@@ -12,12 +12,14 @@ class User {
     boolean passwordExpired
     boolean active
 
+
     static hasMany = [accounts: UserSocialAccount]
 
     static constraints = {
         username blank: false, unique: true, email: true
         password blank: false, minSize: 8
         active blank: false, default: false
+        accounts lazy: true;
     }
 
     static mapping = {

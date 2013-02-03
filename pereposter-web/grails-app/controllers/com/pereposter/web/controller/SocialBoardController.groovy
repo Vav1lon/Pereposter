@@ -1,7 +1,13 @@
 package com.pereposter.web.controller
 
+import com.google.common.base.Charsets
 import com.google.common.base.Strings
-import groovyx.net.http.HTTPBuilder
+import com.google.common.io.CharStreams
+import groovy.json.JsonSlurper
+import org.apache.http.HttpResponse
+import org.apache.http.client.HttpClient
+import org.apache.http.client.methods.HttpGet
+import org.apache.http.impl.client.DefaultHttpClient
 
 class SocialBoardController {
 
@@ -26,11 +32,19 @@ class SocialBoardController {
         Long id = socialBoardService.addSocialNetwork(socialNetworkId, username, password)
 
         //TODO: send init request
-        def http = new HTTPBuilder('http://localhost:8096')
 
-        def html = http.get(path: "/service/User/" + id.toString())
+        sendRequestToCore(id)
 
         redirect(uri: '/')
+    }
+
+    def validateSocialNetwokAccount() {
+        Long idInternalSocialNetwork = params.id as long
+
+        sendRequestToCore(idInternalSocialNetwork)
+
+        redirect(uri: '/')
+
     }
 
     def enabledAndDisabledSocialNetwork() {
@@ -52,6 +66,39 @@ class SocialBoardController {
         flash.removeSucculMessage = "Соц. сеть успешно удалена"
 
         redirect(uri: '/')
+    }
+
+    //TODO: need refactoring
+    private void sendRequestToCore(long idInternalSocialNetwork) {
+
+        try {
+            HttpClient client = new DefaultHttpClient()
+            HttpGet get = new HttpGet(grailsApplication.config.pereposter.core.initSocialAccount.url + idInternalSocialNetwork)
+
+            String body;
+            HttpResponse httpResponse = client.execute(get)
+            if (httpResponse.getEntity() != null) {
+                body = CharStreams.toString(new InputStreamReader(httpResponse.getEntity().getContent(), Charsets.UTF_8));
+                Map response = new JsonSlurper().parseText(body)
+            }
+            get.abort()
+
+            if (body != null) {
+
+                log.error('====== Begin ======')
+                log.error(grailsApplication.config.pereposter.core.initSocialAccount.url + idInternalSocialNetwork)
+                log.error(body)
+                log.error('====== End ======')
+
+                flash.errorMessage = response['error']
+
+                //flash.errorMessage = "Не удалось получить данные учетной записи, проверти логин/пароль"
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            flash.errorMessage = "Сервер валидации пользователя недоступен"
+        }
+
     }
 
 }

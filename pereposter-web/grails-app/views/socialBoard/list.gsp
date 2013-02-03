@@ -76,6 +76,15 @@
 </head>
 
 <body>
+
+<g:if test="${flash.errorMessage}">
+    <div class="errors">
+        <ul>
+            <g:render template="renderflasherrors" collection="${flash.errorMessage}"/>
+        </ul>
+    </div>
+</g:if>
+
 <div class="login">
 
     <g:if test="${socialNetworks == null || socialNetworks.size() == 0}">
@@ -95,7 +104,14 @@
         <br>
 
         <g:each in="${socialNetworks}" var="n">
-           Pere =>  ${n.socialNetworkEnum} - ${n.username} - <g:link controller="socialBoard" action="enabledAndDisabledSocialNetwork" params="${[id: n.id]}">${n.enabled}</g:link> - <g:link controller="socialBoard" action="removeSocialNetwork" params="${[id: n.id]}">Удадить соц сеть</g:link><br>
+            ${n.socialNetworkEnum} - ${n.username} - ${n.socialUserId} - ${n.userId} - <g:link controller="socialBoard"
+                                                             action="enabledAndDisabledSocialNetwork"
+                                                             params="${[id: n.id]}">${n.enabled}</g:link> - <g:link
+                controller="socialBoard" action="removeSocialNetwork"
+                params="${[id: n.id]}">Удадить соц сеть</g:link> <g:if
+                test="${!n.socialUserId}"><b>- Учетные данные не проверены в соц. сети. <g:link controller="socialBoard"
+                                                                                                action="validateSocialNetwokAccount"
+                                                                                                params="${[id: n.id]}">Проверить учетные данные</g:link></b></g:if>  <br>
         </g:each>
 
         <br>

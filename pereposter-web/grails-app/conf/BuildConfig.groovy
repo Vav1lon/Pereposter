@@ -44,6 +44,7 @@ grails.project.dependency.resolution = {
         compile "joda-time:joda-time-hibernate:1.3"
         compile "joda-time:joda-time:2.1"
         compile 'com.google.guava:guava:13.0.1'
+        compile 'org.apache.httpcomponents:httpclient:4.2.3'
         runtime 'mysql:mysql-connector-java:5.1.22'
     }
 
@@ -52,8 +53,7 @@ grails.project.dependency.resolution = {
         runtime ":jquery:1.8.3"
         runtime ":resources:1.1.6"
         compile ":spring-security-core:1.2.7.3"
-        compile ":mail:1.0.1"
-        compile ":rest:0.7"
+        //compile ":mail:1.0.1"
 
         build ":tomcat:$grailsVersion"
 
