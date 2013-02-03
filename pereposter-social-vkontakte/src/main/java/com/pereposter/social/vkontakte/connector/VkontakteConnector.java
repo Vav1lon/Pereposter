@@ -234,7 +234,7 @@ public class VkontakteConnector implements SocialNetworkConnector {
             }
 
             if (entry.getKey().equals("from_id")) {
-                result.setDate(Long.parseLong(entry.getValue().toString()));
+                result.setFrom_id(Long.parseLong(entry.getValue().toString()));
             }
 
             if (entry.getKey().equals("to_id")) {
@@ -319,6 +319,7 @@ public class VkontakteConnector implements SocialNetworkConnector {
         result.setCreatedDate(new DateTime(postVkontakte.getDate() * 1000));
         result.setId(postVkontakte.getId().toString());
         result.setMessage(postVkontakte.getText());
+        result.setOwnerId(postVkontakte.getFrom_id().toString());
         return result;
     }
 

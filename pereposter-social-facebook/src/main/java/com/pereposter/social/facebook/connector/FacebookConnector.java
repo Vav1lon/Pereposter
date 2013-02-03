@@ -263,6 +263,7 @@ public class FacebookConnector implements SocialNetworkConnector {
         result.setId(post.getPost_id());
         result.setMessage(post.getMessage());
         result.setCreatedDate(new DateTime(post.getCreated_time() * 1000));
+        result.setOwnerId(post.getActor_id().toString());
         return result;
     }
 

@@ -9,6 +9,7 @@ public class PostEntity implements Serializable {
     private String id;
     private String message;
     private DateTime createdDate;
+    private String ownerId;
 
     public String getId() {
         return id;
@@ -32,5 +33,13 @@ public class PostEntity implements Serializable {
 
     public void setCreatedDate(DateTime createdDate) {
         this.createdDate = createdDate;
+    }
+
+    public String getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(String ownerId) {
+        this.ownerId = ownerId;
     }
 }
