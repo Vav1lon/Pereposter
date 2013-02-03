@@ -2,8 +2,9 @@ package com.pereposter.entity.internal;
 
 public enum SocialNetworkEnum {
 
-    FACEBOOK(1, "facebookService"),
-    VKONTAKTE(2, "vkontakteService");
+    FACEBOOK(1, "facebookControl"),
+    VKONTAKTE(2, "vkontakteControl"),
+    TWITTER(3, "twitterControl");
 
     private int id;
     private String serviceName;

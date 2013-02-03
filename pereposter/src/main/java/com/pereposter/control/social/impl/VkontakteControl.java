@@ -1,8 +1,7 @@
 package com.pereposter.control.social.impl;
 
-import com.pereposter.control.social.SocialNetworkControl;
+import com.pereposter.control.social.SocialControl;
 import com.pereposter.entity.internal.UserSocialAccount;
-import com.pereposter.social.api.ResponseStatusInfo;
 import com.pereposter.social.api.SocialWebServices;
 import com.pereposter.social.api.entity.*;
 import com.pereposter.entity.Post;
@@ -16,9 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Component("vkontakteService")
+@Component("vkontakteControl")
 @Transactional(propagation = Propagation.MANDATORY)
-public class VkontakteControl implements SocialNetworkControl {
+public class VkontakteControl implements SocialControl {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(VkontakteControl.class);
 

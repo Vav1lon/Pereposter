@@ -5,7 +5,7 @@ import com.pereposter.entity.Post;
 
 import java.util.List;
 
-public interface SocialNetworkControl {
+public interface SocialControl {
 
     /*
        * find last message user in social network

@@ -1,6 +1,7 @@
 package com.pereposter.entity.internal;
 
 import com.pereposter.utils.usertype.JodaTimeTypes;
+import org.hibernate.annotations.ForeignKey;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
@@ -49,7 +50,8 @@ public class UserSocialAccount {
     @Column(name = "SOCIAL_USER_ID", length = 128)
     private String socialUserId;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+    @ForeignKey(name = "USER_SOCIAL_ACCOUNT_USER_PEREPOSTER")
     private User user;
 
     public Long getId() {

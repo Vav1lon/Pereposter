@@ -1,5 +1,6 @@
 package com.pereposter.control;
 
+import com.pereposter.control.social.SocialControl;
 import com.pereposter.entity.Post;
 import com.pereposter.entity.internal.SocialNetworkEnum;
 import com.pereposter.entity.internal.User;
@@ -21,8 +22,6 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 @Transactional(propagation = Propagation.REQUIRED)
 public class PostManagerControl {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(PostManagerControl.class);
 
     @Autowired
     private ServiceHelper serviceHelper;
@@ -83,9 +82,8 @@ public class PostManagerControl {
 
             }
 
-
             //TODO: hack
-            getSession().flush();
+//            getSession().flush();
 
             postsMap.clear();
         }
@@ -105,7 +103,7 @@ public class PostManagerControl {
     }
 
     private void writeNewPosts(List<Post> posts, UserSocialAccount accountForWritePosts) {
-        com.pereposter.control.social.SocialNetworkControl service = serviceHelper.getSocialNetworkControl(accountForWritePosts.getSocialNetwork());
+        SocialControl service = serviceHelper.getSocialNetworkControl(accountForWritePosts.getSocialNetwork());
         Post lastPost = service.writePosts(accountForWritePosts, posts);
 
         if (lastPost != null) {
@@ -113,8 +111,8 @@ public class PostManagerControl {
             accountForWritePosts.setLastPostId(lastPost.getId());
 
             //TODO: dirty hack
-            getSession().saveOrUpdate(accountForWritePosts);
-            getSession().flush();
+//            getSession().saveOrUpdate(accountForWritePosts);
+//            getSession().flush();
         }
 
     }

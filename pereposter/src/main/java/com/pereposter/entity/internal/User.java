@@ -1,9 +1,7 @@
 package com.pereposter.entity.internal;
 
-import org.hibernate.annotations.ForeignKey;
-
 import javax.persistence.*;
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "USER_PEREPOSTER")
@@ -14,23 +12,12 @@ public class User {
     @Column(name = "ID")
     private Long id;
 
-    @Transient
-    private String password;
-    @Transient
-    private boolean enabled;
-    @Transient
-    private boolean accountExpired;
-    @Transient
-    private boolean accountLocked;
-    @Transient
-    private boolean passwordExpired;
-
     @Column(name = "username", nullable = false, unique = true)
     private String name;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @ForeignKey(name = "USER_PEREPOSTER_USER_SOCIAL_ACCOUNT", inverseName = "USER_SOCIAL_ACCOUNT_USER_PEREPOSTER")
-    private List<UserSocialAccount> accounts;
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "USER_ID", nullable = false)
+    private Set<UserSocialAccount> accounts;
 
     @Column(name = "ACTIVE", nullable = false)
     private Boolean active;
@@ -51,11 +38,11 @@ public class User {
         this.name = name;
     }
 
-    public List<UserSocialAccount> getAccounts() {
+    public Set<UserSocialAccount> getAccounts() {
         return accounts;
     }
 
-    public void setAccounts(List<UserSocialAccount> accounts) {
+    public void setAccounts(Set<UserSocialAccount> accounts) {
         this.accounts = accounts;
     }
 

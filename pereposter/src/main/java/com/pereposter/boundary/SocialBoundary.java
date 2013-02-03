@@ -1,13 +1,14 @@
 package com.pereposter.boundary;
 
+import com.pereposter.entity.RestResponse;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.jws.WebService;
 
 @WebService
 @Transactional
-public interface UserBoundary {
+public interface SocialBoundary {
 
-    void initUser(String id);
+    RestResponse initSocialAccount(String id);
 
 }

@@ -23,30 +23,40 @@ public abstract class AbstractTest {
     @Autowired
     private SessionFactory sessionFactory;
 
-    protected User user;
-    protected User user2;
+    protected User globalUser1;
+    protected User globalUser2;
 
-    protected UserSocialAccount socialAccountFaceBookEnabledForUser1;
-    protected UserSocialAccount socialAccountVkontakteEnableForUser1;
+    protected UserSocialAccount socialAccountFaceBookEnabled1;
+    protected UserSocialAccount socialAccountFaceBookEnabled2;
+    protected UserSocialAccount socialAccountFaceBookDisable;
 
-    protected UserSocialAccount socialAccountFaceBookEnabledForUser2;
-    protected UserSocialAccount socialAccountVkontakteEnableForUser2;
-    protected UserSocialAccount socialAccountVkontakteDisableForUser2;
+    protected UserSocialAccount socialAccountVkontakteEnable1;
+    protected UserSocialAccount socialAccountVkontakteEnable2;
+    protected UserSocialAccount socialAccountVkontakteDisable;
+
+    protected UserSocialAccount socialAccountTwitterEnabled1;
+    protected UserSocialAccount socialAccountTwitterEnabled2;
+    protected UserSocialAccount socialAccountTwitterDisabled;
 
     @Before
     public void setUp() {
 
+        socialAccountFaceBookEnabled1 = createUserSocialAccount(true, SocialNetworkEnum.FACEBOOK);
+        socialAccountFaceBookEnabled2 = createUserSocialAccount(true, SocialNetworkEnum.FACEBOOK);
+        socialAccountFaceBookDisable = createUserSocialAccount(false, SocialNetworkEnum.FACEBOOK);
+
+        socialAccountVkontakteEnable1 = createUserSocialAccount(true, SocialNetworkEnum.VKONTAKTE);
+        socialAccountVkontakteEnable2 = createUserSocialAccount(true, SocialNetworkEnum.VKONTAKTE);
+        socialAccountVkontakteDisable = createUserSocialAccount(false, SocialNetworkEnum.VKONTAKTE);
+
+        socialAccountTwitterEnabled1 = createUserSocialAccount(true, SocialNetworkEnum.TWITTER);
+        socialAccountTwitterEnabled2 = createUserSocialAccount(true, SocialNetworkEnum.TWITTER);
+        socialAccountTwitterDisabled = createUserSocialAccount(false, SocialNetworkEnum.TWITTER);
+
+        globalUser1 = createUser("Test-User-1");
+        globalUser2 = createUser("Test-User-2");
+
         getSession().setFlushMode(FlushMode.ALWAYS);
-
-        socialAccountFaceBookEnabledForUser1 = createUserSocialAccount(true, SocialNetworkEnum.FACEBOOK);
-        socialAccountVkontakteEnableForUser1 = createUserSocialAccount(true, SocialNetworkEnum.VKONTAKTE);
-
-        socialAccountFaceBookEnabledForUser2 = createUserSocialAccount(true, SocialNetworkEnum.FACEBOOK);
-        socialAccountVkontakteEnableForUser2 = createUserSocialAccount(true, SocialNetworkEnum.VKONTAKTE);
-        socialAccountVkontakteDisableForUser2 = createUserSocialAccount(false, SocialNetworkEnum.VKONTAKTE);
-
-        user = createUser("Test-User-1");
-        user2 = createUser("Test-User-2");
 
     }
 

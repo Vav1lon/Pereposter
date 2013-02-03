@@ -15,16 +15,26 @@
 
     <jaxws:client id="vkontakteSocialService"
                   serviceClass="com.pereposter.social.api.SocialWebServices"
-                  address="${pereposter.social.vkontakte.url.service}" />
+                  address="${pereposter.social.vkontakte.url.service}"/>
 
     <jaxws:client id="facebookSocialService"
                   serviceClass="com.pereposter.social.api.SocialWebServices"
-                  address="${pereposter.social.facebook.url.service}" />
+                  address="${pereposter.social.facebook.url.service}"/>
 
     <jaxrs:server id="restContainer" address="/">
+
         <jaxrs:serviceBeans>
-            <ref bean="userBoundary"/>
+            <ref bean="socialBoundary"/>
         </jaxrs:serviceBeans>
+
+        <jaxrs:providers>
+            <bean class="org.codehaus.jackson.jaxrs.JacksonJsonProvider"/>
+        </jaxrs:providers>
+
+        <jaxrs:outFaultInterceptors>
+            <ref bean="responseOutFaultInterceptor"/>
+        </jaxrs:outFaultInterceptors>
+
     </jaxrs:server>
 
 </beans>

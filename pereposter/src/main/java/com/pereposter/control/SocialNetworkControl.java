@@ -1,6 +1,8 @@
 package com.pereposter.control;
 
+import com.pereposter.control.social.SocialControl;
 import com.pereposter.entity.Post;
+import com.pereposter.entity.RestResponse;
 import com.pereposter.entity.internal.UserSocialAccount;
 import com.pereposter.utils.ServiceHelper;
 import org.hibernate.Session;
@@ -20,27 +22,32 @@ public class SocialNetworkControl {
     @Autowired
     private SessionFactory sessionFactory;
 
-    public void initializationUser(String id) {
+    public RestResponse initializationSocialAccount(String id) {
 
         UserSocialAccount user = (UserSocialAccount) getSession().get(UserSocialAccount.class, Long.valueOf(id));
 
+        RestResponse result = null;
+
         if (user != null) {
             initializationUser(user);
+        } else {
+            result = new RestResponse("Not found Social account");
         }
 
+        return result;
     }
 
     public void initializationUser(UserSocialAccount account) {
 
 
-        com.pereposter.control.social.SocialNetworkControl service = serviceHelper.getSocialNetworkControl(account.getSocialNetwork());
+        SocialControl service = serviceHelper.getSocialNetworkControl(account.getSocialNetwork());
         Post post = service.findLastUserPost(account);
 
         if (post != null) {
             account.setLastPostId(post.getId());
             account.setCreateDateLastPost(post.getCreatedDate());
             account.setSocialUserId(post.getOwnerId());
-            getSession().saveOrUpdate(account);
+            //getSession().saveOrUpdate(account);
         } else {
             //TODO: пишем в лог что данной учетной записи не существует или пароль не верен
             //TODO: уведосить юзера что учетная запись не верна

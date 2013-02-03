@@ -1,5 +1,6 @@
 package com.pereposter.control.social.impl;
 
+import com.google.common.base.Strings;
 import com.pereposter.entity.Post;
 import com.pereposter.social.api.entity.PostEntity;
 import org.springframework.stereotype.Component;
@@ -39,6 +40,11 @@ public class WebServiceTransform {
         post.setMessage(entity.getMessage());
         post.setId(entity.getId());
         post.setCreatedDate(entity.getCreatedDate());
+
+        if (!Strings.isNullOrEmpty(entity.getOwnerId())) {
+            post.setOwnerId(entity.getOwnerId());
+        }
+
         return post;
     }
 
