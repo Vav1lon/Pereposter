@@ -8,6 +8,7 @@
 
     <jaxws:endpoint implementor="#socialVkontakteServices" address="/vkontakteWebService"/>
     <jaxws:endpoint implementor="#socialFacebookServices" address="/facebookWebService"/>
+    <jaxws:endpoint implementor="#socialTwitterServices" address="/twitterWebService"/>
 
     <bean id="socialVkontakteServices" class="com.pereposter.social.vkontakte.VkontakteServiceImpl">
         <constructor-arg index="0" ref="camelContext"/>
@@ -17,5 +18,8 @@
         <constructor-arg index="0" ref="camelContext"/>
     </bean>
 
+    <bean id="socialTwitterServices" class="com.pereposter.social.twitter.TwitterServiceImpl">
+        <constructor-arg index="0" ref="camelContext"/>
+    </bean>
 
 </beans>

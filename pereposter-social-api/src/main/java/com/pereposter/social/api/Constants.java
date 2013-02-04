@@ -39,4 +39,21 @@ public interface Constants {
     String SOCIAL_FACEBOOK_POST_FIND_LAST_POST_RESPONSE_QUEUE = "jms://queue:social.facebook.post.findLastPost.response.queue";
 
 
+    // Twitter
+
+    String SOCIAL_TWITTER_POST_WRITE_REQUEST_QUEUE = "jms://queue:social.twitter.post.write.request.queue";
+    String SOCIAL_TWITTER_POST_WRITE_RESPONSE_QUEUE = "jms://queue:social.twitter.post.write.response.queue";
+
+    String SOCIAL_TWITTER_POST_LIST_WRITE_REQUEST_QUEUE = "jms://queue:social.twitter.post.list.write.request.queue";
+    String SOCIAL_TWITTER_POST_LIST_WRITE_RESPONSE_QUEUE = "jms://queue:social.twitter.post.list.write.response.queue";
+
+    String SOCIAL_TWITTER_POST_FIND_BY_ID_REQUEST_QUEUE = "jms://queue:social.twitter.post.findById.request.queue";
+    String SOCIAL_TWITTER_POST_FIND_BY_ID_RESPONSE_QUEUE = "jms://queue:social.twitter.post.findById.response.queue";
+
+    String SOCIAL_TWITTER_POST_FIND_BY_OVER_CREATE_DATE_REQUEST_QUEUE = "jms://queue:social.twitter.post.findByOverCreateDate.request.queue";
+    String SOCIAL_TWITTER_POST_FIND_BY_OVER_CREATE_DATE_RESPONSE_QUEUE = "jms://queue:social.twitter.post.findByOverCreateDate.response.queue";
+
+    String SOCIAL_TWITTER_POST_FIND_LAST_POST_REQUEST_QUEUE = "jms://queue:social.twitter.post.findLastPost.request.queue";
+    String SOCIAL_TWITTER_POST_FIND_LAST_POST_RESPONSE_QUEUE = "jms://queue:social.twitter.post.findLastPost.response.queue";
+
 }

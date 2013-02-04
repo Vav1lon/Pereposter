@@ -1,0 +1,10 @@
+curl --get 'https://api.twitter.com/1.1/statuses/show.json'
+--data 'id=210462857140252672'
+--header 'Authorization: OAuth oauth_consumer_key="SsqQKenbELpHjJo9kfAtQ"
+    , oauth_nonce="76cdb307c846b83f4ac52c72d6ab5e57"
+    , oauth_signature="CjZzoviXWIBbESdoIXiAbbFNMWc%3D"
+    , oauth_signature_method="HMAC-SHA1"
+    , oauth_timestamp="1359944216"
+    , oauth_token="1086416810-W6p2SSHGkDuRKTQQ1RGbMD1v1EOplpUzw3o5eRq"
+    , oauth_version="1.0"'
+--verbose
