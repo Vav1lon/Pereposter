@@ -104,7 +104,7 @@
         <br>
 
         <g:each in="${socialNetworks}" var="n">
-            ${n.socialNetworkEnum} - ${n.username} - ${n.socialUserId} - ${n.userId} - <g:link controller="socialBoard"
+            ${n.socialNetworkEnum} - ${n.username} - ${n.socialUserId} - ${n.lastPostId} - <g:link controller="socialBoard"
                                                              action="enabledAndDisabledSocialNetwork"
                                                              params="${[id: n.id]}">${n.enabled}</g:link> - <g:link
                 controller="socialBoard" action="removeSocialNetwork"

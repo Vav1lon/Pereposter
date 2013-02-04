@@ -51,7 +51,6 @@ class SocialBoardController {
 
         long id = params.id as Long
 
-
         socialBoardService.enabledAndDisabledSocialNetwork(id)
 
         redirect(uri: '/')

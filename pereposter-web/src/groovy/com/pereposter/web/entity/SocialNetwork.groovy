@@ -8,5 +8,6 @@ class SocialNetwork {
     String username
     Boolean enabled
     String socialUserId
+    String lastPostId
 
 }

@@ -16,7 +16,8 @@ class SocialBoardService {
                     , username: it.username
                     , userId: getCurrentUser().id
                     , enabled: it.enabled
-                    , socialUserId: it.socialUserId)
+                    , socialUserId: it.socialUserId
+                    , lastPostId: it.lastPostId)
         }
     }
 
@@ -36,7 +37,7 @@ class SocialBoardService {
 
     long updateSocialNetwork(long socialNetworkId, SocialNetworkEnum socialNetwork, String username, String password) {
 
-        UserSocialAccount socialNetworkInternal = getCurrentUser().accounts.find { it.id = socialNetworkId }
+        UserSocialAccount socialNetworkInternal = UserSocialAccount.findByIdAndUser(socialNetworkId, getCurrentUser())
 
         if (!socialNetworkInternal) {
             throw new NullPointerException("Not found UserSocialAccount by id: " + socialNetworkId + " in User: " + getCurrentUser().id);
@@ -48,7 +49,7 @@ class SocialBoardService {
 
     void enabledAndDisabledSocialNetwork(long socialNetworkId) {
 
-        UserSocialAccount socialNetwork = getCurrentUser().accounts.find { it.id = socialNetworkId }
+        UserSocialAccount socialNetwork = UserSocialAccount.findByIdAndUser(socialNetworkId, getCurrentUser())
 
         if (!socialNetwork) {
             throw new NullPointerException("Not found UserSocialAccount by id: " + socialNetworkId + " in User: " + getCurrentUser().id);
