@@ -36,7 +36,7 @@ public class SocialAuthEntity implements Serializable {
     public String toString() {
         return "SocialAuthEntity{" +
                 "login='" + login + '\'' +
-                ", password='" + password + '\'' +
+                ", password='" + password + '\'' + //TODO на время тестирования
                 ", userId='" + userId + '\'' +
                 '}';
     }

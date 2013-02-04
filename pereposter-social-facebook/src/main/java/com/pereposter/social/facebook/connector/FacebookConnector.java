@@ -91,9 +91,11 @@ public class FacebookConnector implements SocialNetworkConnector {
         try {
             if (result == null) {
                 result = facebookAccessTokenService.getAccessToken(auth);
-                accessTokenMap.put(result.getUserId(), result);
+                if (!Strings.isNullOrEmpty(result.getUserId())) {
+                    accessTokenMap.put(result.getUserId(), result);
+                }
             }
-        } catch (Exception e) {
+        } catch (FacebookException e) {
             // TODO: write log
             LOGGER.error("can not access to use for SocialAuthEntity: " + auth.toString());
         }
@@ -234,8 +236,10 @@ public class FacebookConnector implements SocialNetworkConnector {
 
             checkErrorInResponse(json);
 
-            PostFacebook postFacebook = readDataFromResponse(json, PostFacebook.class);
-            result.setValue(createAndFillPostFromPostFacebook(postFacebook));
+            PostResponse postFacebook = readDataFromResponse(json, PostResponse.class);
+            if (postFacebook.getData().size() != 0) {
+                result.setValue(createAndFillPostFromPostFacebook(postFacebook.getData().get(0)));
+            }
 
         } catch (FacebookException e) {
             //TODO: пишем в логер
