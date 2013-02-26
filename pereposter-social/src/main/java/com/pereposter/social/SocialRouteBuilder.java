@@ -22,5 +22,11 @@ public class SocialRouteBuilder extends RouteBuilder {
         from(Constants.SOCIAL_FACEBOOK_POST_FIND_BY_OVER_CREATE_DATE_RESPONSE_QUEUE).beanRef("findPostsByOverCreatedDateFacebookResponseHolder", "addResponse");
         from(Constants.SOCIAL_FACEBOOK_POST_FIND_LAST_POST_RESPONSE_QUEUE).beanRef("findLastPostFacebookResponseHolder", "addResponse");
 
+        from(Constants.SOCIAL_GOOGLEPLUS_POST_WRITE_RESPONSE_QUEUE).beanRef("writeNewPostGooglePlusResponseHolder", "addResponse");
+        from(Constants.SOCIAL_GOOGLEPLUS_POST_LIST_WRITE_RESPONSE_QUEUE).beanRef("writeNewPostsGooglePlusResponseHolder", "addResponse");
+        from(Constants.SOCIAL_GOOGLEPLUS_POST_FIND_BY_ID_RESPONSE_QUEUE).beanRef("findPostByIdGooglePlusResponseHolder", "addResponse");
+        from(Constants.SOCIAL_GOOGLEPLUS_POST_FIND_BY_OVER_CREATE_DATE_RESPONSE_QUEUE).beanRef("findPostsByOverCreatedDateGooglePlusResponseHolder", "addResponse");
+        from(Constants.SOCIAL_GOOGLEPLUS_POST_FIND_LAST_POST_RESPONSE_QUEUE).beanRef("findLastPostGooglePlusResponseHolder", "addResponse");
+
     }
 }

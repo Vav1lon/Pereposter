@@ -8,12 +8,17 @@
 
     <jaxws:endpoint implementor="#socialVkontakteServices" address="/vkontakteWebService"/>
     <jaxws:endpoint implementor="#socialFacebookServices" address="/facebookWebService"/>
+    <jaxws:endpoint implementor="#socialGooglePlusServices" address="/googlePlusWebService"/>
 
     <bean id="socialVkontakteServices" class="com.pereposter.social.vkontakte.VkontakteServiceImpl">
         <constructor-arg index="0" ref="camelContext"/>
     </bean>
 
     <bean id="socialFacebookServices" class="com.pereposter.social.facebook.FacebookServiceImpl">
+        <constructor-arg index="0" ref="camelContext"/>
+    </bean>
+
+    <bean id="socialGooglePlusServices" class="com.pereposter.social.googleplus.GooglePlusServiceImpl">
         <constructor-arg index="0" ref="camelContext"/>
     </bean>
 

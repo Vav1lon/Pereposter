@@ -15,6 +15,7 @@
         <module>../pereposter-social-api</module>
         <module>../pereposter-social-vkontakte</module>
         <module>../pereposter-social-facebook</module>
+        <module>../pereposter-social-googleplus</module>
         <module>../pereposter-social-utils</module>
         <module>../jaxb-utils</module>
     </modules>
