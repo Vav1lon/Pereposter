@@ -39,4 +39,21 @@ public interface Constants {
     String SOCIAL_FACEBOOK_POST_FIND_LAST_POST_RESPONSE_QUEUE = "jms://queue:social.facebook.post.findLastPost.response.queue";
 
 
+    // Tumblr
+
+    String SOCIAL_TUMBLR_POST_WRITE_REQUEST_QUEUE = "jms://queue:social.tumblr.post.write.request.queue";
+    String SOCIAL_TUMBLR_POST_WRITE_RESPONSE_QUEUE = "jms://queue:social.tumblr.post.write.response.queue";
+
+    String SOCIAL_TUMBLR_POST_LIST_WRITE_REQUEST_QUEUE = "jms://queue:social.tumblr.post.list.write.request.queue";
+    String SOCIAL_TUMBLR_POST_LIST_WRITE_RESPONSE_QUEUE = "jms://queue:social.tumblr.post.list.write.response.queue";
+
+    String SOCIAL_TUMBLR_POST_FIND_BY_ID_REQUEST_QUEUE = "jms://queue:social.tumblr.post.findById.request.queue";
+    String SOCIAL_TUMBLR_POST_FIND_BY_ID_RESPONSE_QUEUE = "jms://queue:social.tumblr.post.findById.response.queue";
+
+    String SOCIAL_TUMBLR_POST_FIND_BY_OVER_CREATE_DATE_REQUEST_QUEUE = "jms://queue:social.tumblr.post.findByOverCreateDate.request.queue";
+    String SOCIAL_TUMBLR_POST_FIND_BY_OVER_CREATE_DATE_RESPONSE_QUEUE = "jms://queue:social.tumblr.post.findByOverCreateDate.response.queue";
+
+    String SOCIAL_TUMBLR_POST_FIND_LAST_POST_REQUEST_QUEUE = "jms://queue:social.tumblr.post.findLastPost.request.queue";
+    String SOCIAL_TUMBLR_POST_FIND_LAST_POST_RESPONSE_QUEUE = "jms://queue:social.tumblr.post.findLastPost.response.queue";
+
 }
