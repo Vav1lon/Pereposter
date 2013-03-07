@@ -6,7 +6,6 @@ import com.pereposter.social.api.entity.Response;
 import com.pereposter.social.tumblr.entity.OAuthToken;
 import com.pereposter.social.tumblr.entity.TumblrException;
 import oauth.signpost.OAuthConsumer;
-import oauth.signpost.OAuthProvider;
 import oauth.signpost.commonshttp.CommonsHttpOAuthProvider;
 import oauth.signpost.exception.OAuthCommunicationException;
 import oauth.signpost.exception.OAuthExpectationFailedException;
@@ -39,7 +38,7 @@ public class Client {
 
     private DefaultHttpClient httpClient;
 
-    private OAuthProvider oAuthProvider;
+    private CommonsHttpOAuthProvider oAuthProvider;
 
     @PostConstruct
     private void initClient() {
@@ -53,6 +52,7 @@ public class Client {
                 , "http://www.tumblr.com/oauth/authorize");
 
         oAuthProvider.setOAuth10a(true);
+        oAuthProvider.setHttpClient(httpClient);
     }
 
     @PreDestroy
@@ -64,6 +64,8 @@ public class Client {
 
         Response result = null;
         HttpResponse httpResponse = null;
+
+        //httpClient.getCookieStore().clear();
 
         try {
             httpResponse = httpClient.execute(request);
@@ -104,11 +106,7 @@ public class Client {
         Response result = null;
         HttpResponse httpResponse = null;
 
-        CommonsHttpOAuthProvider provider = new CommonsHttpOAuthProvider(
-                "http://www.tumblr.com/oauth/request_token",
-                "http://www.tumblr.com/oauth/access_token",
-                "http://www.tumblr.com/oauth/authorize");
-        provider.setOAuth10a(true);
+        httpClient.getCookieStore().clear();
 
         try {
             oAuthProvider.retrieveAccessToken(consumer, oauthVerifier);
