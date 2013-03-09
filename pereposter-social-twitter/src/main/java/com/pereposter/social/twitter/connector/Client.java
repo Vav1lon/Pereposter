@@ -4,12 +4,7 @@ import com.google.common.base.Charsets;
 import com.google.common.io.CharStreams;
 import com.pereposter.social.api.TwitterException;
 import com.pereposter.social.api.entity.Response;
-import net.oauth.OAuthAccessor;
-import net.oauth.client.httpclient4.OAuthCredentials;
-import net.oauth.client.httpclient4.OAuthSchemeFactory;
 import org.apache.http.HttpResponse;
-import org.apache.http.auth.AUTH;
-import org.apache.http.auth.AuthScope;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -48,19 +43,29 @@ public class Client {
         httpClient.getConnectionManager().shutdown();
     }
 
-    public Response processRequest(HttpUriRequest request, OAuthAccessor oAuthAccessor) throws TwitterException {
-
-
-        httpClient.getAuthSchemes().register(AUTH.WWW_AUTH_RESP, new OAuthSchemeFactory());
-
-        httpClient.getCredentialsProvider().setCredentials(
-                new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT, AuthScope.ANY_REALM,
-                        OAuthSchemeFactory.SCHEME_NAME),
-                new OAuthCredentials(oAuthAccessor));
-
+    public Response processRequest(HttpUriRequest request) throws TwitterException {
 
         Response result = null;
 
+
+        try {
+            HttpResponse httpResponse = httpClient.execute(request);
+            result = new Response(CharStreams.toString(new InputStreamReader(httpResponse.getEntity().getContent(), Charsets.UTF_8)), httpResponse);
+        } catch (Exception e) {
+            throw new TwitterException(e.getMessage(), e);
+        }
+        request.abort();
+
+        return result;
+    }
+
+    public Response processRequest(HttpUriRequest request, boolean clear) throws TwitterException {
+
+        Response result = null;
+
+        if (clear) {
+            httpClient.getCookieStore().clear();
+        }
 
         try {
             HttpResponse httpResponse = httpClient.execute(request);
