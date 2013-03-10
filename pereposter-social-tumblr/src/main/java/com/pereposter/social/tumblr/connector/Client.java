@@ -78,6 +78,26 @@ public class Client {
         return result;
     }
 
+    public Response processRequest(HttpUriRequest request, boolean flag) throws TumblrException {
+
+        Response result = null;
+        HttpResponse httpResponse = null;
+
+        if (flag) {
+            httpClient.getCookieStore().clear();
+        }
+
+        try {
+            httpResponse = httpClient.execute(request);
+            result = new Response(CharStreams.toString(new InputStreamReader(httpResponse.getEntity().getContent(), Charsets.UTF_8)), httpResponse);
+        } catch (Exception e) {
+            throw new TumblrException(e.getMessage(), e);
+        }
+        request.abort();
+
+        return result;
+    }
+
     public OAuthToken processRequestToken(OAuthConsumer consumer) throws TumblrException {
 
         OAuthToken result = new OAuthToken();
