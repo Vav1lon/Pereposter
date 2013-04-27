@@ -5,7 +5,6 @@ import com.pereposter.social.api.GooglePlusException;
 import com.pereposter.social.api.entity.Response;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
@@ -27,7 +26,7 @@ public class AccessTokenService {
     private String auth_uri = "https://accounts.google.com/o/oauth2/auth?";
     private String redirect_uris = "http://localhost/callback";
     private String clientId = "843096996013.apps.googleusercontent.com";
-    private String scope = "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile";
+    private String scope = "https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile";
     private String responseType = "token";
     private String state = "profile";
 
