@@ -6,6 +6,7 @@ import com.pereposter.social.api.entity.PostEntity;
 import com.pereposter.social.api.entity.PostsResponse;
 import com.pereposter.social.api.entity.ResponseObject;
 import com.pereposter.social.api.entity.SocialAuthEntity;
+import com.pereposter.social.googleplus.entity.AccessToken;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,14 +26,14 @@ public class GooglePlusConnector implements SocialNetworkConnector {
     @Override
     public ResponseObject<PostEntity> findLastPost(SocialAuthEntity auth) {
 
+        AccessToken accessToken = null;
+
         try {
-            tokenService.getAccessToken();
+            accessToken = tokenService.getAccessToken(auth);
         } catch (GooglePlusException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            //TODO: write to log
+            e.printStackTrace();
         }
-
-        System.out.println("aaa");
-
         return null;
     }
 

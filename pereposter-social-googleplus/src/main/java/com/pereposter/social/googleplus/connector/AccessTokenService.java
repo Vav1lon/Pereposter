@@ -3,8 +3,11 @@ package com.pereposter.social.googleplus.connector;
 import com.google.common.base.Strings;
 import com.pereposter.social.api.GooglePlusException;
 import com.pereposter.social.api.entity.Response;
+import com.pereposter.social.api.entity.SocialAuthEntity;
+import com.pereposter.social.googleplus.entity.AccessToken;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
@@ -26,141 +29,83 @@ public class AccessTokenService {
     private String auth_uri = "https://accounts.google.com/o/oauth2/auth?";
     private String redirect_uris = "http://localhost/callback";
     private String clientId = "843096996013.apps.googleusercontent.com";
-    private String scope = "https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile";
+    private String scope = "https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/plus.me https://www.googleapis.com/auth/userinfo.email";
     private String responseType = "token";
-    private String state = "profile";
+    private String apiKey = "AIzaSyCfHizMRYLxvIXVQHCUH6ywKm5K39Kqh6o";
 
-
-    public void getAccessToken() throws GooglePlusException {
+    public AccessToken getAccessToken(SocialAuthEntity auth) throws GooglePlusException {
 
         String newUrl2 = null;
         Response response = null;
 
         // Step 1 :: first request
+        response = step1();
 
-        StringBuilder urlStep1 = new StringBuilder();
+        if (!response.getHttpResponse().getFirstHeader("Location").getValue().contains("access_token")) {
 
-        urlStep1.append(auth_uri);
-        try {
-            urlStep1.append("scope=" + URLEncoder.encode(scope, "UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-            //TODO: write log
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-        urlStep1.append("&client_id=" + clientId);
-        urlStep1.append("&redirect_uri=" + redirect_uris);
-        urlStep1.append("&state=profile");
-        urlStep1.append("&response_type=" + responseType);
+            if (response.getHttpResponse().getStatusLine().getStatusCode() != 200) {
 
-        HttpPost step1 = new HttpPost(urlStep1.toString());
+                if (response.getHttpResponse().getStatusLine().getStatusCode() != 302) {
+                    throw new GooglePlusException("Не верный ответ на первый запрос аутификации");
+                }
+
+                // Step 2 :: get url And open login page
+                response = step2(response);
+
+                // Step 3 :: Parse html and send login data
+                if (response == null || Strings.isNullOrEmpty(response.getBody())) {
+                    //TODO: пишем в лог
+                    throw new GooglePlusException("Нет даннх о странице логина");
+                }
+                response = step3(response, auth);
 
 
-        response = client.processRequest(step1);
+                // Step 4 :: redirect checkCoockie
+                response = step4(response);
 
-        if (response.getHttpResponse().getStatusLine().getStatusCode() != 200) {
+                // step5
+                response = step5(response);
 
-            if (response.getHttpResponse().getStatusLine().getStatusCode() != 302) {
-                throw new GooglePlusException("Не верный ответ на первый запрос аутификации");
+                newUrl2 = response.getHttpResponse().getFirstHeader("Location").getValue();
             }
 
-            //Step 2 :: get url And open login page
+            response = step6(newUrl2);
 
-            String urlStep2 = response.getHttpResponse().getFirstHeader("Location").getValue();
-
-            HttpPost step2 = new HttpPost(urlStep2);
-
-            try {
-                response = client.processRequest(step2);
-            } catch (GooglePlusException e) {
-                //TODO: пишем в лог
-                e.printStackTrace();
-            }
-
-
-            // Step 3 :: Parse html and send login data
-
-            if (response == null || Strings.isNullOrEmpty(response.getBody())) {
-                //TODO: пишем в лог
-                throw new GooglePlusException("Нет даннх о странице логина");
-            }
-
-            String fromUrlNameParam = "action=\"";
-
-            String continueNameParam = "continue\" value=\"";
-            String serviceNameParam = "service\" value=\"";
-            String dshNameParam = "dsh\" value=\"";
-            String GALXNameParam = "GALX\"\n" +
-                    "         value=\"";
-            String _utf8NameParam = "_utf8\" value=\"";
-
-
-            String fromUrlValueParam = readHtmlAndFindValueParam(fromUrlNameParam, response.getBody());
-            String continueValueParam = readHtmlAndFindValueParam(continueNameParam, response.getBody());
-            String serviceValueParam = readHtmlAndFindValueParam(serviceNameParam, response.getBody());
-            String dshValueParam = readHtmlAndFindValueParam(dshNameParam, response.getBody());
-            String GALXValueParam = readHtmlAndFindValueParam(GALXNameParam, response.getBody());
-            String _utf8ValueParam = readHtmlAndFindValueParam(_utf8NameParam, response.getBody());
-
-
-            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-            nameValuePairs.add(new BasicNameValuePair("continue", continueValueParam));
-            nameValuePairs.add(new BasicNameValuePair("service", serviceValueParam));
-            nameValuePairs.add(new BasicNameValuePair("dsh", dshValueParam));
-            nameValuePairs.add(new BasicNameValuePair("GALX", GALXValueParam));
-            nameValuePairs.add(new BasicNameValuePair("_utf8", _utf8ValueParam));
-            nameValuePairs.add(new BasicNameValuePair("timeStmp", ""));
-            nameValuePairs.add(new BasicNameValuePair("secTok", ""));
-            nameValuePairs.add(new BasicNameValuePair("pstMsg", "1"));
-            nameValuePairs.add(new BasicNameValuePair("dnConn", ""));
-            nameValuePairs.add(new BasicNameValuePair("checkConnection", "youtube:92:1"));
-            nameValuePairs.add(new BasicNameValuePair("checkedDomains", "youtube"));
-            nameValuePairs.add(new BasicNameValuePair("bgresponse", "js_disabled"));
-            nameValuePairs.add(new BasicNameValuePair("checkedDomains", "youtube"));
-            nameValuePairs.add(new BasicNameValuePair("PersistentCookie", "yes"));
-            nameValuePairs.add(new BasicNameValuePair("Email", "pereposter@gmail.com"));
-            nameValuePairs.add(new BasicNameValuePair("Passwd", "19516811"));
-
-            HttpPost step3 = new HttpPost(fromUrlValueParam);
-
-            step3.setHeader(new BasicHeader("content-type", "application/x-www-form-urlencoded"));
-
-            try {
-                step3.setEntity(new UrlEncodedFormEntity(nameValuePairs, HTTP.UTF_8));
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-
-            response = client.processRequest(step3);
-
-
-            // Step 4 :: redirect checkCoockie
-
-            String urlStep4 = response.getHttpResponse().getFirstHeader("Location").getValue();
-
-            if (Strings.isNullOrEmpty(urlStep4)) {
-                throw new GooglePlusException("Пользователь не прошел ауйнтификацию");
-            }
-
-            HttpPost step4 = new HttpPost(urlStep4);
-            response = client.processRequest(step4);
-
-            // next
-
-
-            String newUrl = readHtmlAndFindValueParam("content=\"4;url=", response.getBody()).replace("&amp;amp%3B", "&").replace("&amp;", "&");
-
-
-            HttpPost step5 = new HttpPost(newUrl);
-            response = client.processRequest(step5);
-
-            newUrl2 = response.getHttpResponse().getFirstHeader("Location").getValue();
-
+            response = step7(response);
         }
 
-        HttpPost step6 = new HttpPost(newUrl2);
-        response = client.processRequest(step6);
+        AccessToken accessToken = new AccessToken();
 
-        String par1 = readHtmlAndFindValueParam("form action=\"", response.getBody()).replace("&amp;amp%3B", "&").replace("&amp;", "&");
+        String[] arr = response.getHttpResponse().getFirstHeader("Location").getValue().split("&");
+
+        for (String anArr : arr) {
+
+            if (anArr.contains("access_token")) {
+                accessToken.setAccessToken(anArr.split("=")[1]);
+            }
+
+            if (anArr.contains("expires_in")) {
+                accessToken.setExpiresIn(new Long(anArr.split("=")[1]));
+            }
+
+            if (anArr.contains("token_type")) {
+                accessToken.setTokenType(anArr.split("=")[1]);
+            }
+        }
+
+        HttpGet httpGet = new HttpGet("https://www.googleapis.com/plus/v1/people/me?fields=id&key=" + apiKey);
+        httpGet.addHeader(new BasicHeader("Authorization", accessToken.getTokenType() + " " + accessToken.getAccessToken()));
+
+        response = client.processRequest(httpGet);
+
+        accessToken.setUserId(response.getBody().split(":")[1].split("\"")[1]);
+
+        return accessToken;
+    }
+
+    private Response step7(Response response) throws GooglePlusException {
+
+        String par1 = readHtmlAndFindValueParam("action=\"", response.getBody()).replace("&amp;amp%3B", "&").replace("&amp;", "&");
         String par2 = readHtmlAndFindValueParam("name=\"state_wrapper\" value=\"", response.getBody());
 
         List<NameValuePair> nameValuePairs1 = new ArrayList<NameValuePair>();
@@ -168,9 +113,7 @@ public class AccessTokenService {
         nameValuePairs1.add(new BasicNameValuePair("submit_access", "true"));
         nameValuePairs1.add(new BasicNameValuePair("bgresponse", ""));
 
-
         HttpPost step7 = new HttpPost(par1);
-
 
         try {
             step7.setEntity(new UrlEncodedFormEntity(nameValuePairs1, HTTP.UTF_8));
@@ -178,11 +121,101 @@ public class AccessTokenService {
             e.printStackTrace();
         }
 
-        response = client.processRequest(step7);
+        return client.processRequest(step7);
+    }
 
-        System.out.println(response.getHttpResponse().getFirstHeader("Location").getValue());
+    private Response step6(String newUrl2) throws GooglePlusException {
+        return client.processRequest(new HttpPost(newUrl2));
+    }
+
+    private Response step5(Response response) throws GooglePlusException {
+        String newUrl = readHtmlAndFindValueParam("content=\"4;url=", response.getBody()).replace("&amp;amp%3B", "&").replace("&amp;", "&");
+
+        return client.processRequest(new HttpPost(newUrl));
+    }
+
+    private Response step4(Response response) throws GooglePlusException {
+
+        String urlStep4 = null;
+        if (response.getHttpResponse().getFirstHeader("Location") != null) {
+            urlStep4 = response.getHttpResponse().getFirstHeader("Location").getValue();
+        } else {
+            throw new GooglePlusException("Пользователь не прошел ауйнтификацию");
+        }
+        return client.processRequest(new HttpPost(urlStep4));
+    }
+
+    private Response step3(Response response, SocialAuthEntity auth) throws GooglePlusException {
+        String fromUrlNameParam = "action=\"";
+
+        String continueNameParam = "continue\" value=\"";
+        String serviceNameParam = "service\" value=\"";
+        String dshNameParam = "dsh\" value=\"";
+        String GALXNameParam = "GALX\"\n" +
+                "         value=\"";
+        String _utf8NameParam = "_utf8\" value=\"";
 
 
+        String fromUrlValueParam = readHtmlAndFindValueParam(fromUrlNameParam, response.getBody());
+        String continueValueParam = readHtmlAndFindValueParam(continueNameParam, response.getBody());
+        String serviceValueParam = readHtmlAndFindValueParam(serviceNameParam, response.getBody());
+        String dshValueParam = readHtmlAndFindValueParam(dshNameParam, response.getBody());
+        String GALXValueParam = readHtmlAndFindValueParam(GALXNameParam, response.getBody());
+        String _utf8ValueParam = readHtmlAndFindValueParam(_utf8NameParam, response.getBody());
+
+
+        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+        nameValuePairs.add(new BasicNameValuePair("continue", continueValueParam));
+        nameValuePairs.add(new BasicNameValuePair("service", serviceValueParam));
+        nameValuePairs.add(new BasicNameValuePair("dsh", dshValueParam));
+        nameValuePairs.add(new BasicNameValuePair("GALX", GALXValueParam));
+        nameValuePairs.add(new BasicNameValuePair("_utf8", _utf8ValueParam));
+        nameValuePairs.add(new BasicNameValuePair("timeStmp", ""));
+        nameValuePairs.add(new BasicNameValuePair("secTok", ""));
+        nameValuePairs.add(new BasicNameValuePair("pstMsg", "1"));
+        nameValuePairs.add(new BasicNameValuePair("dnConn", ""));
+        nameValuePairs.add(new BasicNameValuePair("checkConnection", "youtube:92:1"));
+        nameValuePairs.add(new BasicNameValuePair("checkedDomains", "youtube"));
+        nameValuePairs.add(new BasicNameValuePair("bgresponse", "js_disabled"));
+        nameValuePairs.add(new BasicNameValuePair("checkedDomains", "youtube"));
+        nameValuePairs.add(new BasicNameValuePair("PersistentCookie", "yes"));
+        nameValuePairs.add(new BasicNameValuePair("Email", auth.getLogin()));
+        nameValuePairs.add(new BasicNameValuePair("Passwd", auth.getPassword()));
+
+        HttpPost step3 = new HttpPost(fromUrlValueParam);
+
+        step3.setHeader(new BasicHeader("content-type", "application/x-www-form-urlencoded"));
+
+        try {
+            step3.setEntity(new UrlEncodedFormEntity(nameValuePairs, HTTP.UTF_8));
+        } catch (UnsupportedEncodingException e) {
+            //TODO: write to log
+            e.printStackTrace();
+        }
+        return client.processRequest(step3);
+    }
+
+    private Response step2(Response response) throws GooglePlusException {
+        return client.processRequest(new HttpPost(response.getHttpResponse().getFirstHeader("Location").getValue()));
+    }
+
+    private Response step1() throws GooglePlusException {
+        StringBuffer url = new StringBuffer();
+
+        url.append(auth_uri);
+        try {
+            url.append("scope=" + URLEncoder.encode(scope, "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            //TODO: write log
+            e.printStackTrace();
+        }
+
+        url.append("&client_id=" + clientId);
+        url.append("&redirect_uri=" + redirect_uris);
+        url.append("&state=profile");
+        url.append("&response_type=" + responseType);
+
+        return client.processRequestCleanCookie(new HttpPost(url.toString()));
     }
 
     private String readHtmlAndFindValueParam(String paramName, String html) {

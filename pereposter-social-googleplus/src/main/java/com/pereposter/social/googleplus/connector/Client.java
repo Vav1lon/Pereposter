@@ -57,4 +57,9 @@ public class Client {
 
         return result;
     }
+
+    public Response processRequestCleanCookie(HttpUriRequest request) throws GooglePlusException {
+        httpClient.getCookieStore().clear();
+        return processRequest(request);
+    }
 }
