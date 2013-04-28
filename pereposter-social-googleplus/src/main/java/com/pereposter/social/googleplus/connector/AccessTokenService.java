@@ -34,7 +34,7 @@ public class AccessTokenService {
     private String redirect_uris;
 
     @Value("${pereposter.social.googleplus.clientId}")
-    private String clientId = "843096996013.apps.googleusercontent.com";
+    private String clientId;
 
     @Value("${pereposter.social.googleplus.scope}")
     private String scope;
