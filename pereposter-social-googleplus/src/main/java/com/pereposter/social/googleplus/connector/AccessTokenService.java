@@ -45,6 +45,9 @@ public class AccessTokenService {
     @Value("${pereposter.social.googleplus.apiKey}")
     private String apiKey;
 
+    @Value("${pereposter.social.googleplus.url_getUserId}")
+    private String urlUserId;
+
     public AccessToken getAccessToken(SocialAuthEntity auth) throws GooglePlusException {
 
         String newUrl2 = null;
@@ -105,14 +108,18 @@ public class AccessTokenService {
             }
         }
 
-        HttpGet httpGet = new HttpGet("https://www.googleapis.com/plus/v1/people/me?fields=id&key=" + apiKey);
+        getAndSetUserIdtiAccessToken(accessToken);
+
+        return accessToken;
+    }
+
+    private void getAndSetUserIdtiAccessToken(AccessToken accessToken) throws GooglePlusException {
+        Response response;HttpGet httpGet = new HttpGet(urlUserId);
         httpGet.addHeader(new BasicHeader("Authorization", accessToken.getTokenType() + " " + accessToken.getAccessToken()));
 
         response = client.processRequest(httpGet);
 
         accessToken.setUserId(response.getBody().split(":")[1].split("\"")[1]);
-
-        return accessToken;
     }
 
     private Response step7(Response response) throws GooglePlusException {
