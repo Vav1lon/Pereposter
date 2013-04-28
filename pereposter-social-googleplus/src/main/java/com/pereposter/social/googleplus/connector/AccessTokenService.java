@@ -13,6 +13,7 @@ import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.UnsupportedEncodingException;
@@ -26,12 +27,23 @@ public class AccessTokenService {
     @Autowired
     private Client client;
 
-    private String auth_uri = "https://accounts.google.com/o/oauth2/auth?";
-    private String redirect_uris = "http://localhost/callback";
+    @Value("${pereposter.social.googleplus.auth_uri}")
+    private String auth_uri;
+
+    @Value("${pereposter.social.googleplus.redirect_uris}")
+    private String redirect_uris;
+
+    @Value("${pereposter.social.googleplus.clientId}")
     private String clientId = "843096996013.apps.googleusercontent.com";
-    private String scope = "https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/plus.me https://www.googleapis.com/auth/userinfo.email";
-    private String responseType = "token";
-    private String apiKey = "AIzaSyCfHizMRYLxvIXVQHCUH6ywKm5K39Kqh6o";
+
+    @Value("${pereposter.social.googleplus.scope}")
+    private String scope;
+
+    @Value("${pereposter.social.googleplus.responseType}")
+    private String responseType;
+
+    @Value("${pereposter.social.googleplus.apiKey}")
+    private String apiKey;
 
     public AccessToken getAccessToken(SocialAuthEntity auth) throws GooglePlusException {
 
