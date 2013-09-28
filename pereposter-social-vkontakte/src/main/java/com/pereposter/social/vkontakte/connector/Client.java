@@ -5,17 +5,16 @@ import com.google.common.io.CharStreams;
 import com.pereposter.social.api.VkontakteException;
 import com.pereposter.social.api.entity.Response;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.PoolingClientConnectionManager;
+import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import java.io.InputStreamReader;
 
 @Component
@@ -28,32 +27,29 @@ public class Client {
     @Value("${pereposter.social.vkontakte.client.maxTotalConnections}")
     private Integer maxTotalConnections;
 
-    private DefaultHttpClient httpClient;
+    private HttpClient httpClient;
 
     @PostConstruct
     private void initClient() {
-        ClientConnectionManager connectionManager = new PoolingClientConnectionManager();
-        ((PoolingClientConnectionManager) connectionManager).setMaxTotal(maxTotalConnections);
-        ((PoolingClientConnectionManager) connectionManager).setDefaultMaxPerRoute(defaultMaxConnectionsPerHost);
-        httpClient = new DefaultHttpClient(connectionManager);
-    }
-
-    @PreDestroy
-    private void onDestroy() {
-        httpClient.getConnectionManager().shutdown();
+        httpClient = HttpClientBuilder.create()
+                .setMaxConnTotal(maxTotalConnections)
+                .setMaxConnPerRoute(defaultMaxConnectionsPerHost)
+                .build();
     }
 
     public Response processRequest(HttpUriRequest request, boolean clearCookie) throws VkontakteException {
 
-        Response result = null;
-        HttpResponse httpResponse = null;
-
-        if (clearCookie) {
-            httpClient.getCookieStore().clear();
-        }
+        Response result;
+        HttpResponse httpResponse;
+        HttpClientContext context = HttpClientContext.create();
 
         try {
-            httpResponse = httpClient.execute(request);
+            if (clearCookie) {
+                httpResponse = httpClient.execute(request, context);
+            } else {
+                httpResponse = httpClient.execute(request, context);
+            }
+
             result = new Response(CharStreams.toString(new InputStreamReader(httpResponse.getEntity().getContent(), Charsets.UTF_8)), httpResponse);
         } catch (Exception e) {
             throw new VkontakteException(e.getMessage(), e);
