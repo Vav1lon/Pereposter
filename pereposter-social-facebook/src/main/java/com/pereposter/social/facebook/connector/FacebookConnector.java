@@ -108,7 +108,7 @@ public class FacebookConnector implements SocialNetworkConnector {
 
         ResponseObject<String> result = new ResponseObject<String>();
 
-        if (Strings.isNullOrEmpty(postEntity.getMessage())) {
+        if (!Strings.isNullOrEmpty(postEntity.getMessage())) {
 
             try {
 
@@ -224,9 +224,16 @@ public class FacebookConnector implements SocialNetworkConnector {
     }
 
     @Override
-    public ResponseObject<PostEntity> findLastPost(SocialAuthEntity auth) {
+    public ResponseObject<PostEntity> findLastPost(SocialAuthEntity auth) throws FacebookException {
 
         ResponseObject<PostEntity> result = new ResponseObject<PostEntity>();
+
+        if (getAccessToken(auth) == null) {
+            //TODO: пишем в логер
+            String message = "AccessToken is null!";
+            LOGGER.error(message);
+            throw new FacebookException(message);
+        }
 
         HttpGet query = new HttpGet(fqlFindLastPost + accessTokenParamName + getAccessToken(auth));
 

@@ -30,6 +30,6 @@ public interface SocialNetworkConnector {
 
     ResponseObject<PostsResponse> findPostsByOverCreatedDate(SocialAuthEntity auth, DateTime createdDate);
 
-    ResponseObject<PostEntity> findLastPost(SocialAuthEntity auth);
+    ResponseObject<PostEntity> findLastPost(SocialAuthEntity auth) throws FacebookException;
 
 }

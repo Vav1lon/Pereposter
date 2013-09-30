@@ -5,10 +5,9 @@ import com.google.common.io.CharStreams;
 import com.pereposter.social.api.FacebookException;
 import com.pereposter.social.api.entity.Response;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.PoolingClientConnectionManager;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -27,19 +26,20 @@ public class Client {
     @Value("${pereposter.social.facebook.client.maxTotalConnections}")
     private Integer maxTotalConnections;
 
-    private DefaultHttpClient httpClient;
+
+    private HttpClient httpClient;
 
     @PostConstruct
     private void initClient() {
-        ClientConnectionManager connectionManager = new PoolingClientConnectionManager();
-        ((PoolingClientConnectionManager) connectionManager).setMaxTotal(maxTotalConnections);
-        ((PoolingClientConnectionManager) connectionManager).setDefaultMaxPerRoute(defaultMaxConnectionsPerHost);
-        httpClient = new DefaultHttpClient(connectionManager);
+        httpClient = HttpClientBuilder.create()
+                .setMaxConnTotal(maxTotalConnections)
+                .setMaxConnPerRoute(defaultMaxConnectionsPerHost)
+                .build();
     }
 
     public Response processRequest(HttpUriRequest request) throws FacebookException {
-        HttpResponse httpResponse = null;
-        String bodyResponse = null;
+        HttpResponse httpResponse;
+        String bodyResponse;
 
         try {
             httpResponse = httpClient.execute(request);

@@ -1,5 +1,6 @@
 package com.pereposter.social.facebook;
 
+import com.pereposter.social.api.FacebookException;
 import com.pereposter.social.api.SocialNetworkConnector;
 import com.pereposter.social.api.entity.*;
 import com.pereposter.social.facebook.connector.FacebookConnector;
@@ -32,7 +33,7 @@ public class FacebookConnectorWrapper {
         return facebookConnector.findPostsByOverCreatedDate(findPostRequest.getSocialAuthEntity(), findPostRequest.getCreatedDate());
     }
 
-    public ResponseObject<PostEntity> findLastPost(FindPostRequest findPostRequest) {
+    public ResponseObject<PostEntity> findLastPost(FindPostRequest findPostRequest) throws FacebookException {
         return facebookConnector.findLastPost(findPostRequest.getSocialAuthEntity());
     }
 }

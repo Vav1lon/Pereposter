@@ -231,15 +231,24 @@ public class AccessTokenService {
 
     private HttpPost getHttpPost(String login, String password, HttpResponse httpResponse, String body) {
         HttpPost httpPost;
+
+        //TODO: need extract to prop file
+        String domainName = "https://www.facebook.com";
         int being = body.indexOf("<form id=\"login_form\" action=\"");
         int end = body.substring(being + 30).indexOf("\"");
-        String urlLoginForm = body.substring(being + 30, being + 30 + end);
+        String url = body.substring(being + 30, being + 30 + end);
+
+        //TODO: need optimize
+        if (!url.contains(domainName)) {
+            url = domainName + url;
+        }
+
 
         being = body.indexOf("name=\"lsd\" value=\"");
         end = body.substring(being + 18).indexOf("\"");
         String lsdParam = body.substring(being + 18, being + 18 + end);
 
-        httpPost = setHttpEntityToHttpPost(urlLoginForm, fillFormParams(login, password, lsdParam));
+        httpPost = setHttpEntityToHttpPost(url, fillFormParams(login, password, lsdParam));
         httpPost.setHeader(readAndCreateCookie(httpResponse));
         return httpPost;
     }
