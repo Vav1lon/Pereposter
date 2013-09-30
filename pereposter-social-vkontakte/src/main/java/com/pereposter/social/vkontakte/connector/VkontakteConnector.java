@@ -76,7 +76,7 @@ public class VkontakteConnector implements SocialNetworkConnector {
 
         ResponseObject<String> result = new ResponseObject<String>();
 
-        if (Strings.isNullOrEmpty(postEntity.getMessage())) {
+        if (!Strings.isNullOrEmpty(postEntity.getMessage())) {
 
             try {
                 result.setValue(writePostToWall(auth, postEntity));

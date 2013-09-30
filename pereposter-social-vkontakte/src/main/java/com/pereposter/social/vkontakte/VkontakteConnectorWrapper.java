@@ -1,6 +1,7 @@
 package com.pereposter.social.vkontakte;
 
 import com.pereposter.social.api.ConnectorWrapper;
+import com.pereposter.social.api.FacebookException;
 import com.pereposter.social.api.SocialNetworkConnector;
 import com.pereposter.social.api.entity.*;
 
@@ -28,7 +29,7 @@ public class VkontakteConnectorWrapper extends ConnectorWrapper {
         return vkontakteConnector.findPostsByOverCreatedDate(findPostRequest.getSocialAuthEntity(), findPostRequest.getCreatedDate());
     }
 
-    public ResponseObject<PostEntity> findLastPost(FindPostRequest findPostRequest) {
+    public ResponseObject<PostEntity> findLastPost(FindPostRequest findPostRequest) throws FacebookException {
         return vkontakteConnector.findLastPost(findPostRequest.getSocialAuthEntity());
     }
 
