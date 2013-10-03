@@ -14,22 +14,28 @@ class SocialBoardController {
     def socialBoardService
 
     def index() {
-        render view: "list", model: [socialNetworks: socialBoardService.list()]
+        render view: "index", model: [socialNetworks: socialBoardService.list()]
     }
 
-    def addNewScoailNetwork() {
+    def add() {
+        render view: "add"
+    }
 
-        if (Strings.isNullOrEmpty(params.socialNetworkId) || Strings.isNullOrEmpty(params.login) || Strings.isNullOrEmpty(params.password)) {
+
+    def insert() {
+
+        if (Strings.isNullOrEmpty(params.name) || Strings.isNullOrEmpty(params.login) || Strings.isNullOrEmpty(params.password) || Strings.isNullOrEmpty(params.socialNetworkList)) {
             flash.addSocialNetworkError = "Ошибка, не все поля заполнены!"
             redirect(uri: '/')
             return
         }
 
+        String name = params.name as String
         String username = params.login as String
         String password = params.password as String
-        Integer socialNetworkId = params.socialNetworkId as Integer
+        Integer socialNetworkId = params.socialNetworkList as Integer
 
-        Long id = socialBoardService.addSocialNetwork(socialNetworkId, username, password)
+        Long id = socialBoardService.addSocialNetwork(socialNetworkId, username, password, name)
 
         //TODO: send init request
 

@@ -3,7 +3,7 @@ package com.pereposter.web.service
 import com.pereposter.web.entity.SocialNetwork
 import com.pereposter.web.entity.SocialNetworkEnum
 import com.pereposter.web.entity.User
-import com.pereposter.web.entity.UserSocialAccount
+import com.pereposter.web.entity.SocialAccount
 
 class SocialBoardService {
 
@@ -13,6 +13,7 @@ class SocialBoardService {
         currentUser.accounts.collect {
             new SocialNetwork(socialNetworkEnum: it.socialNetwork
                     , id: it.id
+                    , name: it.name
                     , username: it.username
                     , userId: getCurrentUser().id
                     , enabled: it.enabled
@@ -21,13 +22,14 @@ class SocialBoardService {
         }
     }
 
-    long addSocialNetwork(Integer socialNetworkId, String username, String password) {
+    long addSocialNetwork(Integer socialNetworkId, String username, String password, String name) {
 
-        UserSocialAccount account = new UserSocialAccount(
+        SocialAccount account = new SocialAccount(
                 username: username
                 , enabled: false
                 , password: password
                 , socialNetwork: SocialNetworkEnum.fromInt(socialNetworkId)
+                , name: name
         )
 
         getCurrentUser().addToAccounts(account).save()
@@ -37,10 +39,10 @@ class SocialBoardService {
 
     long updateSocialNetwork(long socialNetworkId, SocialNetworkEnum socialNetwork, String username, String password) {
 
-        UserSocialAccount socialNetworkInternal = UserSocialAccount.findByIdAndUser(socialNetworkId, getCurrentUser())
+        SocialAccount socialNetworkInternal = SocialAccount.findByIdAndUser(socialNetworkId, getCurrentUser())
 
         if (!socialNetworkInternal) {
-            throw new NullPointerException("Not found UserSocialAccount by id: " + socialNetworkId + " in User: " + getCurrentUser().id);
+            throw new NullPointerException("Not found SocialAccount by id: " + socialNetworkId + " in User: " + getCurrentUser().id);
         }
 
         removedSocialNetwork(socialNetworkId)
@@ -49,10 +51,10 @@ class SocialBoardService {
 
     void enabledAndDisabledSocialNetwork(long socialNetworkId) {
 
-        UserSocialAccount socialNetwork = UserSocialAccount.findByIdAndUser(socialNetworkId, getCurrentUser())
+        SocialAccount socialNetwork = SocialAccount.findByIdAndUser(socialNetworkId, getCurrentUser())
 
         if (!socialNetwork) {
-            throw new NullPointerException("Not found UserSocialAccount by id: " + socialNetworkId + " in User: " + getCurrentUser().id);
+            throw new NullPointerException("Not found SocialAccount by id: " + socialNetworkId + " in User: " + getCurrentUser().id);
         }
 
         if (socialNetwork.enabled) {
@@ -65,10 +67,10 @@ class SocialBoardService {
     }
 
     void removedSocialNetwork(long socialNetworkId) {
-        UserSocialAccount socialNetwork = getCurrentUser().accounts.find { it.id = socialNetworkId }
+        SocialAccount socialNetwork = getCurrentUser().accounts.find { it.id = socialNetworkId }
 
         if (!socialNetwork) {
-            throw new NullPointerException("Not found UserSocialAccount by id: " + socialNetworkId + " in User: " + getCurrentUser().id);
+            throw new NullPointerException("Not found SocialAccount by id: " + socialNetworkId + " in User: " + getCurrentUser().id);
         }
 
         User currentUser = socialNetwork.user;

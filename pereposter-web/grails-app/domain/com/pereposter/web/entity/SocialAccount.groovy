@@ -3,7 +3,7 @@ package com.pereposter.web.entity
 import org.joda.time.DateTime
 import org.joda.time.contrib.hibernate.PersistentDateTime
 
-class UserSocialAccount {
+class SocialAccount {
 
     DateTime createDateLastPost
     boolean enabled
@@ -12,19 +12,18 @@ class UserSocialAccount {
     SocialNetworkEnum socialNetwork
     String socialUserId
     String username
+    String name
 
     static belongsTo = [user: User]
 
     static mappedBy = []
 
     static mapping = {
-        table name: 'USER_SOCIAL_ACCOUNT'
+        table name: 'SOCIAL_ACCOUNT'
         socialNetwork enumClass: 'com.pereposter.web.entity.SocialNetworkEnum'
         createDateLastPost type: PersistentDateTime
         user cascade: 'save-update'
-        user foreignKey: 'USER_SOCIAL_ACCOUNT_USER_PEREPOSTER'
-
-        version false
+        id generator: 'sequence', params: [sequence: 'social_account_seq']
     }
 
     static constraints = {

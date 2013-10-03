@@ -5,9 +5,9 @@ class Role {
     String authority
 
     static mapping = {
-        table name: 'ROLE'
+        table name: 'ROLES'
         cache true
-        version false
+        id generator: 'sequence', params: [sequence: 'role_seq']
     }
 
     static constraints = {

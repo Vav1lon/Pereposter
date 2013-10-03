@@ -13,7 +13,7 @@ class User {
     boolean active
 
 
-    static hasMany = [accounts: UserSocialAccount]
+    static hasMany = [accounts: SocialAccount]
 
     static constraints = {
         username blank: false, unique: true, email: true
@@ -23,14 +23,14 @@ class User {
     }
 
     static mapping = {
-        table name: 'USER_PEREPOSTER'
+        table name: 'USERS'
         password column: '`password`'
         accounts cascade: 'all-delete-orphan'
-        version false
+        id generator: 'sequence', params: [sequence: 'user_seq']
     }
 
     Set<Role> getAuthorities() {
-        UserRole.findAllByPereposterUser(this).collect { it.pereposterRole } as Set
+        UserRole.findAllByUser(this).collect { it.role } as Set
     }
 
     def beforeInsert() {

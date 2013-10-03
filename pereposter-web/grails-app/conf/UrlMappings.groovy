@@ -2,15 +2,14 @@ class UrlMappings {
 
     static mappings = {
 
-
-        "/user/registration" {
-            controller = "user"
-            action = [GET: "registration", POST: "save"]
+        name social: "/social/" {
+            controller = "socialBoard"
+            action = [POST: "addNewSocialNetwork", GET: "index"]
         }
 
-        "/social/add" {
+        name addSocial: "/social/add" {
             controller = "socialBoard"
-            action = [POST: "addNewScoailNetwork"]
+            action = [POST: "insert", GET: "add"]
         }
 
 
@@ -21,7 +20,6 @@ class UrlMappings {
 
         "/$controller/$action?/$id?" {
             constraints {
-                // apply constraints here
             }
         }
 

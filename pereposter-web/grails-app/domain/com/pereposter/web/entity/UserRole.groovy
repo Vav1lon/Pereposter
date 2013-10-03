@@ -4,36 +4,36 @@ import org.apache.commons.lang.builder.HashCodeBuilder
 
 class UserRole implements Serializable {
 
-    User pereposterUser
-    Role pereposterRole
+    User user
+    Role role
 
     boolean equals(other) {
         if (!(other instanceof UserRole)) {
             return false
         }
 
-        other.pereposterUser?.id == pereposterUser?.id &&
-                other.pereposterRole?.id == pereposterRole?.id
+        other.user?.id == user?.id &&
+                other.role?.id == role?.id
     }
 
     int hashCode() {
         def builder = new HashCodeBuilder()
-        if (pereposterUser) builder.append(pereposterUser.id)
-        if (pereposterRole) builder.append(pereposterRole.id)
+        if (user) builder.append(user.id)
+        if (role) builder.append(role.id)
         builder.toHashCode()
     }
 
-    static UserRole get(long pereposterUserId, long pereposterRoleId) {
-        find 'from UserRole where pereposterUser.id=:pereposterUserId and pereposterRole.id=:pereposterRoleId',
-                [pereposterUserId: pereposterUserId, pereposterRoleId: pereposterRoleId]
+    static UserRole get(long userId, long roleId) {
+        find 'from UserRole where user.id=:userId and role.id=:roleId',
+                [userId: userId, roleId: roleId]
     }
 
-    static UserRole create(User pereposterUser, Role pereposterRole, boolean flush = false) {
-        new UserRole(pereposterUser: pereposterUser, pereposterRole: pereposterRole).save(flush: flush, insert: true)
+    static UserRole create(User user, Role role, boolean flush = false) {
+        new UserRole(user: user, role: role).save(flush: flush, insert: true)
     }
 
-    static boolean remove(User pereposterUser, Role pereposterRole, boolean flush = false) {
-        UserRole instance = UserRole.findByPereposterUserAndPereposterRole(pereposterUser, pereposterRole)
+    static boolean remove(User user, Role role, boolean flush = false) {
+        UserRole instance = UserRole.findByUserAndRole(user, role)
         if (!instance) {
             return false
         }
@@ -42,17 +42,16 @@ class UserRole implements Serializable {
         true
     }
 
-    static void removeAll(User pereposterUser) {
-        executeUpdate 'DELETE FROM UserRole WHERE pereposterUser=:pereposterUser', [pereposterUser: pereposterUser]
+    static void removeAll(User user) {
+        executeUpdate 'DELETE FROM UserRole WHERE user=:user', [user: user]
     }
 
-    static void removeAll(Role pereposterRole) {
-        executeUpdate 'DELETE FROM UserRole WHERE pereposterRole=:pereposterRole', [pereposterRole: pereposterRole]
+    static void removeAll(Role role) {
+        executeUpdate 'DELETE FROM UserRole WHERE role=:role', [role: role]
     }
 
     static mapping = {
-        table name:  'USER_ROLE'
-        id composite: ['pereposterRole', 'pereposterUser']
-        version false
+        table name: 'USER_ROLE'
+        id composite: ['role', 'user']
     }
 }
