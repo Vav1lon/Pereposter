@@ -30,6 +30,20 @@
         <camel.version>2.12.1</camel.version>
         <xbean.spring.version>3.12</xbean.spring.version>
         <activemq.version>5.7.0</activemq.version>
+        <activemq-pool.version>5.7.0</activemq-pool.version>
+        <httpclient.version>4.3</httpclient.version>
+        <logback-classic.version>1.0.13</logback-classic.version>
+        <janino.version>2.6.1</janino.version>
+        <guava.version>15.0</guava.version>
+        <commons-lang3.version>3.1</commons-lang3.version>
+        <jsr311-api.version>1.1.1</jsr311-api.version>
+
+        <pereposter-social-api.version>1.0-SNAPSHOT</pereposter-social-api.version>
+        <pereposter-social-utils.version>1.0-SNAPSHOT</pereposter-social-utils.version>
+        <jaxb-utils.version>1.0-SNAPSHOT</jaxb-utils.version>
+
+        <junit.version>4.11</junit.version>
+        <mockito-all.version>1.9.5</mockito-all.version>
     </properties>
 
     <dependencies>
@@ -81,7 +95,7 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.0.0</version>
+            <version>${logback-classic.version}</version>
             <exclusions>
                 <exclusion>
                     <artifactId>slf4j-api</artifactId>
@@ -111,7 +125,7 @@
         <dependency>
             <groupId>org.codehaus.janino</groupId>
             <artifactId>janino</artifactId>
-            <version>2.6.1</version>
+            <version>${janino.version}</version>
         </dependency>
 
         <!-- Spring -->
@@ -139,26 +153,25 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <version>4.3</version>
+            <version>${httpclient.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>15.0</version>
+            <version>${guava.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.1</version>
+            <version>${commons-lang3.version}</version>
         </dependency>
 
         <dependency>
             <groupId>javax.ws.rs</groupId>
             <artifactId>jsr311-api</artifactId>
-            <version>1.1.1</version>
-            <!--<scope>provided</scope>-->
+            <version>${jsr311-api.version}</version>
         </dependency>
 
         <!--Test-->
@@ -173,14 +186,14 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.11</version>
+            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
-            <version>1.9.5</version>
+            <version>${mockito-all.version}</version>
             <scope>test</scope>
         </dependency>
 

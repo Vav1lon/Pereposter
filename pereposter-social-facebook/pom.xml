@@ -10,7 +10,6 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.pereposter.social</groupId>
     <artifactId>pereposter-social-facebook</artifactId>
     <packaging>war</packaging>
 
@@ -20,13 +19,13 @@
         <dependency>
             <groupId>com.pereposter.social</groupId>
             <artifactId>pereposter-social-api</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${pereposter-social-api.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.pereposter.social</groupId>
             <artifactId>jaxb-utils</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${jaxb-utils.version}</version>
         </dependency>
 
         <!--CAMEL-->
