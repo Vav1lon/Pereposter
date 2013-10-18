@@ -12,10 +12,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 
@@ -50,7 +47,7 @@ public class PostManagerTest extends AbstractTest {
 
         super.setUp();
 
-        globalUser1.setAccounts(new HashSet<UserSocialAccount>(Arrays.asList(socialAccountVkontakteEnable1, socialAccountFaceBookEnabled1, socialAccountTwitterEnabled1)));
+        globalUser1.setAccounts(Arrays.asList(socialAccountVkontakteEnable1, socialAccountFaceBookEnabled1, socialAccountTwitterEnabled1));
 
         globalUser2.setActive(false);
 
@@ -62,7 +59,7 @@ public class PostManagerTest extends AbstractTest {
 
     }
 
-    private void fillTestUserAccount1(Set<UserSocialAccount> accounts, DateTime setCreateDateLastPost) {
+    private void fillTestUserAccount1(List<UserSocialAccount> accounts, DateTime setCreateDateLastPost) {
         for (UserSocialAccount account : accounts) {
 
             account.setCreateDateLastPost(setCreateDateLastPost);

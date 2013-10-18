@@ -9,8 +9,6 @@ import com.pereposter.utils.ServiceHelper;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
@@ -109,10 +107,6 @@ public class PostManagerControl {
         if (lastPost != null) {
             accountForWritePosts.setCreateDateLastPost(lastPost.getCreatedDate());
             accountForWritePosts.setLastPostId(lastPost.getId());
-
-            //TODO: dirty hack
-//            getSession().saveOrUpdate(accountForWritePosts);
-//            getSession().flush();
         }
 
     }

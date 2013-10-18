@@ -1,7 +1,7 @@
 package com.pereposter.entity.internal;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "USER_PEREPOSTER")
@@ -16,8 +16,9 @@ public class User {
     private String name;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "USER_ID", nullable = false)
-    private Set<UserSocialAccount> accounts;
+
+    @JoinColumn(nullable = false, referencedColumnName = "ID")
+    private List<UserSocialAccount> accounts;
 
     @Column(name = "ACTIVE", nullable = false)
     private Boolean active;
@@ -38,11 +39,11 @@ public class User {
         this.name = name;
     }
 
-    public Set<UserSocialAccount> getAccounts() {
+    public List<UserSocialAccount> getAccounts() {
         return accounts;
     }
 
-    public void setAccounts(Set<UserSocialAccount> accounts) {
+    public void setAccounts(List<UserSocialAccount> accounts) {
         this.accounts = accounts;
     }
 

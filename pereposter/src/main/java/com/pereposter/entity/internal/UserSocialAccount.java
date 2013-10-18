@@ -52,6 +52,7 @@ public class UserSocialAccount {
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     @ForeignKey(name = "USER_SOCIAL_ACCOUNT_USER_PEREPOSTER")
+    @JoinColumn(name="USER_ID")
     private User user;
 
     public Long getId() {
