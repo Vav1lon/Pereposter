@@ -1,6 +1,5 @@
 package com.pereposter.social.api;
 
-
 import com.pereposter.social.api.entity.RequestStatus;
 
 import javax.jws.WebService;

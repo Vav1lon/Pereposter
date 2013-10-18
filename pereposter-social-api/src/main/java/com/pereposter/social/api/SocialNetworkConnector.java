@@ -4,6 +4,7 @@ import com.pereposter.social.api.entity.PostEntity;
 import com.pereposter.social.api.entity.PostsResponse;
 import com.pereposter.social.api.entity.ResponseObject;
 import com.pereposter.social.api.entity.SocialAuthEntity;
+import com.pereposter.social.api.social.FacebookException;
 import org.joda.time.DateTime;
 
 import java.util.List;

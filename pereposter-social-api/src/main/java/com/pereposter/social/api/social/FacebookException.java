@@ -1,4 +1,4 @@
-package com.pereposter.social.api;
+package com.pereposter.social.api.social;
 
 public class FacebookException extends Exception {
 
