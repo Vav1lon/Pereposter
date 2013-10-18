@@ -3,11 +3,13 @@ package com.pereposter.social.api.entity;
 import org.joda.time.DateTime;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class PostEntity implements Serializable {
 
     private String id;
     private String message;
+    private List<String> imgUrls;
     private DateTime createdDate;
     private String ownerId;
 
@@ -41,5 +43,13 @@ public class PostEntity implements Serializable {
 
     public void setOwnerId(String ownerId) {
         this.ownerId = ownerId;
+    }
+
+    public List<String> getImgUrls() {
+        return imgUrls;
+    }
+
+    public void setImgUrls(List<String> imgUrls) {
+        this.imgUrls = imgUrls;
     }
 }
