@@ -2,8 +2,8 @@ package com.pereposter.social.vkontakte.connector;
 
 import com.google.common.base.Strings;
 import com.pereposter.social.api.SocialNetworkConnector;
-import com.pereposter.social.api.VkontakteException;
 import com.pereposter.social.api.entity.*;
+import com.pereposter.social.api.social.VkontakteException;
 import com.pereposter.social.vkontakte.entity.*;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.http.client.methods.HttpGet;

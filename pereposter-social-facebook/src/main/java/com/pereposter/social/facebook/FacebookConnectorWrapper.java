@@ -1,8 +1,8 @@
 package com.pereposter.social.facebook;
 
-import com.pereposter.social.api.FacebookException;
 import com.pereposter.social.api.SocialNetworkConnector;
 import com.pereposter.social.api.entity.*;
+import com.pereposter.social.api.social.FacebookException;
 import com.pereposter.social.facebook.connector.FacebookConnector;
 
 public class FacebookConnectorWrapper {

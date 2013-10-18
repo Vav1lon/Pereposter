@@ -1,9 +1,9 @@
 package com.pereposter.social.vkontakte;
 
 import com.pereposter.social.api.ConnectorWrapper;
-import com.pereposter.social.api.FacebookException;
 import com.pereposter.social.api.SocialNetworkConnector;
 import com.pereposter.social.api.entity.*;
+import com.pereposter.social.api.social.FacebookException;
 
 public class VkontakteConnectorWrapper extends ConnectorWrapper {
 

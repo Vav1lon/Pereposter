@@ -1,9 +1,9 @@
 package com.pereposter.social.facebook.connector;
 
 import com.google.common.base.Strings;
-import com.pereposter.social.api.FacebookException;
 import com.pereposter.social.api.SocialNetworkConnector;
 import com.pereposter.social.api.entity.*;
+import com.pereposter.social.api.social.FacebookException;
 import com.pereposter.social.facebook.entity.AccessToken;
 import com.pereposter.social.facebook.entity.PostFacebook;
 import com.pereposter.social.facebook.entity.PostResponse;
