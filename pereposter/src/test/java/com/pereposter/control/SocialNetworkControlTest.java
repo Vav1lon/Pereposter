@@ -3,7 +3,7 @@ package com.pereposter.control;
 import com.pereposter.AbstractTest;
 import com.pereposter.TestHelper;
 import com.pereposter.entity.RestResponse;
-import com.pereposter.entity.internal.UserSocialAccount;
+import com.pereposter.entity.internal.SocialUserAccount;
 import com.pereposter.stub.FacebookSocialWebServicesStub;
 import com.pereposter.stub.VkontakteSocialWebServicesStub;
 import org.joda.time.DateTime;
@@ -31,31 +31,31 @@ public class SocialNetworkControlTest extends AbstractTest {
     @Autowired
     private TestHelper testHelper;
 
-    UserSocialAccount facebookAccountUser1 = null;
-    UserSocialAccount vkontakteAccountUser1 = null;
-    UserSocialAccount twitterAccountUser1 = null;
+    SocialUserAccount facebookAccountUser1 = null;
+    SocialUserAccount vkontakteAccountUser1 = null;
+    SocialUserAccount twitterAccountUser1 = null;
 
     @Before
     public void setUp() {
 
         super.setUp();
 
-        globalUser1.setAccounts(Arrays.asList(socialAccountVkontakteEnable1, socialAccountFaceBookEnabled1, socialAccountTwitterEnabled1));
-        socialAccountVkontakteEnable1.setUser(globalUser1);
-        socialAccountFaceBookEnabled1.setUser(globalUser1);
-        socialAccountTwitterEnabled1.setUser(globalUser1);
+        globalSocialUser1.setAccounts(Arrays.asList(socialAccountVkontakteEnable1, socialAccountFaceBookEnabled1, socialAccountTwitterEnabled1));
+        socialAccountVkontakteEnable1.setSocialUser(globalSocialUser1);
+        socialAccountFaceBookEnabled1.setSocialUser(globalSocialUser1);
+        socialAccountTwitterEnabled1.setSocialUser(globalSocialUser1);
 
-        globalUser2.setActive(false);
+        globalSocialUser2.setActive(false);
 
-        getSession().saveOrUpdate(globalUser1);
-        getSession().saveOrUpdate(globalUser2);
+        getSession().saveOrUpdate(globalSocialUser1);
+        getSession().saveOrUpdate(globalSocialUser2);
 
-        fillTestUserAccount1(globalUser1.getAccounts(), new DateTime().minusDays(2));
+        fillTestUserAccount1(globalSocialUser1.getAccounts(), new DateTime().minusDays(2));
         getSession().flush();
     }
 
-    private void fillTestUserAccount1(List<UserSocialAccount> accounts, DateTime setCreateDateLastPost) {
-        for (UserSocialAccount account : accounts) {
+    private void fillTestUserAccount1(List<SocialUserAccount> accounts, DateTime setCreateDateLastPost) {
+        for (SocialUserAccount account : accounts) {
 
             account.setCreateDateLastPost(setCreateDateLastPost);
 
@@ -79,18 +79,18 @@ public class SocialNetworkControlTest extends AbstractTest {
     @Test
     public void initUserNew() {
 
-        for (UserSocialAccount account : globalUser1.getAccounts()) {
+        for (SocialUserAccount account : globalSocialUser1.getAccounts()) {
             assertNull(account.getCreateDateLastPost());
             assertNull(account.getLastPostId());
             assertNull(account.getSocialUserId());
         }
 
-        for (UserSocialAccount account : globalUser1.getAccounts()) {
+        for (SocialUserAccount account : globalSocialUser1.getAccounts()) {
             socialNetworkControl.initializationSocialAccount(account.getId().toString());
         }
 
 
-        for (UserSocialAccount account : globalUser1.getAccounts()) {
+        for (SocialUserAccount account : globalSocialUser1.getAccounts()) {
             assertNotNull(account.getCreateDateLastPost());
             assertNotNull(account.getLastPostId());
             assertNotNull(account.getSocialUserId());
@@ -109,16 +109,16 @@ public class SocialNetworkControlTest extends AbstractTest {
     @Test
     public void initUserNewWhereEnabledTrue() {
 
-        for (UserSocialAccount account : globalUser1.getAccounts()) {
+        for (SocialUserAccount account : globalSocialUser1.getAccounts()) {
             assertNull(account.getCreateDateLastPost());
             assertNull(account.getLastPostId());
         }
 
-        socialNetworkControl.initializationSocialAccount(globalUser2.getId().toString());
+        socialNetworkControl.initializationSocialAccount(globalSocialUser2.getId().toString());
 
         boolean flag = false;
 
-        for (UserSocialAccount account : globalUser2.getAccounts()) {
+        for (SocialUserAccount account : globalSocialUser2.getAccounts()) {
 
             if (!account.isEnabled() && account.getLastPostId() == null && account.getCreateDateLastPost() == null) {
                 flag = true;

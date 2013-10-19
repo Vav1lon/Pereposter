@@ -1,8 +1,8 @@
 package com.pereposter;
 
 import com.pereposter.entity.internal.SocialNetworkEnum;
-import com.pereposter.entity.internal.User;
-import com.pereposter.entity.internal.UserSocialAccount;
+import com.pereposter.entity.internal.SocialUser;
+import com.pereposter.entity.internal.SocialUserAccount;
 import org.hibernate.FlushMode;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -23,20 +23,20 @@ public abstract class AbstractTest {
     @Autowired
     private SessionFactory sessionFactory;
 
-    protected User globalUser1;
-    protected User globalUser2;
+    protected SocialUser globalSocialUser1;
+    protected SocialUser globalSocialUser2;
 
-    protected UserSocialAccount socialAccountFaceBookEnabled1;
-    protected UserSocialAccount socialAccountFaceBookEnabled2;
-    protected UserSocialAccount socialAccountFaceBookDisable;
+    protected SocialUserAccount socialAccountFaceBookEnabled1;
+    protected SocialUserAccount socialAccountFaceBookEnabled2;
+    protected SocialUserAccount socialAccountFaceBookDisable;
 
-    protected UserSocialAccount socialAccountVkontakteEnable1;
-    protected UserSocialAccount socialAccountVkontakteEnable2;
-    protected UserSocialAccount socialAccountVkontakteDisable;
+    protected SocialUserAccount socialAccountVkontakteEnable1;
+    protected SocialUserAccount socialAccountVkontakteEnable2;
+    protected SocialUserAccount socialAccountVkontakteDisable;
 
-    protected UserSocialAccount socialAccountTwitterEnabled1;
-    protected UserSocialAccount socialAccountTwitterEnabled2;
-    protected UserSocialAccount socialAccountTwitterDisabled;
+    protected SocialUserAccount socialAccountTwitterEnabled1;
+    protected SocialUserAccount socialAccountTwitterEnabled2;
+    protected SocialUserAccount socialAccountTwitterDisabled;
 
     @Before
     public void setUp() {
@@ -53,25 +53,25 @@ public abstract class AbstractTest {
         socialAccountTwitterEnabled2 = createUserSocialAccount(true, SocialNetworkEnum.TWITTER);
         socialAccountTwitterDisabled = createUserSocialAccount(false, SocialNetworkEnum.TWITTER);
 
-        globalUser1 = createUser("Test-User-1");
-        globalUser2 = createUser("Test-User-2");
+        globalSocialUser1 = createUser("Test-SocialUser-1");
+        globalSocialUser2 = createUser("Test-SocialUser-2");
 
         getSession().setFlushMode(FlushMode.ALWAYS);
 
     }
 
-    private User createUser(String name) {
-        User result = new User();
+    private SocialUser createUser(String name) {
+        SocialUser result = new SocialUser();
         result.setName(name);
         result.setActive(true);
         return result;
     }
 
-    private UserSocialAccount createUserSocialAccount(boolean enabled, SocialNetworkEnum networkEnum) {
+    private SocialUserAccount createUserSocialAccount(boolean enabled, SocialNetworkEnum networkEnum) {
 
         UUID uuid = UUID.randomUUID();
 
-        UserSocialAccount account = new UserSocialAccount();
+        SocialUserAccount account = new SocialUserAccount();
         account.setEnabled(enabled);
         account.setSocialNetwork(networkEnum);
         account.setPassword(uuid.toString());

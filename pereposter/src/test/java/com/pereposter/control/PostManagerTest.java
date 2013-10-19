@@ -4,15 +4,16 @@ import com.pereposter.AbstractTest;
 import com.pereposter.TestHelper;
 import com.pereposter.control.social.SocialControl;
 import com.pereposter.entity.Post;
-import com.pereposter.entity.internal.User;
-import com.pereposter.entity.internal.UserSocialAccount;
+import com.pereposter.entity.internal.SocialUser;
+import com.pereposter.entity.internal.SocialUserAccount;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -33,13 +34,13 @@ public class PostManagerTest extends AbstractTest {
     @Autowired
     private SocialControl twitterControl;
 
-    UserSocialAccount facebookAccountUser1 = null;
-    UserSocialAccount vkontakteAccountUser1 = null;
-    UserSocialAccount twitterAccountUser1 = null;
+    SocialUserAccount facebookAccountUser1 = null;
+    SocialUserAccount vkontakteAccountUser1 = null;
+    SocialUserAccount twitterAccountUser1 = null;
 
-    UserSocialAccount facebookAccountUser2 = null;
-    UserSocialAccount vkontakteAccountUser2 = null;
-    UserSocialAccount twitterAccountUser2 = null;
+    SocialUserAccount facebookAccountUser2 = null;
+    SocialUserAccount vkontakteAccountUser2 = null;
+    SocialUserAccount twitterAccountUser2 = null;
 
 
     @Before
@@ -47,20 +48,20 @@ public class PostManagerTest extends AbstractTest {
 
         super.setUp();
 
-        globalUser1.setAccounts(Arrays.asList(socialAccountVkontakteEnable1, socialAccountFaceBookEnabled1, socialAccountTwitterEnabled1));
+        globalSocialUser1.setAccounts(Arrays.asList(socialAccountVkontakteEnable1, socialAccountFaceBookEnabled1, socialAccountTwitterEnabled1));
 
-        globalUser2.setActive(false);
+        globalSocialUser2.setActive(false);
 
-        getSession().saveOrUpdate(globalUser1);
-        getSession().saveOrUpdate(globalUser2);
+        getSession().saveOrUpdate(globalSocialUser1);
+        getSession().saveOrUpdate(globalSocialUser2);
 
 
-        fillTestUserAccount1(globalUser1.getAccounts(), new DateTime().minusDays(2));
+        fillTestUserAccount1(globalSocialUser1.getAccounts(), new DateTime().minusDays(2));
 
     }
 
-    private void fillTestUserAccount1(List<UserSocialAccount> accounts, DateTime setCreateDateLastPost) {
-        for (UserSocialAccount account : accounts) {
+    private void fillTestUserAccount1(List<SocialUserAccount> accounts, DateTime setCreateDateLastPost) {
+        for (SocialUserAccount account : accounts) {
 
             account.setCreateDateLastPost(setCreateDateLastPost);
 
@@ -79,8 +80,8 @@ public class PostManagerTest extends AbstractTest {
         }
     }
 
-    private void fillTestUserAccount2(List<UserSocialAccount> accounts, DateTime setCreateDateLastPost) {
-        for (UserSocialAccount account : accounts) {
+    private void fillTestUserAccount2(List<SocialUserAccount> accounts, DateTime setCreateDateLastPost) {
+        for (SocialUserAccount account : accounts) {
 
             account.setCreateDateLastPost(setCreateDateLastPost);
 
@@ -123,9 +124,9 @@ public class PostManagerTest extends AbstractTest {
 
         Mockito.verify(facebookControl, Mockito.times(1)).writePosts(facebookAccountUser1, Arrays.asList(post1, post2));
 
-        User user = (User) getSession().get(User.class, globalUser1.getId());
+        SocialUser socialUser = (SocialUser) getSession().get(SocialUser.class, globalSocialUser1.getId());
 
-        for (UserSocialAccount account : user.getAccounts()) {
+        for (SocialUserAccount account : socialUser.getAccounts()) {
 
             switch (account.getSocialNetwork()) {
 
@@ -182,9 +183,9 @@ public class PostManagerTest extends AbstractTest {
         Mockito.verify(facebookControl, Mockito.times(1)).writePosts(facebookAccountUser1, vkontaktePosts);
         Mockito.verify(twitterControl, Mockito.times(1)).writePosts(twitterAccountUser1, vkontaktePosts);
 
-        User user = (User) getSession().get(User.class, globalUser1.getId());
+        SocialUser socialUser = (SocialUser) getSession().get(SocialUser.class, globalSocialUser1.getId());
 
-        for (UserSocialAccount account : user.getAccounts()) {
+        for (SocialUserAccount account : socialUser.getAccounts()) {
 
             switch (account.getSocialNetwork()) {
 
@@ -255,9 +256,9 @@ public class PostManagerTest extends AbstractTest {
         Mockito.verify(vkontakteControl, Mockito.times(1)).writePosts(vkontakteAccountUser1, facebookPosts);
         Mockito.verify(facebookControl, Mockito.times(1)).writePosts(facebookAccountUser1, vkontaktePosts);
 
-        User user = (User) getSession().get(User.class, globalUser1.getId());
+        SocialUser socialUser = (SocialUser) getSession().get(SocialUser.class, globalSocialUser1.getId());
 
-        for (UserSocialAccount account : user.getAccounts()) {
+        for (SocialUserAccount account : socialUser.getAccounts()) {
 
             switch (account.getSocialNetwork()) {
 
