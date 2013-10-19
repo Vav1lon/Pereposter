@@ -1,7 +1,7 @@
 package com.pereposter.control.social;
 
-import com.pereposter.entity.internal.UserSocialAccount;
 import com.pereposter.entity.Post;
+import com.pereposter.entity.internal.SocialUserAccount;
 
 import java.util.List;
 
@@ -11,17 +11,17 @@ public interface SocialControl {
        * find last message user in social network
        * if not found returned null
      */
-    Post findLastUserPost(UserSocialAccount socialAccount);
+    Post findLastUserPost(SocialUserAccount socialAccount);
 
-    Post getPostById(UserSocialAccount socialAccount, String postId);
+    Post getPostById(SocialUserAccount socialAccount, String postId);
 
-    List<Post> findNewPostByOverCreateDate(UserSocialAccount socialAccount);
+    List<Post> findNewPostByOverCreateDate(SocialUserAccount socialAccount);
 
     /*
       * write post to social network
      */
-    Post writePost(UserSocialAccount socialAccount, Post post);
+    Post writePost(SocialUserAccount socialAccount, Post post);
 
-    Post writePosts(UserSocialAccount socialAccount, List<Post> posts);
+    Post writePosts(SocialUserAccount socialAccount, List<Post> posts);
 
 }

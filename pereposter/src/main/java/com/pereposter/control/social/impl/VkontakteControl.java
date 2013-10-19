@@ -1,10 +1,10 @@
 package com.pereposter.control.social.impl;
 
 import com.pereposter.control.social.SocialControl;
-import com.pereposter.entity.internal.UserSocialAccount;
+import com.pereposter.entity.Post;
+import com.pereposter.entity.internal.SocialUserAccount;
 import com.pereposter.social.api.SocialWebServices;
 import com.pereposter.social.api.entity.*;
-import com.pereposter.entity.Post;
 import com.pereposter.utils.ServiceHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +31,7 @@ public class VkontakteControl implements SocialControl {
     private WebServiceTransform transformer;
 
     @Override
-    public Post findLastUserPost(UserSocialAccount socialAccount) {
+    public Post findLastUserPost(SocialUserAccount socialAccount) {
         SocialAuthEntity socialAuth = serviceHelper.transformSocialAuthService(socialAccount);
 
         String requestId = vkontakteSocialService.findLastPost(new FindPostRequest(socialAuth));
@@ -48,7 +48,7 @@ public class VkontakteControl implements SocialControl {
     }
 
     @Override
-    public Post getPostById(UserSocialAccount socialAccount, String postId) {
+    public Post getPostById(SocialUserAccount socialAccount, String postId) {
         SocialAuthEntity socialAuth = serviceHelper.transformSocialAuthService(socialAccount);
 
         String requestId = vkontakteSocialService.findPostById(new FindPostRequest(socialAuth, postId));
@@ -67,7 +67,7 @@ public class VkontakteControl implements SocialControl {
     }
 
     @Override
-    public List<Post> findNewPostByOverCreateDate(UserSocialAccount socialAccount) {
+    public List<Post> findNewPostByOverCreateDate(SocialUserAccount socialAccount) {
         SocialAuthEntity socialAuth = serviceHelper.transformSocialAuthService(socialAccount);
 
         String requestId = vkontakteSocialService.findPostsByOverCreateDate(new FindPostRequest(socialAuth, socialAccount.getCreateDateLastPost()));
@@ -91,7 +91,7 @@ public class VkontakteControl implements SocialControl {
     }
 
     @Override
-    public Post writePost(UserSocialAccount socialAccount, Post post) {
+    public Post writePost(SocialUserAccount socialAccount, Post post) {
         SocialAuthEntity socialAuth = serviceHelper.transformSocialAuthService(socialAccount);
 
         String requestId = vkontakteSocialService.writePost(new WritePostRequest(socialAuth, transformer.toPostEntity(post)));
@@ -114,7 +114,7 @@ public class VkontakteControl implements SocialControl {
     }
 
     @Override
-    public Post writePosts(UserSocialAccount socialAccount, List<Post> posts) {
+    public Post writePosts(SocialUserAccount socialAccount, List<Post> posts) {
         SocialAuthEntity socialAuth = serviceHelper.transformSocialAuthService(socialAccount);
 
         String requestId = vkontakteSocialService.writePosts(new WritePostsRequest(socialAuth, transformer.toPostEntities(posts)));

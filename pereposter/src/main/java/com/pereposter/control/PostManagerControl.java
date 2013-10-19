@@ -3,8 +3,8 @@ package com.pereposter.control;
 import com.pereposter.control.social.SocialControl;
 import com.pereposter.entity.Post;
 import com.pereposter.entity.internal.SocialNetworkEnum;
-import com.pereposter.entity.internal.User;
-import com.pereposter.entity.internal.UserSocialAccount;
+import com.pereposter.entity.internal.SocialUser;
+import com.pereposter.entity.internal.SocialUserAccount;
 import com.pereposter.utils.ServiceHelper;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -32,20 +32,20 @@ public class PostManagerControl {
     //TODO: временный метод
     public void starter() {
 
-        List<User> users = (List<User>) getSession().createQuery("FROM User u WHERE u.active = true ").list();
+        List<SocialUser> socialUsers = (List<SocialUser>) getSession().createQuery("FROM SocialUser u WHERE u.active = true ").list();
 
-        for (User user : users) {
+        for (SocialUser socialUser : socialUsers) {
 
-            findAndWriteNewPost(user);
+            findAndWriteNewPost(socialUser);
 
         }
 
     }
 
     //TODO: надо сделать много поточность через countDownlatch
-    private synchronized void findAndWriteNewPost(User user) {
+    private synchronized void findAndWriteNewPost(SocialUser socialUser) {
 
-        for (UserSocialAccount account : user.getAccounts()) {
+        for (SocialUserAccount account : socialUser.getAccounts()) {
 
             ConcurrentHashMap map = findNewPosts(account);
 
@@ -57,14 +57,14 @@ public class PostManagerControl {
 
         if (postsMap.size() != 0) {
 
-            for (UserSocialAccount account : user.getAccounts()) {
+            for (SocialUserAccount account : socialUser.getAccounts()) {
 
                 SocialNetworkEnum currentAccount = account.getSocialNetwork();
                 List<Post> posts = postsMap.get(currentAccount);
 
                 if (posts != null) {
 
-                    for (UserSocialAccount accountForWritePosts : user.getAccounts()) {
+                    for (SocialUserAccount accountForWritePosts : socialUser.getAccounts()) {
 
                         if (accountForWritePosts.getSocialNetwork().getId() != currentAccount.getId()) {
 
@@ -88,7 +88,7 @@ public class PostManagerControl {
 
     }
 
-    private void checkReadSourcePost(UserSocialAccount account, List<Post> posts) {
+    private void checkReadSourcePost(SocialUserAccount account, List<Post> posts) {
         Post lastPost = findLastDateOriginalPost(posts);
 
         if (lastPost != null) {
@@ -100,7 +100,7 @@ public class PostManagerControl {
         }
     }
 
-    private void writeNewPosts(List<Post> posts, UserSocialAccount accountForWritePosts) {
+    private void writeNewPosts(List<Post> posts, SocialUserAccount accountForWritePosts) {
         SocialControl service = serviceHelper.getSocialNetworkControl(accountForWritePosts.getSocialNetwork());
         Post lastPost = service.writePosts(accountForWritePosts, posts);
 
@@ -130,7 +130,7 @@ public class PostManagerControl {
         return result;
     }
 
-    private ConcurrentHashMap<SocialNetworkEnum, List<Post>> findNewPosts(UserSocialAccount account) {
+    private ConcurrentHashMap<SocialNetworkEnum, List<Post>> findNewPosts(SocialUserAccount account) {
 
         List<Post> posts = serviceHelper.getSocialNetworkControl(account.getSocialNetwork()).findNewPostByOverCreateDate(account);
 

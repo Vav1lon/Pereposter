@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import javax.ws.rs.*;
 
 @Component("socialBoundary")
-@Path("/Social")
+@Path("/social")
 @Produces("application/json")
 @Consumes("application/json")
 public class SocialBoundaryImpl implements SocialBoundary {
@@ -18,7 +18,7 @@ public class SocialBoundaryImpl implements SocialBoundary {
     private SocialNetworkControl socialNetworkControl;
 
     @GET
-    @Path("/Account/{id}")
+    @Path("/account/{id}")
     @Override
     public RestResponse initSocialAccount(@PathParam("id") String id) {
         return socialNetworkControl.initializationSocialAccount(id);

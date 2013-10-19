@@ -3,7 +3,7 @@ package com.pereposter.control;
 import com.pereposter.control.social.SocialControl;
 import com.pereposter.entity.Post;
 import com.pereposter.entity.RestResponse;
-import com.pereposter.entity.internal.UserSocialAccount;
+import com.pereposter.entity.internal.SocialUserAccount;
 import com.pereposter.utils.ServiceHelper;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -24,7 +24,7 @@ public class SocialNetworkControl {
 
     public RestResponse initializationSocialAccount(String id) {
 
-        UserSocialAccount user = (UserSocialAccount) getSession().get(UserSocialAccount.class, Long.valueOf(id));
+        SocialUserAccount user = (SocialUserAccount) getSession().get(SocialUserAccount.class, Long.valueOf(id));
 
         RestResponse result = null;
 
@@ -37,7 +37,7 @@ public class SocialNetworkControl {
         return result;
     }
 
-    public void initializationUser(UserSocialAccount account) {
+    public void initializationUser(SocialUserAccount account) {
 
 
         SocialControl service = serviceHelper.getSocialNetworkControl(account.getSocialNetwork());

@@ -3,7 +3,7 @@ package com.pereposter.utils;
 import com.google.common.base.Strings;
 import com.pereposter.control.social.SocialControl;
 import com.pereposter.entity.internal.SocialNetworkEnum;
-import com.pereposter.entity.internal.UserSocialAccount;
+import com.pereposter.entity.internal.SocialUserAccount;
 import com.pereposter.social.api.entity.SocialAuthEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -19,7 +19,7 @@ public class ServiceHelper {
         return applicationContext.getBean(socialNetworkEnum.getServiceName(), SocialControl.class);
     }
 
-    public SocialAuthEntity transformSocialAuthService(UserSocialAccount account) {
+    public SocialAuthEntity transformSocialAuthService(SocialUserAccount account) {
 
         SocialAuthEntity result = new SocialAuthEntity();
 
