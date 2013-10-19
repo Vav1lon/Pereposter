@@ -29,7 +29,7 @@
         <usertype.core.version>3.0.0.CR3</usertype.core.version>
         <logback.classic.version>1.0.0</logback.classic.version>
         <janino.version>2.6.1</janino.version>
-        <mysql-connector-java.version>5.1.26</mysql-connector-java.version>
+        <postgres.version>9.2-1003-jdbc4</postgres.version>
         <tomcat-jdbc.version>7.0.42</tomcat-jdbc.version>
         <cglib.version>3.0</cglib.version>
         <guava.version>15.0</guava.version>
@@ -50,6 +50,18 @@
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
             <version>${joda.time.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jadira.usertype</groupId>
+            <artifactId>usertype.core</artifactId>
+            <version>${usertype.core.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgres.version}</version>
         </dependency>
 
     </dependencies>

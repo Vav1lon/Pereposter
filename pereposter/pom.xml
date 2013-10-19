@@ -154,12 +154,6 @@
 
         <!-- DB -->
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>${mysql-connector-java.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-jdbc</artifactId>
             <version>${tomcat-jdbc.version}</version>
@@ -177,12 +171,6 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>${guava.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jadira.usertype</groupId>
-            <artifactId>usertype.core</artifactId>
-            <version>${usertype.core.version}</version>
         </dependency>
 
         <dependency>
@@ -222,34 +210,5 @@
         </dependency>
 
     </dependencies>
-
-    <profiles>
-        <profile>
-            <id>Generate DDL by Entity</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>de.juplo</groupId>
-                        <artifactId>hibernate4-maven-plugin</artifactId>
-                        <version>1.0</version>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>export</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <driverClassName>com.mysql.jdbc.Driver</driverClassName>
-                            <hibernateDialect>org.hibernate.dialect.MySQL5Dialect</hibernateDialect>
-                            <url><![CDATA[jdbc:mysql://localhost:3306/pereposter]]></url>
-                            <username>pereposter_user</username>
-                            <password>1951681119216811</password>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 
 </project>
