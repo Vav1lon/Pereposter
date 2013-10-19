@@ -5,7 +5,7 @@ dataSource {
     username = "pereposter_user"
     password = "PKaggA3s1V7CMWXoMSQJCwo7K"
     url = "jdbc:postgresql://localhost:5432/pereposter"
-    dialect = "org.hibernate.dialect.PostgreSQLDialect"
+    dialect = "org.hibernate.dialect.PostgresPlusDialect"
     loggingSql = true
 }
 hibernate {
