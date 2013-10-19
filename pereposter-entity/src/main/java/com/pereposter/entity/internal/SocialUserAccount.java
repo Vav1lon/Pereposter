@@ -8,11 +8,12 @@ import org.joda.time.DateTime;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "USER_SOCIAL_ACCOUNT")
-public class UserSocialAccount {
+@Table(name = "SOCIAL_USER_ACCOUNT")
+public class SocialUserAccount {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "social_user_account_seq")
+    @SequenceGenerator(name = "social_user_account_seq", sequenceName = "social_user_account_seq")
     @Column(name = "ID")
     private Long id;
 
@@ -51,9 +52,9 @@ public class UserSocialAccount {
     private String socialUserId;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
-    @ForeignKey(name = "USER_SOCIAL_ACCOUNT_USER_PEREPOSTER")
     @JoinColumn(name = "USER_ID")
-    private User user;
+    @ForeignKey(name = "USER_SOCIAL_ACCOUNT_SOCIAL_USER_FK")
+    private SocialUser socialUser;
 
     public Long getId() {
         return id;
@@ -119,11 +120,11 @@ public class UserSocialAccount {
         this.socialUserId = socialUserId;
     }
 
-    public User getUser() {
-        return user;
+    public SocialUser getSocialUser() {
+        return socialUser;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setSocialUser(SocialUser socialUser) {
+        this.socialUser = socialUser;
     }
 }
