@@ -1,4 +1,4 @@
-package com.pereposter.entity.internal;
+package com.pereposter.entity;
 
 public enum SocialNetworkEnum {
 

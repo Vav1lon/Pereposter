@@ -10,7 +10,7 @@
 
     <modules>
         <module>../pereposter</module>
-        <module>../pereposter-entity</module>
+        <module>../pereposter-api</module>
     </modules>
 
     <packaging>pom</packaging>
@@ -62,6 +62,13 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>${postgres.version}</version>
+        </dependency>
+
+        <!-- Hibernate -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>${hibernate.version}</version>
         </dependency>
 
     </dependencies>
