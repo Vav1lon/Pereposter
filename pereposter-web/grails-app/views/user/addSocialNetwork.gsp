@@ -3,47 +3,15 @@
 <html>
 
 <head>
-    <title>Narrow Jumbotron</title>
-    <meta name="viewport" content="width=device-width">
-    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-    <script type="text/javascript" src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    <meta name="layout" content="indexLayout">
 </head>
 
 <body>
-<div class="container">
-    <div style="margin-top: 50px"></div>
+<div style="margin:25px">
+    <a class="btn btn-success disabled" href=""><b>Добавить социальную сеть</b></a>
+</div>
 
-    <div class="navbar navbar-default">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
-                </button>
-                <a href="#" class="navbar-brand"><b>Pereposter</b></a>
-            </div>
-
-            <div class="collapse navbar-collapse">
-                <ul class="nav navbar-nav">
-                    <li class="active">
-                        <a href="#">Мои социальные сети</a>
-                    </li>
-                    <li>
-                        <a href="#">Профиль</a>
-                    </li>
-                    <li>
-                        <a href="#">Contact</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
-    <div style="margin:25px">
-        <a class="btn btn-success disabled"><b>+</b> Добавить социальную сеть</a>
-    </div>
-
-    <div class="well">
+<div class="well">
         <form>
             <div class="form-group">
                 <label class="control-label">Название сети</label>
@@ -52,11 +20,8 @@
                     <input type="text" class="form-control">
                 </div>
             </div>
-            <select class="form-control">
-                <option>ВКонтакте</option>
-                <option>Facebook</option>
-                <option>Twitter</option>
-            </select>
+
+            <g:select class="form-control" name="socialNetwork" from="${com.pereposter.entity.SocialNetworkEnum.values()}" optionKey="id" optionValue="serviceName"/>
 
             <div class="form-group">
                 <label class="control-label">Login</label>

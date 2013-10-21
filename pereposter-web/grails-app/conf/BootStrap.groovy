@@ -1,40 +1,44 @@
-import com.pereposter.web.entity.Role
-import com.pereposter.web.entity.User
-import com.pereposter.web.entity.UserRole
+import com.pereposter.web.entity.internal.Role
+import com.pereposter.web.entity.internal.User
+import com.pereposter.web.entity.internal.UserRole
 
 class BootStrap {
 
     def init = { servletContext ->
 
-        Role role1 = Role.findByAuthority('ROLE_USER');
+        // TEMP DATA
 
-        if (!role1) {
-            role1 = new Role(authority: 'ROLE_USER')
-            role1.save()
+        Role roleUser = Role.findByAuthority('ROLE_USER')
+        if (roleUser == null) {
+            roleUser = new Role(authority: 'ROLE_USER')
+            roleUser.save(flush: true)
         }
 
-        Role role2 = Role.findByAuthority('ROLE_ADMIN');
-
-        if (!role2) {
-            role2 = new Role(authority: 'ROLE_ADMIN')
-            role2.save()
+        Role roleAdmin = Role.findByAuthority('ROLE_ADMIN')
+        if (roleAdmin == null) {
+            roleAdmin = new Role(authority: 'ROLE_ADMIN')
+            roleAdmin.save(flush: true)
         }
 
-        Role role3 = Role.findByAuthority('ROLE_INVITE');
-
-        if (!role3) {
-            role3 = new Role(authority: 'ROLE_INVITE')
-            role3.save()
+        User userUser = User.findByUsername('user')
+        if (userUser == null) {
+            userUser = new User(username: 'user', email: 'aaa@aaa.ru', accountExpired: false, accountLocked: false, enabled: true, password: '123456789', passwordExpired: false)
+            userUser.save(flush: true)
         }
 
-        User user = User.findByUsername('dev@vav1lon.ru')
-        if (!user) {
-            user = new User(username: 'dev@vav1lon.ru', password: '19216811', active: true, accountExpired: false, accountLocked: false, enabled: true)
-            user.save(flush: true)
+        User userAdmin = User.findByUsername('admin')
+        if (userAdmin == null) {
+            userAdmin = new User(username: 'admin', email: 'aaa@1aaa.ru', accountExpired: false, accountLocked: false, enabled: true, password: '123456789', passwordExpired: false)
+            userAdmin.save(flush: true)
+        }
 
-            UserRole.create(user, role1, true)
-            UserRole.create(user, role2, true)
-            UserRole.create(user, role3, true)
+
+        if (UserRole.get(userUser.id, roleUser.id) == null) {
+            UserRole.create(userUser, roleUser, true)
+        }
+
+        if (UserRole.get(userAdmin.id, roleAdmin.id) == null) {
+            UserRole.create(userAdmin, roleAdmin, true)
         }
 
 

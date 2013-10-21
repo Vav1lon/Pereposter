@@ -1,4 +1,4 @@
-package com.pereposter.web.entity
+package com.pereposter.web.entity.internal
 
 class User {
 
@@ -6,26 +6,29 @@ class User {
 
     String username
     String password
-    boolean enabled
-    boolean accountExpired
-    boolean accountLocked
-    boolean passwordExpired
-    boolean active
+    String email
+    boolean enabled = true
+    boolean accountExpired = false
+    boolean accountLocked = false
+    boolean passwordExpired = false
+    Date dateCreated
+    Date lastUpdated
+    List accounts
 
+    static transients = ['springSecurityService']
 
     static hasMany = [accounts: SocialAccount]
 
     static constraints = {
-        username blank: false, unique: true, email: true
-        password blank: false, minSize: 8
-        active blank: false, default: false
-        accounts lazy: true;
+        username blank: false
+        password blank: false, size: 8..512
+        email email: true, unique: true
     }
 
     static mapping = {
-        table name: 'USERS'
+        table name: 'SITE_USER'
         password column: '`password`'
-        accounts cascade: 'all-delete-orphan'
+        accounts lazy: true
         id generator: 'sequence', params: [sequence: 'user_seq']
     }
 

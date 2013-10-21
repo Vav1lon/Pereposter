@@ -1,42 +1,21 @@
 package com.pereposter.web.controller
 
-import com.google.common.base.Strings
-import grails.plugins.springsecurity.Secured
-import grails.validation.ValidationException
+import com.pereposter.entity.SocialNetworkEnum
+import com.pereposter.web.entity.internal.SocialAccount
 
 class UserController {
 
-    def userService;
+    def index() {
+
+        List<SocialAccount> accounts = [new SocialAccount(name: 'test', socialNetwork: SocialNetworkEnum.FACEBOOK, enabled: true), new SocialAccount(name: 'test2', socialNetwork: SocialNetworkEnum.TWITTER, enabled: false)]
+
+        render view: 'index', model: [accounts: accounts]
+    }
 
     def registration() {}
 
-    @Secured("IS_AUTHENTICATED_ANONYMOUSLY")
-    def save() {
+    def addSocialNetwork() {}
 
-        if (Strings.isNullOrEmpty(params.password)) {
-            flash.message = "Passwords is null"
-            render(view: 'registration')
-            return
-        } else if (Strings.isNullOrEmpty(params.passwordRepeat)) {
-            flash.message = "Repeat passwords is null"
-            render(view: 'registration')
-            return
-        } else if (params.password != params.passwordRepeat) {
-            flash.message = "Passwords do not match"
-            render(view: 'registration')
-            return
-        }
-
-        try {
-            userService.createNewUser(params.login, params.password)
-        } catch (ValidationException e) {
-            flash.errors = e.errors.allErrors*.defaultMessage
-            render(view: 'registration')
-            return
-        }
-
-        redirect controller: "login", action: "index"
-    }
-
+    def edit() {}
 
 }

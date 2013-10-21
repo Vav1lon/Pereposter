@@ -1,9 +1,9 @@
-$(document).ready(function () {
-
-    $('.item').each(function () {
-        $('#' + $(this).id).click(function () {
-            $(this).addClass("active");
-        });
-    });
-
-});
+if (typeof jQuery !== 'undefined') {
+    (function ($) {
+        $('#spinner').ajaxStart(function () {
+            $(this).fadeIn();
+        }).ajaxStop(function () {
+                $(this).fadeOut();
+            });
+    })(jQuery);
+}
